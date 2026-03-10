@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Loader from '../components/Loader';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 // Lazy load components
 const DashboardLayout = lazy(() => import('../layouts/DashboardLayout'));
@@ -31,6 +32,7 @@ const CommunicationPortal = lazy(() => import('../pages/hr/CommunicationPortal')
 // Common Pages
 const Settings = lazy(() => import('../pages/common/Settings'));
 const Help = lazy(() => import('../pages/common/Help'));
+const Unauthorized = lazy(() => import('../pages/public/Unauthorized'));
 
 const LoadingFallback = () => (
     <div className="fixed top-0 left-0 w-full h-1 z-[100] bg-slate-100 overflow-hidden">
@@ -48,11 +50,12 @@ const AppRoutes = () => {
                 {/* Authentication & Candidate Flow */}
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/exam-instructions" element={<ExamInstructions />} />
-                <Route path="/exam" element={<ExamPage />} />
+                <Route path="/exam-instructions" element={<ProtectedRoute allowedRoles={['candidate']}><ExamInstructions /></ProtectedRoute>} />
+                <Route path="/exam" element={<ProtectedRoute allowedRoles={['candidate']}><ExamPage /></ProtectedRoute>} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
 
                 {/* Super Admin Module */}
-                <Route path="/admin" element={<DashboardLayout role="superadmin" />}>
+                <Route path="/admin" element={<ProtectedRoute allowedRoles={['superadmin', 'admin']}><DashboardLayout role="superadmin" /></ProtectedRoute>}>
                     <Route index element={<AdminDashboard />} />
                     <Route path="proctoring" element={<ProctoringDashboard />} />
                     <Route path="candidates" element={<CandidatesList />} />
@@ -65,7 +68,7 @@ const AppRoutes = () => {
                 </Route>
 
                 {/* Interviewer Module */}
-                <Route path="/interviewer" element={<DashboardLayout role="interviewer" />}>
+                <Route path="/interviewer" element={<ProtectedRoute allowedRoles={['interviewer']}><DashboardLayout role="interviewer" /></ProtectedRoute>}>
                     <Route index element={<InterviewerDashboard />} />
                     <Route path="interviews" element={<AssignedInterviews />} />
                     <Route path="reviews" element={<TechnicalReview />} />
@@ -74,7 +77,7 @@ const AppRoutes = () => {
                 </Route>
 
                 {/* HR Module */}
-                <Route path="/hr" element={<DashboardLayout role="hr" />}>
+                <Route path="/hr" element={<ProtectedRoute allowedRoles={['hr']}><DashboardLayout role="hr" /></ProtectedRoute>}>
                     <Route index element={<HRDashboard />} />
                     <Route path="candidates" element={<HRProfiles />} />
                     <Route path="interviews" element={<AllInterviews />} />

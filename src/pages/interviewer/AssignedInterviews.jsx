@@ -58,7 +58,7 @@ const AssignedInterviews = () => {
                     { label: 'Scheduled Today', value: stats.today, icon: Clock },
                     { label: 'Evaluations Done', value: stats.completed, icon: CheckCircle2 }
                 ].map((s, i) => (
-                    <Card key={i} className="p-6 shadow-elevation-high hover:translate-y-[-4px] transition-all duration-300 ring-1 ring-slate-100 hover:ring-[#ff6e00] border-none">
+                    <Card key={i} className="p-6 shadow-elevation-high hover:-translate-y-1 transition-all duration-300 ring-1 ring-slate-100 hover:ring-[#ff6e00] border-none">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-orange-100/50 flex items-center justify-center text-[#ff6e00]">
                                 <s.icon size={24} />

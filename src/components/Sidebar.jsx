@@ -166,7 +166,7 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
 
             {/* Footer */}
             <div className="px-4 py-3 shrink-0 text-center bg-gray-50/50 border-t border-gray-100">
-                <p className="text-[9px] font-black text-slate-400 tracking-[0.1em]">
+                <p className="text-[9px] font-black text-slate-400 tracking-widest">
                     {collapsed ? "©" : "© 2026 EMBEL TECH"}
                 </p>
             </div>

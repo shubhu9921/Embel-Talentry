@@ -9,7 +9,7 @@ const QuestionFilters = ({
     stats: { active = 0, inactive = 0 } = {}
 }) => {
     return (
-        <div className="lg:col-span-3 bg-white rounded-[2rem] shadow-elevation-high border border-slate-100 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="lg:col-span-3 bg-white rounded-4xl shadow-elevation-high border border-slate-100 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1 w-full md:w-auto">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Filter by Vacancy</p>
                 <div className="relative dropdown dropdown-hover w-full">
@@ -18,7 +18,7 @@ const QuestionFilters = ({
                         <span>{selectedPosition === 'all' ? 'All Vacancies' : (vacancies.find(v => v.id === selectedPosition)?.title || 'All Vacancies')}</span>
                         <ChevronDown className="w-4 h-4 text-slate-400" />
                     </div>
-                    <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-[100] w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
+                    <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
                         <li>
                             <button onClick={() => setSelectedPosition('all')} className={selectedPosition === 'all' ? 'active w-full text-left' : 'w-full text-left'}>All Vacancies</button>
                         </li>

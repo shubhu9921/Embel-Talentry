@@ -84,7 +84,7 @@ const CommunicationPortal = () => {
                         </div>
                     </Card>
 
-                    <Card className="p-6 border-none bg-slate-900 text-white shadow-xl shadow-slate-900/40 shadow-elevation-high">
+                    <Card className="p-6 border-none bg-slate-900 text-white shadow-xl shadow-slate-900/40">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                                 <History className="w-5 h-5 text-[#ff6e00]" />
@@ -131,7 +131,7 @@ const CommunicationPortal = () => {
                             <div className="flex items-center justify-between gap-4">
                                 <div className="flex -space-x-3 overflow-hidden p-1">
                                     {candidates.slice(0, 5).map((c, i) => (
-                                        <div key={i} className="inline-block h-10 w-10 rounded-full ring-2 ring-white bg-orange-50 flex items-center justify-center text-[10px] font-black text-[#ff6e00]">
+                                        <div key={i} className="inline-block h-10 w-10 rounded-full ring-2 ring-white bg-orange-50 items-center justify-center text-[10px] font-black text-[#ff6e00]">
                                             {c.name.charAt(0)}
                                         </div>
                                     ))}
