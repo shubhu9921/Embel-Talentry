@@ -30,15 +30,24 @@ const CodingEditor = ({ initialCode = '', language = 'javascript', onSave }) => 
         <div className="flex flex-col h-full bg-[#1e1e1e] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
             <div className="flex items-center justify-between px-6 py-3 bg-[#252526] border-b border-[#333]">
                 <div className="flex items-center gap-4">
-                    <div className="relative group">
-                        <select
-                            value={lang}
-                            onChange={(e) => setLang(e.target.value)}
-                            className="appearance-none bg-[#3c3c3c] text-slate-200 text-sm px-4 py-1.5 pr-8 rounded-lg outline-none hover:bg-[#454545] transition-colors cursor-pointer"
-                        >
-                            {languages.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
-                        </select>
-                        <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <div className="relative dropdown dropdown-hover">
+                        <div tabIndex={0} role="button" className="bg-[#3c3c3c] text-slate-200 text-sm px-4 py-1.5 rounded-lg outline-none hover:bg-[#454545] transition-colors cursor-pointer flex items-center justify-between min-w-30">
+                            <span>{languages.find(l => l.value === lang)?.label || 'Select Language'}</span>
+                            <ChevronDown className="w-4 h-4 text-slate-400 ml-2" />
+                        </div>
+                        <ul tabIndex={0} className="dropdown-content menu bg-[#3c3c3c] rounded-lg z-100 w-full p-2 shadow-2xl border border-[#555] mt-1 text-slate-200">
+                            {languages.map(l => (
+                                <li key={l.value}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setLang(l.value)}
+                                        className={`w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-[#555] ${lang === l.value ? 'bg-[#555] text-white font-bold' : ''}`}
+                                    >
+                                        {l.label}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
 
@@ -63,7 +72,7 @@ const CodingEditor = ({ initialCode = '', language = 'javascript', onSave }) => 
                 </div>
             </div>
 
-            <div className="flex-1 min-h-[400px]">
+            <div className="flex-1 min-h-100">
                 <Editor
                     height="100%"
                     language={lang}

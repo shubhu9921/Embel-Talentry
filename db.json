@@ -34,7 +34,7 @@
         "useReducer"
       ],
       "correct": "useEffect",
-      "selected": true
+      "selected": false
     },
     {
       "id": 3,
@@ -49,7 +49,7 @@
         "To memoize DOM elements"
       ],
       "correct": "To memoize expensive calculations",
-      "selected": true
+      "selected": false
     },
     {
       "id": 4,
@@ -64,7 +64,7 @@
         "404"
       ],
       "correct": "204",
-      "selected": true
+      "selected": false
     },
     {
       "id": 5,
@@ -79,7 +79,7 @@
         "None of the above"
       ],
       "correct": "Abstract classes can have state",
-      "selected": true
+      "selected": false
     },
     {
       "id": 1773039113905,
@@ -94,7 +94,7 @@
         "dasfdwf"
       ],
       "correct": "",
-      "selected": true
+      "selected": false
     }
   ],
   "interviews": [],
@@ -105,11 +105,29 @@
       "password": "admin123",
       "role": "superadmin",
       "name": "Alex Rivera",
-      "lastLogin": "2026-03-10T05:15:51.187Z"
+      "lastLogin": "2026-03-10T05:51:53.125Z"
+    },
+    {
+      "name": "teat",
+      "email": "test@gmail.com",
+      "password": "test123",
+      "role": "interviewer",
+      "domain": "frontend",
+      "createdAt": "2026-03-10T05:44:15.761Z",
+      "id": 2
+    },
+    {
+      "name": "hr manager",
+      "email": "hr@gmail.com",
+      "password": "hr1234",
+      "role": "hr",
+      "domain": "",
+      "createdAt": "2026-03-10T05:52:31.326Z",
+      "id": 3
     }
   ],
   "settings": {
-    "projectName": "Embel TalentSphere",
+    "projectName": "Embel Talentry",
     "theme": "Blue & Orange"
   }
 }

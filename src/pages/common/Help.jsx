@@ -7,11 +7,11 @@ const Help = () => {
         <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in duration-700">
             <div>
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight">Help & Support</h1>
-                <p className="text-slate-500 font-medium mt-1">Get the most out of Embel TalentSphere hiring platform.</p>
+                <p className="text-slate-500 font-medium mt-1">Get the most out of Embel Talentry hiring platform.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="p-8 border-none ring-1 ring-slate-100 shadow-xl shadow-orange-100/50 hover:ring-[#ff6e00] hover:bg-orange-50 transition-all cursor-pointer group">
+                <Card className="p-8 border-none ring-1 ring-slate-100 shadow-elevation-high hover:ring-[#ff6e00] transition-all cursor-pointer group ">
                     <BookOpen className="w-10 h-10 text-[#ff6e00] mb-6 group-hover:scale-110 transition-transform" />
                     <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Platform Documentation</h3>
                     <p className="text-sm text-slate-500 mb-6 font-medium leading-relaxed">Detailed guides on managing vacancies, assessment creation, and interviewing techniques.</p>
@@ -20,7 +20,7 @@ const Help = () => {
                     </div>
                 </Card>
 
-                <Card className="p-8 border-none ring-1 ring-slate-100 shadow-xl shadow-orange-100/50 hover:ring-emerald-500 hover:bg-emerald-50 transition-all cursor-pointer group">
+                <Card className="p-8 border-none ring-1 ring-slate-100 shadow-elevation-high hover:ring-emerald-500 hover:bg-emerald-50 transition-all cursor-pointer group ">
                     <MessageSquare className="w-10 h-10 text-emerald-500 mb-6 group-hover:scale-110 transition-transform" />
                     <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Live Chat Support</h3>
                     <p className="text-sm text-slate-500 mb-6 font-medium leading-relaxed">Get immediate assistance from our technical support team for real-time issues.</p>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Mail, CheckCircle2, AlertTriangle, Clock, History, FileText, ChevronRight } from 'lucide-react';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
@@ -15,7 +15,7 @@ const CommunicationPortal = () => {
     useEffect(() => {
         const fetchCandidates = async () => {
             try {
-                const data = await apiService.get('/candidates');
+                const data = await ApiService.get('/candidates');
                 setCandidates(data);
             } catch (error) {
                 console.error('Error fetching candidates:', error);
@@ -28,7 +28,7 @@ const CommunicationPortal = () => {
 
     const emailTemplates = {
         invite: {
-            subject: 'Action Required: Assessment Invitation from Embel TalentSphere',
+            subject: 'Action Required: Assessment Invitation from Embel Talentry',
             body: 'Dear Candidate, We are pleased to invite you to take our technical assessment for the position you applied for...'
         },
         shortlist: {
@@ -67,14 +67,14 @@ const CommunicationPortal = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-1 space-y-6">
-                    <Card className="p-6 border-none shadow-md shadow-orange-100/50 ring-1 ring-slate-100">
+                    <Card className="p-6 border-none shadow-elevation-high ring-1 ring-slate-100 ">
                         <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 px-1">Template Selector</h3>
                         <div className="space-y-3">
                             {Object.keys(emailTemplates).map((type) => (
                                 <button
                                     key={type}
                                     onClick={() => setSelectedType(type)}
-                                    className={`w-full p-4 rounded-2xl flex items-center justify-between transition-all border ${selectedType === type ? 'bg-[#ff6e00] text-white border-[#ff6e00] shadow-lg shadow-[#ff6e00]/20' : 'bg-white text-slate-600 border-slate-100 hover:bg-orange-50 hover:border-[#ff6e00] hover:text-[#ff6e00]'
+                                    className={`w-full p-4 rounded-2xl flex items-center justify-between transition-all border ${selectedType === type ? 'bg-[#ff6e00] text-white border-[#ff6e00] shadow-lg shadow-[#ff6e00]/20' : 'bg-white text-slate-600 border-slate-100 hover:border-[#ff6e00] hover:text-[#ff6e00]'
                                         }`}
                                 >
                                     <span className="text-xs font-black uppercase tracking-widest">{type}</span>
@@ -84,7 +84,7 @@ const CommunicationPortal = () => {
                         </div>
                     </Card>
 
-                    <Card className="p-6 border-none bg-slate-900 text-white shadow-xl shadow-slate-900/40">
+                    <Card className="p-6 border-none bg-slate-900 text-white shadow-xl shadow-slate-900/40 shadow-elevation-high">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                                 <History className="w-5 h-5 text-[#ff6e00]" />
@@ -112,7 +112,7 @@ const CommunicationPortal = () => {
                         </div>
                     )}
 
-                    <Card className="p-8 border-none shadow-md shadow-orange-100/50 ring-1 ring-slate-100 h-full">
+                    <Card className="p-8 border-none shadow-elevation-high ring-1 ring-slate-100 h-full ">
                         <div className="mb-8 p-6 bg-orange-50/30 rounded-3xl border border-orange-100/50">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center border border-orange-100 shadow-sm">

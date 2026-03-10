@@ -16,18 +16,18 @@ const Header = ({ role }) => {
                     <input
                         type="text"
                         placeholder="Search (Candidates, Reports, Questions)..."
-                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 placeholder:text-slate-400 shadow-md shadow-orange-100/50 hover:shadow-orange-200/50 hover:border-orange-300 hover:bg-white"
+                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 placeholder:text-slate-400 shadow-elevation-high hover:shadow-orange-200/50 hover:border-orange-300 hover:bg-white"
                     />
                 </div>
             </div>
 
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
-                    <button className="p-2 rounded-full text-slate-600 hover:bg-orange-50 hover:text-[#ff6e00] transition relative group/icon">
+                    <button className="p-2 rounded-full text-slate-600 hover:text-[#ff6e00] transition relative group/icon">
                         <Bell size={20} className="text-slate-600 group-hover/icon:text-[#ff6e00]" />
                         <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
                     </button>
-                    <button className="p-2 rounded-full text-slate-600 hover:bg-orange-50 hover:text-[#ff6e00] transition-colors group/icon">
+                    <button className="p-2 rounded-full text-slate-600 hover:text-[#ff6e00] transition-colors group/icon">
                         <Settings size={20} className="text-slate-600 group-hover/icon:text-[#ff6e00]" />
                     </button>
                 </div>
@@ -43,7 +43,7 @@ const Header = ({ role }) => {
                             {user.role === 'superadmin' ? 'Super Admin' : user.role === 'interviewer' ? 'Technical Interviewer' : 'HR Manager'}
                         </p>
                     </div>
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-md shadow-blue-500/20 group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                    <div className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-md shadow-blue-500/20 group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
                         {userInitials}
                     </div>
                 </div>

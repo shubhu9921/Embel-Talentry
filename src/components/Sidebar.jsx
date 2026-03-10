@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Users, FileQuestion, Briefcase, Award,
@@ -36,15 +36,15 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
     const handleLogout = () => {
         localStorage.removeItem('admin_user');
         sessionStorage.clear();
-        navigate('/login-admin');
+        navigate('/login');
     };
 
     return (
         <aside
             className={`
-                bg-white/50 backdrop-blur-md transition-all duration-300 shadow-[4px_0_24px_rgba(0,0,0,0.15)] z-50 border-r border-gray-100
+                bg-white transition-all duration-300 z-30 border-r border-gray-100 shadow-[4px_0_24px_rgba(0,0,0,0.08)]
                 ${collapsed ? "w-20" : "w-64"}
-                flex flex-col h-screen fixed left-0 top-0 overflow-x-hidden
+                flex flex-col h-screen overflow-x-hidden shrink-0
             `}
         >
             {/* Logo Section */}
@@ -56,7 +56,7 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                         </div>
                         <div className="flex flex-col">
                             <span className="font-black text-base text-slate-800 tracking-tight leading-none uppercase">Embel</span>
-                            <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest mt-0.5">TalentSphere</span>
+                            <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest mt-0.5">Talentry</span>
                         </div>
                     </div>
                 )}
@@ -175,3 +175,4 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
 };
 
 export default Sidebar;
+

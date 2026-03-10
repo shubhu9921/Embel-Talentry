@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Mail, Send, CheckCircle2, XCircle, User, Users, Info, Briefcase, Phone, BookOpen, Download, Eye, Calendar, GraduationCap, Award, AlertCircle, History, Clock } from 'lucide-react';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
@@ -17,7 +17,7 @@ const HRProfiles = () => {
     useEffect(() => {
         const fetchCandidates = async () => {
             try {
-                const data = await apiService.get('/candidates');
+                const data = await ApiService.get('/candidates');
                 setCandidates(data);
             } catch (error) {
                 console.error('Error fetching candidates:', error);
@@ -59,7 +59,7 @@ const HRProfiles = () => {
 
     return (
         <div className="space-y-10 animate-in fade-in duration-700">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md pb-4 pt-8 -mt-8 -mx-8 px-8 border-b border-slate-200/50">
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">HR Candidate Management</h1>
                     <p className="text-slate-500 font-medium mt-1">Track recruitment status and manage candidate communication.</p>
@@ -85,7 +85,7 @@ const HRProfiles = () => {
                     <Card
                         key={i}
                         onClick={() => setStatusFilter(s.id)}
-                        className={`p-6 shadow-md transition-all duration-300 ring-1 border-none cursor-pointer hover:translate-y-[-4px] active:scale-95 ${statusFilter === s.id ? 'ring-[#ff6e00] bg-orange-50 shadow-orange-200' : 'shadow-orange-100/50 ring-slate-100 hover:ring-[#ff6e00] hover:bg-orange-50'}`}
+                        className={`p-6 shadow-premium transition-all duration-300 ring-1 border-none cursor-pointer hover:translate-y-[-4px] active:scale-95 ${statusFilter === s.id ? 'ring-[#ff6e00] bg-orange-50 shadow-orange-200' : 'ring-slate-100 hover:ring-[#ff6e00]'}`}
                     >
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-orange-100/50 flex items-center justify-center text-[#ff6e00]">
@@ -105,7 +105,7 @@ const HRProfiles = () => {
                     <Card
                         key={candidate.id}
                         onClick={() => { setSelectedCandidate(candidate); setIsDetailModalOpen(true); }}
-                        className="p-8 border-none shadow-md shadow-orange-100/50 ring-1 ring-slate-100 group transition-all duration-500 hover:ring-[#ff6e00] hover:bg-orange-50 cursor-pointer overflow-hidden relative"
+                        className="p-8 border-none shadow-premium ring-1 ring-slate-100 group transition-all duration-500 hover:ring-[#ff6e00] cursor-pointer overflow-hidden relative"
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-orange-100/20 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700"></div>
 

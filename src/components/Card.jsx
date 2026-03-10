@@ -1,19 +1,19 @@
 import React from 'react';
 
-const Card = ({ children, title, subtitle, footer, className = '', ...props }) => {
+const Card = ({ children, title, subtitle, footer, className = '', noPadding = false, ...props }) => {
     return (
-        <div className={`card ${className}`} {...props}>
+        <div className={`bg-white rounded-xl transition-all duration-300 ${className}`} {...props}>
             {(title || subtitle) && (
-                <div className="mb-4">
-                    {title && <h3 className="text-lg font-semibold text-slate-900">{title}</h3>}
-                    {subtitle && <p className="text-sm text-slate-500">{subtitle}</p>}
+                <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/30">
+                    {title && <h3 className="text-lg font-bold text-slate-800 tracking-tight">{title}</h3>}
+                    {subtitle && <p className="text-sm text-slate-500 mt-1 font-medium">{subtitle}</p>}
                 </div>
             )}
-            <div className="card-content">
+            <div className={noPadding ? '' : 'p-6'}>
                 {children}
             </div>
             {footer && (
-                <div className="mt-6 pt-4 border-t border-slate-100">
+                <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 text-sm">
                     {footer}
                 </div>
             )}

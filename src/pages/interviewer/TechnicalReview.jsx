@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle2, XCircle, Star, MessageSquare, Terminal, Award } from 'lucide-react';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
@@ -14,7 +14,7 @@ const TechnicalReview = () => {
     useEffect(() => {
         const fetchReviewCandidates = async () => {
             try {
-                const data = await apiService.get('/candidates');
+                const data = await ApiService.get('/candidates');
                 // Only show candidates who have finished the exam or are shortlisted
                 setCandidates(data.filter(c => c.status === 'shortlisted' || c.status === 'applied'));
             } catch (error) {
@@ -30,7 +30,7 @@ const TechnicalReview = () => {
         if (!feedback.decision || !feedback.rating) return;
 
         try {
-            await apiService.patch(`/candidates/${selectedCandidate.id}`, {
+            await ApiService.patch(`/candidates/${selectedCandidate.id}`, {
                 status: feedback.decision === 'hire' ? 'hired' : 'rejected',
                 feedback: {
                     interviewerRating: feedback.rating,
@@ -51,7 +51,7 @@ const TechnicalReview = () => {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-700">
             <div className="lg:col-span-4 space-y-6">
-                <div>
+                <div className="sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md pb-4 pt-8 -mt-8 -mx-8 px-8 border-b border-slate-200/50 mb-0">
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">Technical Review</h1>
                     <p className="text-slate-500 font-medium mt-1">Select a candidate to submit evaluation.</p>
                 </div>
@@ -61,7 +61,7 @@ const TechnicalReview = () => {
                         <Card
                             key={c.id}
                             onClick={() => setSelectedCandidate(c)}
-                            className={`p-4 cursor-pointer transition-all border-none shadow-md shadow-orange-100/50 ${selectedCandidate?.id === c.id ? 'bg-[#ff6e00] text-white ring-4 ring-[#ff6e00]/20' : 'bg-white hover:bg-orange-50 ring-1 ring-slate-100 hover:ring-[#ff6e00]'}`}
+                            className={`p-4 cursor-pointer transition-all border-none shadow-elevation-high ${selectedCandidate?.id === c.id ? 'bg-[#ff6e00] text-white ring-4 ring-[#ff6e00]/20' : 'bg-white ring-1 ring-slate-100 hover:ring-[#ff6e00]'}`}
                         >
                             <div className="flex items-center gap-3">
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black ${selectedCandidate?.id === c.id ? 'bg-white/20 text-white' : 'bg-orange-50 text-[#ff6e00]'}`}>
@@ -75,7 +75,7 @@ const TechnicalReview = () => {
                                 </div>
                                 <div className="ml-auto">
                                     <div className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tight ${selectedCandidate?.id === c.id ? 'bg-white/20 text-white' : 'bg-[#ff6e00]/10 text-[#ff6e00]'}`}>
-                                        {c.examScore || '—'}
+                                        {c.examScore || 'â€”'}
                                     </div>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@ const TechnicalReview = () => {
 
             <div className="lg:col-span-8">
                 {selectedCandidate ? (
-                    <Card className="p-8 border-none shadow-xl shadow-orange-100/50 ring-1 ring-slate-100 min-h-full">
+                    <Card className="p-8 border-none shadow-elevation-high ring-1 ring-slate-100 min-h-full ">
                         <div className="flex items-start justify-between mb-10">
                             <div className="flex items-center gap-5">
                                 <div className="w-16 h-16 rounded-3xl bg-orange-50 flex items-center justify-center border border-orange-100">
@@ -152,7 +152,7 @@ const TechnicalReview = () => {
                                     rows={6}
                                     value={feedback.notes}
                                     onChange={(e) => setFeedback({ ...feedback, notes: e.target.value })}
-                                    className="w-full p-6 bg-slate-50 border border-slate-100 rounded-[2rem] text-sm focus:outline-none focus:bg-white focus:ring-8 focus:ring-primary-500/5 transition-all resize-none font-medium text-slate-700"
+                                    className="w-full p-6 bg-slate-50 border border-slate-100 rounded-4xl text-sm focus:outline-none focus:bg-white focus:ring-8 focus:ring-primary-500/5 transition-all resize-none font-medium text-slate-700"
                                     placeholder="Provide detailed feedback on data structures, problem solving, and cultural fit..."
                                 />
                             </div>

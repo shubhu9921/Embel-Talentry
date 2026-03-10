@@ -7,7 +7,7 @@ import useProctoring from '../../hooks/useProctoring';
 import CodingEditor from './CodingEditor';
 import Timer from '../../components/Timer';
 import Loader from '../../components/Loader';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
 
 const ExamPage = () => {
     const [questions, setQuestions] = useState([]);
@@ -48,7 +48,7 @@ const ExamPage = () => {
 
         const fetchQuestions = async () => {
             try {
-                const data = await apiService.get('/questions');
+                const data = await ApiService.get('/questions');
                 const activePool = data.filter(q => q.position === storedCandidate.position && q.selected === true);
                 const shuffled = [...activePool].sort(() => Math.random() - 0.5);
                 setQuestions(shuffled);
@@ -78,7 +78,7 @@ const ExamPage = () => {
                 submittedAt: new Date().toISOString()
             };
 
-            await apiService.patch(`/candidates/${candidate.id}`, updateData);
+            await ApiService.patch(`/candidates/${candidate.id}`, updateData);
 
             localStorage.setItem('candidate', JSON.stringify({
                 ...candidate,
@@ -120,17 +120,17 @@ const ExamPage = () => {
     };
 
     if (loading) return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#002D5E] to-[#112240] text-white">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-[#002D5E] to-[#112240] text-white">
             <Loader size="lg" className="mb-6" />
             <p className="font-black uppercase tracking-[0.2em] animate-pulse">Initializing Environment</p>
         </div>
     );
 
     if (questions.length === 0) return (
-        <div ref={containerRef} className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#002D5E] to-[#112240] p-10 text-center relative">
+        <div ref={containerRef} className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-[#002D5E] to-[#112240] p-10 text-center relative">
             {/* Malpractice / Tab Switch Warning Overlay */}
             {isTabViolation && (
-                <div className="fixed inset-0 z-[150] bg-purple-900/95 backdrop-blur-2xl flex flex-col items-center justify-center text-white p-10 animate-in zoom-in duration-300">
+                <div className="fixed inset-0 z-150 bg-purple-900/95 backdrop-blur-2xl flex flex-col items-center justify-center text-white p-10 animate-in zoom-in duration-300">
                     <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mb-8 border border-white/20 shadow-2xl">
                         <MonitorX size={56} className="text-purple-400" />
                     </div>
@@ -149,7 +149,7 @@ const ExamPage = () => {
 
             {/* Multiple Faces Warning Overlay */}
             {isMultipleFaces && (
-                <div className="fixed inset-0 z-[110] bg-orange-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-110 bg-orange-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
                     <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
                         <Users size={64} className="text-white" />
                     </div>
@@ -160,7 +160,7 @@ const ExamPage = () => {
 
             {/* Suspicious Movement Warning Overlay */}
             {isSuspiciousMovement && (
-                <div className="fixed inset-0 z-[120] bg-yellow-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-120 bg-yellow-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
                     <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
                         <EyeOff size={64} className="text-white" />
                     </div>
@@ -171,7 +171,7 @@ const ExamPage = () => {
 
             {/* Background Voice Warning Overlay */}
             {isVoiceDetected && (
-                <div className="fixed inset-0 z-[130] bg-indigo-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-130 bg-indigo-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
                     <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
                         <Mic size={64} className="text-white" />
                     </div>
@@ -181,7 +181,7 @@ const ExamPage = () => {
             )}
 
             {isFaceMissing && (
-                <div className="fixed inset-0 z-[100] bg-red-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-100 bg-red-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
                     <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
                         <AlertTriangle size={64} className="text-white" />
                     </div>
@@ -209,7 +209,7 @@ const ExamPage = () => {
         <div ref={containerRef} className="h-screen bg-slate-50 flex flex-col font-sans antialiased overflow-hidden select-none relative">
             {/* Malpractice / Tab Switch Warning Overlay */}
             {isTabViolation && (
-                <div className="fixed inset-0 z-[150] bg-purple-900/95 backdrop-blur-2xl flex flex-col items-center justify-center text-white p-10 animate-in zoom-in duration-300">
+                <div className="fixed inset-0 z-150 bg-purple-900/95 backdrop-blur-2xl flex flex-col items-center justify-center text-white p-10 animate-in zoom-in duration-300">
                     <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mb-8 border border-white/20 shadow-2xl">
                         <MonitorX size={56} className="text-purple-400" />
                     </div>
@@ -228,7 +228,7 @@ const ExamPage = () => {
 
             {/* Multiple Faces Warning Overlay */}
             {isMultipleFaces && (
-                <div className="fixed inset-0 z-[110] bg-orange-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-110 bg-orange-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
                     <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
                         <Users size={64} className="text-white" />
                     </div>
@@ -239,7 +239,7 @@ const ExamPage = () => {
 
             {/* Suspicious Movement Warning Overlay */}
             {isSuspiciousMovement && (
-                <div className="fixed inset-0 z-[120] bg-yellow-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-120 bg-yellow-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
                     <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
                         <EyeOff size={64} className="text-white" />
                     </div>
@@ -250,7 +250,7 @@ const ExamPage = () => {
 
             {/* Background Voice Warning Overlay */}
             {isVoiceDetected && (
-                <div className="fixed inset-0 z-[130] bg-indigo-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-130 bg-indigo-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
                     <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
                         <Mic size={64} className="text-white" />
                     </div>
@@ -261,7 +261,7 @@ const ExamPage = () => {
 
             {/* Face Missing Warning Overlay */}
             {isFaceMissing && (
-                <div className="fixed inset-0 z-[100] bg-red-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-100 bg-red-600/90 backdrop-blur-md flex flex-col items-center justify-center text-white p-6 animate-in fade-in duration-300">
                     <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
                         <AlertTriangle size={64} className="text-white" />
                     </div>
@@ -271,7 +271,7 @@ const ExamPage = () => {
             )}
             {/* Fullscreen Overlay Prompt if not fullscreen */}
             {!loading && typeof document !== 'undefined' && !document.fullscreenElement && (
-                <div className="fixed inset-0 z-[100] bg-[#002D5E]/95 backdrop-blur-xl flex flex-col items-center justify-center text-white p-10 text-center">
+                <div className="fixed inset-0 z-100 bg-[#002D5E]/95 backdrop-blur-xl flex flex-col items-center justify-center text-white p-10 text-center">
                     <ShieldCheck size={80} className="text-orange-500 mb-8 animate-bounce" />
                     <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">Enter Fullscreen Mode</h2>
                     <p className="text-slate-300 mb-10 max-w-md font-medium text-lg leading-relaxed">
@@ -289,7 +289,7 @@ const ExamPage = () => {
             )}
 
             {/* Premium Header */}
-            <header className="bg-gradient-to-r from-[#002D5E] to-[#112240] border-b border-white/10 px-8 py-4 flex items-center justify-between z-30 shadow-2xl relative">
+            <header className="bg-linear-to-r from-[#002D5E] to-[#112240] border-b border-white/10 px-8 py-4 flex items-center justify-between z-30 shadow-2xl relative">
                 <div className="flex items-center gap-12">
                     <img src="https://www.embel.co.in/images/logos/logo-embel.png" alt="Embel" className="h-8 object-contain mix-blend-screen brightness-200" />
                     <div className="hidden lg:flex items-center gap-6">
@@ -338,9 +338,9 @@ const ExamPage = () => {
 
             <div className="flex-1 flex overflow-hidden relative">
                 {/* Modern Sidebar for Large Screens */}
-                <aside className="w-80 bg-white border-r border-slate-100 flex flex-col overflow-y-auto hidden lg:flex shadow-2xl relative z-10">
+                <aside className="w-80 bg-white border-r border-slate-100 flex flex-col overflow-y-auto lg:flex shadow-2xl relative z-10">
                     <div className="p-8">
-                        <div className="aspect-video bg-slate-900 rounded-[2rem] overflow-hidden border-[6px] border-slate-50 shadow-2xl relative mb-8 group">
+                        <div className="aspect-video bg-slate-900 rounded-4xl overflow-hidden border-[6px] border-slate-50 shadow-2xl relative mb-8 group">
                             <Webcam audio={false} className="w-full h-full object-cover" onUserMedia={handleUserMedia} />
                             <div className="absolute top-4 left-4 flex items-center gap-2 px-2.5 py-1 bg-red-500/90 backdrop-blur-sm text-white rounded-lg text-[9px] font-black uppercase tracking-[0.2em]">
                                 <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
@@ -349,7 +349,7 @@ const ExamPage = () => {
                         </div>
 
                         <div className="space-y-8">
-                            <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100">
+                            <div className="p-6 rounded-4xl bg-slate-50 border border-slate-100">
                                 <div className="flex items-center justify-between mb-4">
                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Integrity Rank</span>
                                     <span className={`text-sm font-black ${violations > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
@@ -433,7 +433,7 @@ const ExamPage = () => {
                                             <button
                                                 key={idx}
                                                 onClick={() => handleAnswerSelect(option)}
-                                                className={`w-full p-8 text-left rounded-[2rem] border-2 transition-all group relative overflow-hidden ${answers[activeQuestion.id] === option
+                                                className={`w-full p-8 text-left rounded-4xl border-2 transition-all group relative overflow-hidden ${answers[activeQuestion.id] === option
                                                     ? 'bg-orange-50 border-orange-500 text-slate-900 shadow-xl shadow-orange-500/10'
                                                     : 'bg-white border-slate-100 text-slate-600 hover:border-orange-200 hover:bg-slate-50/50'
                                                     }`}
@@ -453,7 +453,7 @@ const ExamPage = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="h-[500px] rounded-[2rem] overflow-hidden border-4 border-slate-50 shadow-inner">
+                                    <div className="h-125 rounded-4xl overflow-hidden border-4 border-slate-50 shadow-inner">
                                         <CodingEditor
                                             initialCode={activeQuestion.initialCode || ''}
                                             language={activeQuestion.language || 'javascript'}
@@ -504,13 +504,13 @@ const ExamPage = () => {
 
             {
                 isSubmitting && (
-                    <div className="fixed inset-0 z-[110] bg-[#002D5E]/95 backdrop-blur-xl flex flex-col items-center justify-center text-white p-10 animate-in fade-in duration-700">
+                    <div className="fixed inset-0 z-110 bg-[#002D5E]/95 backdrop-blur-xl flex flex-col items-center justify-center text-white p-10 animate-in fade-in duration-700">
                         <div className="relative mb-12">
                             <div className="w-24 h-24 border-8 border-white/20 border-t-orange-500 rounded-full animate-spin"></div>
                             <ShieldCheck className="w-10 h-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                         </div>
                         <h3 className="text-4xl font-black mb-4 uppercase tracking-tighter">Securing Assessment</h3>
-                        <p className="text-slate-400 font-medium tracking-wide text-lg text-center max-w-md">Syncing your encrypted responses with Embel TalentSphere Integrity Engine...</p>
+                        <p className="text-slate-400 font-medium tracking-wide text-lg text-center max-w-md">Syncing your encrypted responses with Embel Talentry Integrity Engine...</p>
                         <div className="mt-12 w-full max-w-xs h-1.5 bg-white/10 rounded-full overflow-hidden">
                             <div className="h-full bg-orange-500 animate-[loading_2s_ease-in-out_infinite] w-1/3"></div>
                         </div>

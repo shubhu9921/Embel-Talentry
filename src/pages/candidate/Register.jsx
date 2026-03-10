@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, ShieldCheck, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, Lock } from 'lucide-react';
+import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, ShieldCheck, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
 
 const Register = () => {
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
@@ -22,11 +22,12 @@ const Register = () => {
     const preSelectedPosition = searchParams.get('position');
     const expType = watch('experienceType');
     const hasBacklogs = watch('activeBacklogs');
+    const watchPosition = watch('position');
 
     useEffect(() => {
         const fetchVacancies = async () => {
             try {
-                const data = await apiService.get('/vacancies');
+                const data = await ApiService.get('/vacancies');
                 const activeVacancies = data.filter(v => v.isOpen);
                 setVacancies(activeVacancies);
 
@@ -61,7 +62,7 @@ const Register = () => {
                 examScore: null,
                 resumeName: resumeFileName || 'Not uploaded'
             };
-            await apiService.post('/candidates', newCandidate);
+            await ApiService.post('/candidates', newCandidate);
             setCandidateData(newCandidate);
             setStep(3);
         } catch (error) {
@@ -86,10 +87,10 @@ const Register = () => {
     const nextStep = () => setStep(2);
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#002D5E] to-[#112240] p-4 font-sans selection:bg-orange-500/30 selection:text-white relative overflow-hidden">
+        <div className="min-h-screen w-full flex items-center justify-center bg-linear-to-br from-[#002D5E] to-[#112240] p-4 font-sans selection:bg-orange-500/30 selection:text-white relative overflow-hidden">
             {/* Massive decorative blurs */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -mr-64 -mt-64 pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] -ml-64 -mb-64 pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-125 h-125 bg-orange-500/5 rounded-full blur-[120px] -mr-64 -mt-64 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-125 h-125 bg-blue-500/10 rounded-full blur-[120px] -ml-64 -mb-64 pointer-events-none"></div>
 
             <div className="w-full max-w-4xl relative z-10 py-12">
                 <div className="text-center mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
@@ -99,7 +100,7 @@ const Register = () => {
                         className="h-12 mx-auto mb-6 object-contain drop-shadow-sm"
                     />
                     <h1 className="text-3xl font-black text-white tracking-tight uppercase">
-                        {step === 1 ? 'TalentSphere Portal' : step === 2 ? 'Registration Form' : 'Success!'}
+                        {step === 1 ? 'Talentry Portal' : step === 2 ? 'Registration Form' : 'Success!'}
                     </h1>
                     <p className="text-slate-400 font-medium mt-2 text-lg">
                         {step === 1 ? (preSelectedPosition ? `Applying for ${vacancies.find(v => v.id === preSelectedPosition)?.title || 'Position'}` : 'Scan to verify and continue on your mobile') : 'Provide your comprehensive details to start the assessment'}
@@ -110,7 +111,7 @@ const Register = () => {
                     {step === 1 ? (
                         <div className="p-16 text-center space-y-12 animate-in fade-in zoom-in-95 duration-500">
                             <div className="flex justify-center">
-                                <div className="p-10 bg-slate-50 rounded-[4.5rem] shadow-inner ring-[16px] ring-slate-100/50 relative group transition-all">
+                                <div className="p-10 bg-slate-50 rounded-[4.5rem] shadow-inner ring-16 ring-slate-100/50 relative group transition-all">
                                     <QRCodeSVG
                                         value={window.location.href}
                                         size={220}
@@ -177,7 +178,7 @@ const Register = () => {
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Lock className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
                                             </div>
-                                            <input type="password" {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Min 6 characters' } })} placeholder="••••••••" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                                            <input type="password" {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Min 6 characters' } })} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
                                         </div>
                                         {errors.password && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.password.message}</p>}
                                     </div>
@@ -223,12 +224,17 @@ const Register = () => {
                                             <input {...register('cgpa', { required: 'CGPA is mandatory' })} placeholder="8.5 or 85%" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
                                         </div>
                                     </div>
-                                    <div className="space-y-2 group">
+                                    <div className="space-y-2 group dropdown dropdown-hover w-full flex flex-col">
                                         <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Active Backlogs?</label>
-                                        <select {...register('activeBacklogs')} className="block w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold appearance-none tracking-widest">
-                                            <option value="no">No, I'm clear</option>
-                                            <option value="yes">Yes, have active</option>
-                                        </select>
+                                        <input type="hidden" {...register('activeBacklogs')} />
+                                        <div tabIndex={0} role="button" className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold tracking-widest cursor-pointer">
+                                            <span className="text-slate-900">{hasBacklogs === 'yes' ? 'Yes, have active' : "No, I'm clear"}</span>
+                                            <ChevronDown className="w-4 h-4 text-slate-400" />
+                                        </div>
+                                        <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
+                                            <li><a onClick={() => setValue('activeBacklogs', 'no')} className={hasBacklogs === 'no' ? 'active' : ''}>No, I'm clear</a></li>
+                                            <li><a onClick={() => setValue('activeBacklogs', 'yes')} className={hasBacklogs === 'yes' ? 'active' : ''}>Yes, have active</a></li>
+                                        </ul>
                                     </div>
                                     {hasBacklogs === 'yes' && (
                                         <div className="space-y-2 animate-in fade-in slide-in-from-left-4 group">
@@ -247,12 +253,17 @@ const Register = () => {
                             <div className="space-y-8">
                                 <h3 className="text-[10px] font-black text-[#ff6e00] uppercase tracking-[0.2em] border-b border-slate-100 pb-4">Professional Details</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-2 group">
+                                    <div className="space-y-2 group dropdown dropdown-hover w-full flex flex-col">
                                         <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Experience Type</label>
-                                        <select {...register('experienceType')} className="block w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold appearance-none tracking-widest">
-                                            <option value="fresher">Fresher / Student</option>
-                                            <option value="experienced">Experienced Professional</option>
-                                        </select>
+                                        <input type="hidden" {...register('experienceType')} />
+                                        <div tabIndex={0} role="button" className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold tracking-widest cursor-pointer">
+                                            <span className="text-slate-900">{expType === 'experienced' ? 'Experienced Professional' : 'Fresher / Student'}</span>
+                                            <ChevronDown className="w-4 h-4 text-slate-400" />
+                                        </div>
+                                        <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
+                                            <li><a onClick={() => setValue('experienceType', 'fresher')} className={expType === 'fresher' ? 'active' : ''}>Fresher / Student</a></li>
+                                            <li><a onClick={() => setValue('experienceType', 'experienced')} className={expType === 'experienced' ? 'active' : ''}>Experienced Professional</a></li>
+                                        </ul>
                                     </div>
                                     {expType === 'experienced' && (
                                         <div className="space-y-2 animate-in fade-in slide-in-from-left-4 group">
@@ -267,15 +278,27 @@ const Register = () => {
                                     )}
                                     <div className="col-span-1 md:col-span-2 space-y-2 group">
                                         <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Target Position</label>
-                                        <div className="relative group/field">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <div className={`relative group/field dropdown dropdown-hover w-full flex flex-col ${!!preSelectedPosition ? 'pointer-events-none opacity-50' : ''}`}>
+                                            <input type="hidden" {...register('position', { required: 'Target position is required' })} />
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10 w-5 h-full">
                                                 <Briefcase className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
                                             </div>
-                                            <select {...register('position', { required: 'Required' })} disabled={!!preSelectedPosition} className="block w-full pl-11 pr-10 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold appearance-none disabled:opacity-50">
-                                                <option value="">Select role...</option>
-                                                {vacancies.map(v => <option key={v.id} value={v.id}>{v.title}</option>)}
-                                            </select>
+                                            <div tabIndex={0} role="button" className="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold cursor-pointer">
+                                                <span className={watchPosition ? "text-slate-900 truncate pr-4" : "text-slate-400 truncate pr-4"}>
+                                                    {watchPosition ? (vacancies.find(v => v.id === watchPosition)?.title || watchPosition) : 'Select role...'}
+                                                </span>
+                                                <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
+                                            </div>
+                                            <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
+                                                <li><a onClick={() => setValue('position', '', { shouldValidate: true })} className={!watchPosition ? 'active text-slate-400' : 'text-slate-400'}>Select role...</a></li>
+                                                {vacancies.map(v => (
+                                                    <li key={v.id}>
+                                                        <a onClick={() => setValue('position', v.id, { shouldValidate: true })} className={watchPosition === v.id ? 'active' : ''}>{v.title}</a>
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
+                                        {errors.position && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.position.message}</p>}
                                     </div>
                                 </div>
                             </div>
@@ -284,7 +307,7 @@ const Register = () => {
                                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">CV / Resume (PDF Only)</label>
                                 <div className="relative group cursor-pointer">
                                     <input type="file" accept=".pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" {...register('resume', { required: 'CV is mandatory' })} />
-                                    <div className={`p-10 border-2 border-dashed rounded-3xl transition-all flex flex-col items-center gap-4 text-center group ${resumeFileName ? 'border-[#ff6e00]/50 bg-orange-50' : 'border-slate-100 bg-slate-50 hover:bg-orange-50 hover:border-[#ff6e00]/50'}`}>
+                                    <div className={`p-10 border-2 border-dashed rounded-3xl transition-all flex flex-col items-center gap-4 text-center group ${resumeFileName ? 'border-[#ff6e00]/50 bg-orange-50' : 'border-slate-100 bg-slate-50 hover:border-[#ff6e00]/50'}`}>
                                         <div className={`w-16 h-16 bg-white rounded-2xl flex items-center justify-center transition-colors shadow-sm ${resumeFileName ? 'text-[#ff6e00]' : 'text-slate-300 group-hover:text-[#ff6e00]'}`}>
                                             <FileText size={32} />
                                         </div>
@@ -308,7 +331,7 @@ const Register = () => {
                                     <CheckCircle2 className="w-10 h-10" />
                                 </div>
                                 <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">Application <span className="text-[#ff6e00]">Submitted!</span></h2>
-                                <p className="text-slate-500 font-medium max-w-sm mx-auto font-black uppercase tracking-wider text-xs">Thank you for the application. Our HR team will connect with you as soon as possible.</p>
+                                <p className="text-slate-500 font-medium max-w-sm mx-auto uppercase tracking-wider text-xs">Thank you for the application. Our HR team will connect with you as soon as possible.</p>
                             </div>
 
                             <div className="flex justify-center">

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
+import { formatUserName } from '../../utils/formatters';
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -15,23 +16,51 @@ const Login = () => {
         setSubmitting(true);
         setLoginError('');
         try {
-            const candidates = await apiService.get('/candidates');
-            const candidate = candidates.find(c => c.email === data.email && c.password === data.password);
+            const authResult = await ApiService.login(data.email, data.password);
 
-            if (candidate) {
-                // Prevent re-login if exam is already submitted
-                if (candidate.status === 'applied' || candidate.examScore !== null) {
+            if (!authResult) {
+                setLoginError('Invalid email or password.');
+                return;
+            }
+
+            const { user, type } = authResult;
+
+            if (type === 'staff') {
+                // Update online status
+                await ApiService.updateAdminUser(user.id, { ...user, lastLogin: new Date().toISOString() });
+
+                sessionStorage.setItem('isAuthenticated', 'true');
+                sessionStorage.setItem('userRole', user.role);
+                sessionStorage.setItem('userId', user.id);
+                sessionStorage.setItem('userName', formatUserName(user));
+                sessionStorage.setItem('userEmail', user.email);
+                localStorage.setItem('admin_user', JSON.stringify(user));
+
+                // Route based on role
+                switch (user.role) {
+                    case 'superadmin': navigate('/admin'); break;
+                    case 'interviewer': navigate('/interviewer'); break;
+                    case 'hr': navigate('/hr'); break;
+                    default: setLoginError('Unknown staff role assigned.');
+                }
+                return;
+            }
+
+            if (type === 'candidate') {
+                if (user.status === 'applied' || user.examScore !== null) {
                     setLoginError('You have already submitted this assessment. Dual attempts are not permitted.');
                     return;
                 }
-                localStorage.setItem('candidate', JSON.stringify(candidate));
+                localStorage.setItem('candidate', JSON.stringify(user));
                 navigate('/exam-instructions');
-            } else {
-                setLoginError('Invalid email or password. Please register first.');
+                return;
             }
+
+            setLoginError('Unknown account type.');
+
         } catch (error) {
             console.error('Login failed:', error);
-            setLoginError('Server error. Please try again later.');
+            setLoginError('Server connection error. Please try again.');
         } finally {
             setSubmitting(false);
         }
@@ -50,8 +79,8 @@ const Login = () => {
                         alt="Embel Logo"
                         className="h-12 mx-auto mb-6 object-contain drop-shadow-sm"
                     />
-                    <h2 className="text-3xl font-black text-slate-800 mb-2 tracking-tight">Candidate Portal</h2>
-                    <p className="text-slate-500 font-medium">Log in to start your assessment</p>
+                    <h2 className="text-3xl font-black text-slate-800 mb-2 tracking-tight">Embel Portal</h2>
+                    <p className="text-slate-500 font-medium text-sm">Universal access for Candidates</p>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -83,7 +112,7 @@ const Login = () => {
                     <div className="space-y-2 group">
                         <div className="flex items-center justify-between ml-1">
                             <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Password</label>
-                            <Link to="/register" className="text-xs font-black text-[#ff6e00] hover:text-[#e05d00] uppercase tracking-wider transition-colors">Register?</Link>
+                            <a href="#" className="text-xs font-black text-[#ff6e00] hover:text-[#e05d00] uppercase tracking-wider transition-colors">Forgot Password?</a>
                         </div>
                         <div className="relative group/field">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -115,14 +144,14 @@ const Login = () => {
                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                         ) : (
                             <span className="flex items-center gap-2">
-                                START ASSESSMENT <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+                                SIGN IN <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
                             </span>
                         )}
                     </button>
                 </form>
 
                 <div className="mt-10 text-center text-xs font-bold text-slate-400">
-                    Don't have an account? <Link to="/register" className="text-[#ff6e00] hover:text-[#e05d00] underline-offset-4 hover:underline decoration-2 transition-all">Create Profile</Link>
+                    Applying for a role? <Link to="/register" className="text-[#ff6e00] hover:text-[#e05d00] underline-offset-4 hover:underline decoration-2 transition-all">Register here</Link>
                 </div>
             </div>
         </div>

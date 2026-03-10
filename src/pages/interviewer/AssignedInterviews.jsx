@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, User, ArrowRight, ExternalLink, CheckCircle2 } from 'lucide-react';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
 import Card from '../../components/Card';
 import Loader from '../../components/Loader';
 import Button from '../../components/Button';
@@ -8,14 +8,14 @@ import Button from '../../components/Button';
 const AssignedInterviews = () => {
     const [interviews, setInterviews] = useState([]);
     const [loading, setLoading] = useState(true);
-    const user = JSON.parse(localStorage.getItem('admin_user'));
+    const user = JSON.parse(localStorage.getItem('admin_user')) || {};
 
     useEffect(() => {
         const fetchInterviews = async () => {
             try {
                 const [intData, candData] = await Promise.all([
-                    apiService.get('/interviews'),
-                    apiService.get('/candidates')
+                    ApiService.get('/interviews'),
+                    ApiService.get('/candidates')
                 ]);
 
                 const myInterviews = (intData || [])
@@ -45,7 +45,7 @@ const AssignedInterviews = () => {
 
     return (
         <div className="space-y-10 animate-in fade-in duration-700">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md pb-4 pt-8 -mt-8 -mx-8 px-8 border-b border-slate-200/50">
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">Assigned Interviews</h1>
                     <p className="text-slate-500 font-medium mt-1">Manage your upcoming technical rounds and candidate discussions.</p>
@@ -58,7 +58,7 @@ const AssignedInterviews = () => {
                     { label: 'Scheduled Today', value: stats.today, icon: Clock },
                     { label: 'Evaluations Done', value: stats.completed, icon: CheckCircle2 }
                 ].map((s, i) => (
-                    <Card key={i} className="p-6 shadow-md shadow-orange-100/50 hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 ring-1 ring-slate-100 hover:ring-[#ff6e00] border-none hover:bg-orange-50">
+                    <Card key={i} className="p-6 shadow-elevation-high hover:translate-y-[-4px] transition-all duration-300 ring-1 ring-slate-100 hover:ring-[#ff6e00] border-none">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-orange-100/50 flex items-center justify-center text-[#ff6e00]">
                                 <s.icon size={24} />
@@ -74,7 +74,7 @@ const AssignedInterviews = () => {
 
             <div className="grid grid-cols-1 gap-4">
                 {interviews.length > 0 ? interviews.map((interview) => (
-                    <Card key={interview.id} className="p-6 border-none shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 flex items-center justify-between group hover:ring-primary-100 transition-all">
+                    <Card key={interview.id} className="p-6 border-none shadow-elevation-high ring-1 ring-slate-100 flex items-center justify-between group hover:ring-primary-100 transition-all">
                         <div className="flex items-center gap-6">
                             <div className="w-14 h-14 rounded-2xl bg-slate-50 flex flex-col items-center justify-center border border-slate-100 group-hover:bg-primary-50 group-hover:border-primary-100 transition-all">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Day</span>

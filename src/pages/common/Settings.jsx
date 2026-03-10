@@ -19,18 +19,18 @@ const Settings = () => {
                         <User className="w-4 h-4" />
                         <span>Profile</span>
                     </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-orange-50 rounded-2xl text-sm font-bold transition-all hover:text-[#ff6e00]">
+                    <button className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-2xl text-sm font-bold transition-all hover:text-[#ff6e00]">
                         <Bell className="w-4 h-4" />
                         <span>Notifications</span>
                     </button>
-                    <button className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-orange-50 rounded-2xl text-sm font-bold transition-all hover:text-[#ff6e00]">
+                    <button className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-2xl text-sm font-bold transition-all hover:text-[#ff6e00]">
                         <Shield className="w-4 h-4" />
                         <span>Security</span>
                     </button>
                 </div>
 
                 <div className="md:col-span-3 space-y-6">
-                    <Card className="p-8 border-none ring-1 ring-slate-100 shadow-xl shadow-orange-100/50">
+                    <Card className="p-8 border-none ring-1 ring-slate-100 shadow-elevation-high">
                         <h3 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-[#ff6e00]">
                                 <User className="w-5 h-5" />
@@ -60,7 +60,7 @@ const Settings = () => {
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Professional Bio</label>
                                 <textarea
                                     rows={4}
-                                    defaultValue="Senior recruiting specialist committed to finding the best talent for Embel TalentSphere technical teams."
+                                    defaultValue="Senior recruiting specialist committed to finding the best talent for Embel Talentry technical teams."
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] font-medium text-slate-700 resize-none transition-all"
                                 />
                             </div>

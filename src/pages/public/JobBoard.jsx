@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Briefcase, Filter, ArrowRight, Clock } from 'lucide-react';
 import Navbar from '../../components/public/Navbar';
 import JobCard from '../../components/public/JobCard';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
 
 const JobBoard = () => {
     const [jobs, setJobs] = useState([]);
@@ -15,7 +15,7 @@ const JobBoard = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await apiService.get('/vacancies');
+                const response = await ApiService.get('/vacancies');
                 setJobs(response.filter(j => j.isOpen));
                 setFilteredJobs(response.filter(j => j.isOpen));
             } catch (error) {
@@ -55,8 +55,10 @@ const JobBoard = () => {
 
                     <div className="flex flex-col md:flex-row gap-4 animate-fade-up" style={{ animationDelay: '100ms' }}>
                         <div className="flex-1 relative group">
+                            <label htmlFor="job-search" className="sr-only">Search by job title or keywords</label>
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#ff6e00] transition-colors" size={20} />
                             <input
+                                id="job-search"
                                 type="text"
                                 placeholder="Search by job title or keywords..."
                                 value={searchQuery}
@@ -66,15 +68,25 @@ const JobBoard = () => {
                         </div>
                         <div className="md:w-64 relative group">
                             <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#ff6e00] transition-colors" size={20} />
-                            <select
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="w-full h-16 pl-12 pr-6 rounded-2xl bg-white/5 border border-white/10 text-white font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] transition-all cursor-pointer"
-                            >
-                                {categories.map(cat => (
-                                    <option key={cat} value={cat} className="bg-slate-900">{cat}</option>
-                                ))}
-                            </select>
+                            <div className="dropdown dropdown-hover w-full h-full">
+                                <div tabIndex={0} role="button" className="w-full h-16 pl-12 pr-6 rounded-2xl bg-white/5 border border-white/10 text-white font-medium flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] transition-all cursor-pointer">
+                                    <span className="truncate">{selectedCategory}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="m6 9 6 6 6-6" /></svg>
+                                </div>
+                                <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
+                                    {categories.map(cat => (
+                                        <li key={cat}>
+                                            <button
+                                                type="button"
+                                                onClick={() => setSelectedCategory(cat)}
+                                                className={`w-full text-left px-4 py-3 rounded-xl transition-all ${selectedCategory === cat ? 'bg-orange-50 text-[#ff6e00] font-bold' : 'text-slate-600 hover:bg-slate-50'}`}
+                                            >
+                                                {cat}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,7 +104,7 @@ const JobBoard = () => {
                     {loading ? (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {[1, 2, 3, 4, 5, 6].map(i => (
-                                <div key={i} className="h-72 rounded-[2rem] bg-white/5 animate-pulse"></div>
+                                <div key={i} className="h-72 rounded-4xl bg-white/5 animate-pulse"></div>
                             ))}
                         </div>
                     ) : filteredJobs.length > 0 ? (
@@ -150,3 +162,4 @@ const JobBoard = () => {
 };
 
 export default JobBoard;
+

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, CheckCircle2, Globe, Shield, Zap, Play } from 'lucide-react';
 import Navbar from '../../components/public/Navbar';
 import JobCard from '../../components/public/JobCard';
-import apiService from '../../services/apiService';
+import ApiService from '../../services/ApiService';
 
 const LandingPage = () => {
     const [jobs, setJobs] = useState([]);
@@ -12,7 +12,7 @@ const LandingPage = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await apiService.get('/vacancies');
+                const response = await ApiService.get('/vacancies');
                 setJobs(response.filter(j => j.isOpen).slice(0, 3));
             } catch (error) {
                 console.error("Error fetching jobs:", error);
@@ -92,7 +92,7 @@ const LandingPage = () => {
                     <div className="grid md:grid-cols-3 gap-8">
                         {loading ? (
                             [1, 2, 3].map(i => (
-                                <div key={i} className="h-64 rounded-[2rem] bg-white/5 animate-pulse"></div>
+                                <div key={i} className="h-64 rounded-4xl bg-white/5 animate-pulse"></div>
                             ))
                         ) : (
                             jobs.map(job => (
@@ -152,7 +152,7 @@ const LandingPage = () => {
                         <img src="https://www.embel.co.in/images/logos/logo-embel.png" alt="Embel" className="h-10 object-contain grayscale brightness-200 opacity-50" />
                         <div className="flex flex-col">
                             <span className="font-black text-slate-500 tracking-tight leading-none uppercase">EMBEL</span>
-                            <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">© 2026 EMBEL TECH</span>
+                            <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Ã‚© 2026 EMBEL TECH</span>
                         </div>
                     </div>
 
@@ -168,3 +168,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+

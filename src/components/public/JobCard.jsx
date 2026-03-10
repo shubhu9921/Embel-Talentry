@@ -4,7 +4,7 @@ import { MapPin, Clock, Briefcase, ArrowRight } from 'lucide-react';
 
 const JobCard = ({ job }) => {
     return (
-        <div className="group relative overflow-hidden rounded-[2rem] bg-slate-800/40 border border-white/5 p-8 transition-all duration-500 hover:bg-slate-800/60 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/10 active:scale-[0.98]">
+        <div className="group relative overflow-hidden rounded-4xl bg-slate-800/40 border border-white/5 p-8 transition-all duration-500 hover:bg-slate-800/60 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/10 active:scale-[0.98]">
             {/* Shimmer effect on hover */}
             <div className="absolute inset-0 shimmer opacity-0 group-hover:opacity-10 pointer-events-none"></div>
 

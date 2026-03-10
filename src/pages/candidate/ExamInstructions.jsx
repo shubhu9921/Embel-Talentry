@@ -64,7 +64,7 @@ const ExamInstructions = () => {
                         }`}>
                         {isTerminated
                             ? 'Suspicious activity detected. Your assessment has been automatically terminated as per procurement integrity rules.'
-                            : 'Your assessment responses have been securely transmitted to the Embel TalentSphere engine.'}
+                            : 'Your assessment responses have been securely transmitted to the Embel Talentry engine.'}
                         <span className="block mt-4 opacity-70">
                             Our HR team will review the proctoring logs and recordings for final decisioning.
                         </span>
@@ -236,7 +236,7 @@ const ExamInstructions = () => {
             </main>
 
             <footer className="mt-20 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] relative z-10 opacity-50">
-                SECURED BY EMBEL TALENTSPHERE AI INTEGRITY
+                SECURED BY EMBEL TALENTRY AI INTEGRITY
             </footer>
         </div>
     );

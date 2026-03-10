@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import * as faceapi from 'face-api.js';
-import apiService from '../services/apiService';
+import ApiService from '../services/ApiService';
 
 const useProctoring = (maxViolations = 3, onAutoSubmit, videoRef, candidateId) => {
     const onAutoSubmitRef = useRef(onAutoSubmit);
@@ -42,7 +42,7 @@ const useProctoring = (maxViolations = 3, onAutoSubmit, videoRef, candidateId) =
     const logViolationToDB = async (type, evidence = null) => {
         if (!candidateId) return;
         try {
-            const candidate = await apiService.get(`/candidates/${candidateId}`);
+            const candidate = await ApiService.get(`/candidates/${candidateId}`);
             const logs = candidate.proctoringLogs || [];
             if (logs.some(log => log.type === type && (new Date() - new Date(log.timestamp)) < 10000)) {
                 return; // Prevent duplicate logs within 10s
@@ -53,7 +53,7 @@ const useProctoring = (maxViolations = 3, onAutoSubmit, videoRef, candidateId) =
                 category: 'malpractice',
                 evidence: evidence // Base64 screenshot
             };
-            await apiService.patch(`/candidates/${candidateId}`, {
+            await ApiService.patch(`/candidates/${candidateId}`, {
                 proctoringLogs: [...logs, newLog]
             });
             console.log(`Violation logged to DB with evidence: ${type}`);

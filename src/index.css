@@ -28,6 +28,25 @@
   --midnight-dark: #001f41;
   --electric-orange: #ff6e00;
   --electric-orange-hover: #e05d00;
+  --shadow-color-premium: 300deg 5% 45%;
+  --shadow-premium-value: 0.3px 0.2px 0.5px hsl(var(--shadow-color-premium) / 0),
+    1.2px 1.1px 2.4px hsl(var(--shadow-color-premium) / 0.18),
+    2.2px 1.9px 4.4px hsl(var(--shadow-color-premium) / 0.35),
+    3.7px 3.3px 7.4px hsl(var(--shadow-color-premium) / 0.52),
+    6.4px 5.7px 12.9px hsl(var(--shadow-color-premium) / 0.7);
+  --shadow-color: 0deg 0% 0%;
+  --shadow-elevation-high: 0.2px 0.1px 0.3px hsl(var(--shadow-color) / 0.06), 1.7px 1.3px 2.8px -0.2px hsl(var(--shadow-color) / 0.08), 3px 2.4px 5.1px -0.3px hsl(var(--shadow-color) / 0.1), 4.6px 3.6px 7.8px -0.5px hsl(var(--shadow-color) / 0.12), 6.8px 5.3px 11.4px -0.7px hsl(var(--shadow-color) / 0.14), 10px 7.8px 16.8px -0.8px hsl(var(--shadow-color) / 0.16), 14.4px 11.3px 24.3px -1px hsl(var(--shadow-color) / 0.17), 20.5px 16.1px 34.6px -1.2px hsl(var(--shadow-color) / 0.19);
+}
+
+@layer utilities {
+  .shadow-premium {
+    --shadow-color-v: 300deg 5% 45%;
+    box-shadow: 0.3px 0.2px 0.5px hsl(var(--shadow-color-v) / 0),
+      1.2px 1.1px 2.4px hsl(var(--shadow-color-v) / 0.18),
+      2.2px 1.9px 4.4px hsl(var(--shadow-color-v) / 0.35),
+      3.7px 3.3px 7.4px hsl(var(--shadow-color-v) / 0.52),
+      6.4px 5.7px 12.9px hsl(var(--shadow-color-v) / 0.7) !important;
+  }
 }
 
 @layer base {
@@ -56,8 +75,44 @@
   }
 
   .card {
-    @apply bg-white rounded-2xl border border-slate-100 p-6;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    @apply bg-white rounded-2xl border border-slate-100 p-6 shadow-elevation-high hover:-translate-y-1 transition-all duration-300;
+  }
+
+  /* --- DAISYUI EMULATION: Dropdown --- */
+  .dropdown {
+    @apply relative inline-block;
+  }
+
+  .dropdown-content {
+    @apply absolute hidden z-100 top-full mt-1 min-w-max scale-95 opacity-0 transition-all duration-200 origin-top;
+  }
+
+  /* Open states */
+  .dropdown.dropdown-open .dropdown-content,
+  .dropdown:focus-within .dropdown-content,
+  .dropdown.dropdown-hover:hover .dropdown-content {
+    @apply block scale-100 opacity-100;
+  }
+
+  /* DaisyUI 'menu' emulation */
+  .menu {
+    @apply flex flex-col flex-wrap items-stretch space-y-0.5;
+  }
+
+  .menu li {
+    @apply block;
+  }
+
+  .menu li>* {
+    @apply flex items-center gap-2 px-4 py-2 text-sm text-slate-700 bg-transparent rounded-lg cursor-pointer transition-colors w-full text-left active:scale-[0.98];
+  }
+
+  .menu li> :hover {
+    @apply bg-orange-50 text-[#ff6e00];
+  }
+
+  .menu li>.active {
+    @apply bg-[#ff6e00] text-white;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
@@ -82,11 +137,11 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60;
+    @apply bg-clip-text text-transparent bg-linear-to-r from-white to-white/60;
   }
 
   .orange-gradient {
-    @apply bg-gradient-to-r from-[#ff6e00] to-[#ff9e00];
+    @apply bg-linear-to-r from-[#ff6e00] to-[#ff9e00];
   }
 
   @keyframes fade-up {
