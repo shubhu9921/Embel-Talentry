@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, ShieldCheck, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock } from 'lucide-react';
+import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, ShieldCheck, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import ApiService from '../../services/ApiService';
 
@@ -182,6 +182,36 @@ const Register = () => {
                                         </div>
                                         {errors.password && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.password.message}</p>}
                                     </div>
+                                    <div className="space-y-2 group">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Country</label>
+                                        <div className="relative group/field">
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
+                                            </div>
+                                            <input {...register('country', { required: 'Country is mandatory' })} placeholder="India" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                                        </div>
+                                        {errors.country && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.country.message}</p>}
+                                    </div>
+                                    <div className="space-y-2 group">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">State</label>
+                                        <div className="relative group/field">
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
+                                            </div>
+                                            <input {...register('state', { required: 'State is mandatory' })} placeholder="Maharashtra" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                                        </div>
+                                        {errors.state && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.state.message}</p>}
+                                    </div>
+                                    <div className="space-y-2 group">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">City</label>
+                                        <div className="relative group/field">
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
+                                            </div>
+                                            <input {...register('city', { required: 'City is mandatory' })} placeholder="Pune" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                                        </div>
+                                        {errors.city && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.city.message}</p>}
+                                    </div>
                                 </div>
                             </div>
 
@@ -331,7 +361,7 @@ const Register = () => {
                                     <CheckCircle2 className="w-10 h-10" />
                                 </div>
                                 <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">Application <span className="text-[#ff6e00]">Submitted!</span></h2>
-                                <p className="text-slate-500 font-medium max-w-sm mx-auto uppercase tracking-wider text-xs">Thank you for the application. Our HR team will connect with you as soon as possible.</p>
+                                <p className="text-slate-500 font-medium max-w-sm mx-auto tracking-wide text-sm">Thank you for applying! HR will connect with you as soon as possible.</p>
                             </div>
 
                             <div className="flex justify-center">

@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Loader from '../components/Loader';
 import ProtectedRoute from '../components/ProtectedRoute';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 // Lazy load components
 const DashboardLayout = lazy(() => import('../layouts/DashboardLayout'));
@@ -42,54 +43,56 @@ const LoadingFallback = () => (
 
 const AppRoutes = () => {
     return (
-        <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-                {/* Default Redirection */}
-                <Route path="/" element={<Navigate to="/login" replace />} />
+        <ErrorBoundary>
+            <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                    {/* Default Redirection */}
+                    <Route path="/" element={<Navigate to="/login" replace />} />
 
-                {/* Authentication & Candidate Flow */}
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/exam-instructions" element={<ProtectedRoute allowedRoles={['candidate']}><ExamInstructions /></ProtectedRoute>} />
-                <Route path="/exam" element={<ProtectedRoute allowedRoles={['candidate']}><ExamPage /></ProtectedRoute>} />
-                <Route path="/unauthorized" element={<Unauthorized />} />
+                    {/* Authentication & Candidate Flow */}
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/exam-instructions" element={<ProtectedRoute allowedRoles={['candidate']}><ExamInstructions /></ProtectedRoute>} />
+                    <Route path="/exam" element={<ProtectedRoute allowedRoles={['candidate']}><ExamPage /></ProtectedRoute>} />
+                    <Route path="/unauthorized" element={<Unauthorized />} />
 
-                {/* Super Admin Module */}
-                <Route path="/admin" element={<ProtectedRoute allowedRoles={['superadmin', 'admin']}><DashboardLayout role="superadmin" /></ProtectedRoute>}>
-                    <Route index element={<AdminDashboard />} />
-                    <Route path="proctoring" element={<ProctoringDashboard />} />
-                    <Route path="candidates" element={<CandidatesList />} />
-                    <Route path="vacancies" element={<Vacancies />} />
-                    <Route path="questions" element={<QuestionBank />} />
-                    <Route path="interviews" element={<AllInterviews />} />
-                    <Route path="team" element={<TeamManagement />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="help" element={<Help />} />
-                </Route>
+                    {/* Super Admin Module */}
+                    <Route path="/admin" element={<ProtectedRoute allowedRoles={['superadmin', 'admin']}><DashboardLayout role="superadmin" /></ProtectedRoute>}>
+                        <Route index element={<AdminDashboard />} />
+                        <Route path="proctoring" element={<ProctoringDashboard />} />
+                        <Route path="candidates" element={<CandidatesList />} />
+                        <Route path="vacancies" element={<Vacancies />} />
+                        <Route path="questions" element={<QuestionBank />} />
+                        <Route path="interviews" element={<AllInterviews />} />
+                        <Route path="team" element={<TeamManagement />} />
+                        <Route path="settings" element={<Settings />} />
+                        <Route path="help" element={<Help />} />
+                    </Route>
 
-                {/* Interviewer Module */}
-                <Route path="/interviewer" element={<ProtectedRoute allowedRoles={['interviewer']}><DashboardLayout role="interviewer" /></ProtectedRoute>}>
-                    <Route index element={<InterviewerDashboard />} />
-                    <Route path="interviews" element={<AssignedInterviews />} />
-                    <Route path="reviews" element={<TechnicalReview />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="help" element={<Help />} />
-                </Route>
+                    {/* Interviewer Module */}
+                    <Route path="/interviewer" element={<ProtectedRoute allowedRoles={['interviewer']}><DashboardLayout role="interviewer" /></ProtectedRoute>}>
+                        <Route index element={<InterviewerDashboard />} />
+                        <Route path="interviews" element={<AssignedInterviews />} />
+                        <Route path="reviews" element={<TechnicalReview />} />
+                        <Route path="settings" element={<Settings />} />
+                        <Route path="help" element={<Help />} />
+                    </Route>
 
-                {/* HR Module */}
-                <Route path="/hr" element={<ProtectedRoute allowedRoles={['hr']}><DashboardLayout role="hr" /></ProtectedRoute>}>
-                    <Route index element={<HRDashboard />} />
-                    <Route path="candidates" element={<HRProfiles />} />
-                    <Route path="interviews" element={<AllInterviews />} />
-                    <Route path="emails" element={<CommunicationPortal />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="help" element={<Help />} />
-                </Route>
+                    {/* HR Module */}
+                    <Route path="/hr" element={<ProtectedRoute allowedRoles={['hr']}><DashboardLayout role="hr" /></ProtectedRoute>}>
+                        <Route index element={<HRDashboard />} />
+                        <Route path="candidates" element={<HRProfiles />} />
+                        <Route path="interviews" element={<AllInterviews />} />
+                        <Route path="emails" element={<CommunicationPortal />} />
+                        <Route path="settings" element={<Settings />} />
+                        <Route path="help" element={<Help />} />
+                    </Route>
 
-                {/* Catch-all */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        </Suspense>
+                    {/* Catch-all */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </Suspense>
+        </ErrorBoundary>
     );
 };
 
