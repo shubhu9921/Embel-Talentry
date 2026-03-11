@@ -38,9 +38,10 @@ const Login = () => {
 
                 // Route based on role
                 switch (user.role) {
-                    case 'superadmin': navigate('/admin'); break;
+                    case 'superadmin':
+                    case 'admin':
+                    case 'hr': navigate('/admin'); break;
                     case 'interviewer': navigate('/interviewer'); break;
-                    case 'hr': navigate('/hr'); break;
                     default: setLoginError('Unknown staff role assigned.');
                 }
                 return;

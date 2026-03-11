@@ -11,7 +11,7 @@ const ProctoringCandidateCard = ({ candidate, onSelect }) => {
 
     return (
         <div
-            className={`group relative bg-white rounded-[2.5rem] p-6 border transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 ${terminated ? 'border-red-200 bg-red-50/10' : 'border-slate-100'}`}
+            className={`group relative bg-white rounded-[2.5rem] p-6 border transition-all duration-500 hover-lift ${terminated ? 'border-red-200 bg-red-50/10' : 'border-slate-100'}`}
         >
             <div className="aspect-video w-full bg-slate-100 rounded-3xl mb-6 overflow-hidden relative border border-slate-100 group">
                 {latestEvidence ? (

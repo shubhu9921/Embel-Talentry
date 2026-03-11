@@ -11,8 +11,8 @@ const RecentActivities = () => {
     ];
 
     return (
-        <Card className="p-8 border-none ring-1 ring-slate-100 shadow-premium hover:shadow-2xl transition-all duration-300">
-            <h3 className="font-bold text-slate-900 mb-8 uppercase tracking-tight text-sm">Recent Activities</h3>
+        <Card className="p-8 ring-1 ring-slate-100">
+            <h3 className="font-bold text-[#19325c] mb-8 uppercase tracking-tight text-sm">Recent Activities</h3>
             <div className="space-y-6">
                 {activities.map((activity, i) => (
                     <div key={i} className="flex gap-4 group transition-transform">

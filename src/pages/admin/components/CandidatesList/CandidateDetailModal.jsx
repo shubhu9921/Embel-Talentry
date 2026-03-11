@@ -9,10 +9,16 @@ const CandidateDetailModal = ({
     onClose,
     candidate,
     questions,
+    interviews = [],
+    interviewers = [],
     onUpdateStatus,
     onScheduleInterview
 }) => {
+    const [showDetails, setShowDetails] = React.useState(false);
     if (!candidate) return null;
+
+    const interview = interviews.find(i => String(i.candidateId) === String(candidate.id));
+    const interviewer = interview ? interviewers.find(i => String(i.id) === String(interview.interviewerId)) : null;
 
     return (
         <Modal
@@ -20,6 +26,38 @@ const CandidateDetailModal = ({
             onClose={onClose}
             title="Application Profile"
             size="xl"
+            footer={
+                <div className="flex items-center justify-between w-full gap-4">
+                    <div className="flex items-center gap-3">
+                        <Button
+                            onClick={() => onUpdateStatus(candidate.id, 'rejected')}
+                            variant="danger"
+                            className="rounded-xl px-6 flex items-center gap-2"
+                            disabled={candidate.status === 'rejected'}
+                        >
+                            <XCircle className="w-4 h-4" />
+                            <span>Reject</span>
+                        </Button>
+                        <Button
+                            onClick={() => onUpdateStatus(candidate.id, 'shortlisted')}
+                            variant="outline"
+                            className="rounded-xl px-6 flex items-center gap-2 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                            disabled={candidate.status === 'shortlisted'}
+                        >
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>Approve</span>
+                        </Button>
+                    </div>
+                    <Button
+                        onClick={onScheduleInterview}
+                        disabled={candidate.status === 'interview scheduled'}
+                        className={`rounded-xl px-8 flex items-center gap-2 border-none shadow-xl shadow-blue-900/10 ${candidate.status === 'interview scheduled' ? 'bg-slate-200 text-slate-400' : 'bg-[#19325c] hover:bg-[#112445] text-white'}`}
+                    >
+                        <Calendar className="w-4 h-4" />
+                        <span>{candidate.status === 'interview scheduled' ? 'Interview Scheduled' : 'Schedule Interview'}</span>
+                    </Button>
+                </div>
+            }
         >
             <div className="space-y-8 py-2">
                 <div className="flex items-start justify-between">
@@ -28,11 +66,20 @@ const CandidateDetailModal = ({
                             {candidate.name?.charAt(0) || '?'}
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-slate-900 leading-tight">{candidate.name}</h2>
+                            <h2 className="text-3xl font-black text-[#19325c] tracking-tight">{candidate.name}</h2>
                             <div className="flex items-center gap-3 mt-1.5">
                                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{candidate.position}</span>
                                 <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                                <Badge variant={candidate.status === 'applied' ? 'success' : candidate.status === 'shortlisted' ? 'warning' : 'danger'} size="sm" className="uppercase tracking-widest">
+                                <Badge
+                                    variant={
+                                        candidate.status === 'applied' ? 'success' :
+                                            candidate.status === 'shortlisted' ? 'warning' :
+                                                candidate.status === 'interview scheduled' ? 'primary' :
+                                                    'danger'
+                                    }
+                                    size="sm"
+                                    className="uppercase tracking-widest"
+                                >
                                     {candidate.status}
                                 </Badge>
                             </div>
@@ -46,14 +93,59 @@ const CandidateDetailModal = ({
                         <Button
                             variant="outline"
                             className="rounded-xl flex items-center gap-2 h-10 py-1 text-xs"
-                            onClick={() => candidate.cvUrl && window.open(candidate.cvUrl, '_blank', 'noopener,noreferrer')}
-                            disabled={!candidate.cvUrl}
+                            onClick={() => {
+                                const rawData = candidate.cvUrl || candidate.resumeData;
+                                if (!rawData) return;
+                                if (rawData.startsWith('data:')) {
+                                    // Safe: convert base64 data URL to Blob URL — avoids XSS via document.write
+                                    try {
+                                        const [header, base64] = rawData.split(',');
+                                        const mime = header.match(/:(.*?);/)?.[1] || 'application/pdf';
+                                        const bytes = atob(base64);
+                                        const arr = new Uint8Array(bytes.length);
+                                        for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+                                        const blobUrl = URL.createObjectURL(new Blob([arr], { type: mime }));
+                                        window.open(blobUrl, '_blank');
+                                    } catch {
+                                        window.open(rawData, '_blank');
+                                    }
+                                } else {
+                                    window.open(rawData, '_blank');
+                                }
+                            }}
+                            disabled={!candidate.cvUrl && !candidate.resumeData}
                         >
                             <Download className="w-4 h-4" />
-                            <span>{candidate.cvUrl ? 'Download CV' : 'No CV Available'}</span>
+                            <span>{candidate.resumeData || candidate.cvUrl ? (candidate.resumeName ? `View ${candidate.resumeName}` : 'View CV') : 'No CV Available'}</span>
                         </Button>
                     </div>
                 </div>
+
+                {interview && (
+                    <div className="p-5 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between group animate-in fade-in slide-in-from-top-2 duration-500">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-white text-[#19325c] flex items-center justify-center shadow-sm border border-blue-50">
+                                <Calendar className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Technical Interview Scheduled</p>
+                                <p className="text-sm font-bold text-[#19325c]">
+                                    {interviewer ? `Expert: ${interviewer.name}` : 'Interviewer TBD'}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-6 pr-2">
+                            <div className="text-right">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</p>
+                                <p className="text-sm font-bold text-slate-700">{interview.date || 'TBD'}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Time</p>
+                                <p className="text-sm font-bold text-slate-700">{interview.time || 'TBD'}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {candidate.submissionReason && (
                     <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100 flex items-center justify-between">
@@ -72,6 +164,19 @@ const CandidateDetailModal = ({
                         </div>
                     </div>
                 )}
+
+                {!showDetails ? (
+                    <div className="flex justify-center pt-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowDetails(true)}
+                            className="w-full py-4 rounded-2xl border-dashed border-2 border-slate-200 text-slate-400 hover:text-[#ff6e00] hover:border-[#ff6e00] transition-all font-black uppercase tracking-widest text-[10px]"
+                        >
+                            View Candidate Detailed Information
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-6">
@@ -183,37 +288,9 @@ const CandidateDetailModal = ({
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">No assessment data available</p>
                         </div>
                     )}
-                </div>
-
-                <div className="pt-8 border-t border-slate-100 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <Button
-                            onClick={() => onUpdateStatus(candidate.id, 'rejected')}
-                            variant="danger"
-                            className="rounded-xl px-6 flex items-center gap-2"
-                            disabled={candidate.status === 'rejected'}
-                        >
-                            <XCircle className="w-4 h-4" />
-                            <span>Reject</span>
-                        </Button>
-                        <Button
-                            onClick={() => onUpdateStatus(candidate.id, 'shortlisted')}
-                            variant="outline"
-                            className="rounded-xl px-6 flex items-center gap-2 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
-                            disabled={candidate.status === 'shortlisted'}
-                        >
-                            <CheckCircle2 className="w-4 h-4" />
-                            <span>Approve</span>
-                        </Button>
+                        </div>
                     </div>
-                    <Button
-                        onClick={onScheduleInterview}
-                        className="rounded-xl px-8 bg-[#19325c] hover:bg-[#112445] flex items-center gap-2 border-none shadow-xl shadow-blue-900/10"
-                    >
-                        <Calendar className="w-4 h-4" />
-                        <span>Schedule Interview</span>
-                    </Button>
-                </div>
+                )}
             </div>
         </Modal>
     );

@@ -19,7 +19,7 @@ const AssignedInterviews = () => {
                 ]);
 
                 const myInterviews = (intData || [])
-                    .filter(i => i.interviewerId === user.id)
+                    .filter(i => String(i.interviewerId) === String(user.id))
                     .map(i => ({
                         ...i,
                         candidate: candData.find(c => c.id === i.candidateId)
@@ -44,10 +44,10 @@ const AssignedInterviews = () => {
     if (loading) return <div className="h-[60vh] flex items-center justify-center"><Loader size="lg" /></div>;
 
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md pb-4 pt-8 -mt-8 -mx-8 px-8 border-b border-slate-200/50">
+        <div className="space-y-10 page-fade-in">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md pb-4 pt-4 border-b border-slate-200/50 mb-4">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Assigned Interviews</h1>
+                    <h1 className="text-3xl font-black text-[#19325c] tracking-tight">Assigned Interviews</h1>
                     <p className="text-slate-500 font-medium mt-1">Manage your upcoming technical rounds and candidate discussions.</p>
                 </div>
             </div>
@@ -58,14 +58,14 @@ const AssignedInterviews = () => {
                     { label: 'Scheduled Today', value: stats.today, icon: Clock },
                     { label: 'Evaluations Done', value: stats.completed, icon: CheckCircle2 }
                 ].map((s, i) => (
-                    <Card key={i} className="p-6 shadow-elevation-high hover:-translate-y-1 transition-all duration-300 ring-1 ring-slate-100 hover:ring-[#ff6e00] border-none">
+                    <Card key={i} noPadding={true} className="p-6 shadow-elevation-high hover:-translate-y-1 transition-all duration-300 ring-1 ring-slate-100 hover:ring-[#ff6e00] border-none">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-orange-100/50 flex items-center justify-center text-[#ff6e00]">
                                 <s.icon size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{s.label}</p>
-                                <p className="text-2xl font-black text-slate-900">{s.value.toString().padStart(2, '0')}</p>
+                                <p className="text-[10px] font-black text-[#19325c] uppercase tracking-widest leading-none mb-1">{s.label}</p>
+                                <p className="text-2xl font-black text-[#19325c]">{s.value.toString().padStart(2, '0')}</p>
                             </div>
                         </div>
                     </Card>
@@ -84,7 +84,7 @@ const AssignedInterviews = () => {
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <h3 className="text-base font-black text-slate-900">{interview.candidate?.name}</h3>
+                                    <h3 className="text-base font-black text-[#19325c]">{interview.candidate?.name}</h3>
                                     <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest leading-none">
                                         {interview.candidate?.position}
                                     </span>
@@ -118,7 +118,7 @@ const AssignedInterviews = () => {
                         <div className="w-20 h-20 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6">
                             <Calendar className="w-10 h-10 text-slate-200" />
                         </div>
-                        <h3 className="text-lg font-black text-slate-900">No Interviews Scheduled</h3>
+                        <h3 className="text-lg font-black text-[#19325c]">No Interviews Scheduled</h3>
                         <p className="text-slate-400 font-medium max-w-xs mx-auto mt-2">You don't have any assigned interviews at the moment. Take a break!</p>
                     </div>
                 )}

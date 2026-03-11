@@ -58,10 +58,10 @@ const HRProfiles = () => {
     if (loading) return <div className="h-[60vh] flex items-center justify-center"><Loader size="lg" /></div>;
 
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
+        <div className="space-y-10 page-fade-in">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md pb-4 pt-8 -mt-8 -mx-8 px-8 border-b border-slate-200/50">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">HR Candidate Management</h1>
+                    <h1 className="text-3xl font-black text-[#19325c] tracking-tight">HR Candidate Management</h1>
                     <p className="text-slate-500 font-medium mt-1">Track recruitment status and manage candidate communication.</p>
                 </div>
                 <div className="relative group">
@@ -92,8 +92,8 @@ const HRProfiles = () => {
                                 <s.icon size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{s.label}</p>
-                                <p className="text-2xl font-black text-slate-900">{s.value.toString().padStart(2, '0')}</p>
+                                <p className="text-[10px] font-black text-[#19325c] uppercase tracking-widest leading-none mb-1">{s.label}</p>
+                                <p className="text-2xl font-black text-[#19325c]">{s.value.toString().padStart(2, '0')}</p>
                             </div>
                         </div>
                     </Card>
@@ -115,7 +115,7 @@ const HRProfiles = () => {
                                     {candidate.name.charAt(0)}
                                 </div>
                                 <div className="space-y-1.5">
-                                    <h3 className="text-xl font-black text-slate-900 group-hover:text-[#ff6e00] transition-colors">{candidate.name}</h3>
+                                    <h3 className="text-xl font-black text-[#19325c] group-hover:text-[#ff6e00] transition-colors">{candidate.name}</h3>
                                     <div className="flex items-center gap-2 text-slate-400">
                                         <Mail className="w-3.5 h-3.5" />
                                         <span className="text-xs font-bold">{candidate.email}</span>
@@ -187,7 +187,7 @@ const HRProfiles = () => {
                                     {selectedCandidate.name.charAt(0)}
                                 </div>
                                 <div className="space-y-1">
-                                    <h2 className="text-2xl font-black text-slate-900 leading-tight">{selectedCandidate.name}</h2>
+                                    <h2 className="text-2xl font-black text-[#19325c] leading-tight">{selectedCandidate.name}</h2>
                                     <div className="flex items-center gap-3 mt-1.5">
                                         <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{selectedCandidate.position}</span>
                                         <span className="w-1 h-1 bg-slate-300 rounded-full"></span>

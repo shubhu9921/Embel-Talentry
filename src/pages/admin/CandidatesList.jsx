@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, Filter, Users } from 'lucide-react';
 import ApiService from '../../services/ApiService';
 import Button from '../../components/Button';
@@ -12,6 +13,10 @@ import CandidateDetailModal from './components/CandidatesList/CandidateDetailMod
 import InterviewScheduleModal from './components/CandidatesList/InterviewScheduleModal';
 
 const CandidatesList = () => {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const initialStatus = queryParams.get('status') || 'all';
+
     const [candidates, setCandidates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -20,8 +25,9 @@ const CandidatesList = () => {
     const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
     const [interviewData, setInterviewData] = useState({ date: '', time: '', interviewerId: '' });
     const [interviewers, setInterviewers] = useState([]);
+    const [interviews, setInterviews] = useState([]);
     const [questions, setQuestions] = useState([]);
-    const [statusFilter, setStatusFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState(initialStatus);
 
     useEffect(() => {
         fetchData();
@@ -30,14 +36,16 @@ const CandidatesList = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [candData, adminData, qData] = await Promise.all([
+            const [candData, adminData, qData, intData] = await Promise.all([
                 ApiService.get('/candidates'),
                 ApiService.get('/admin_users'),
-                ApiService.get('/questions')
+                ApiService.get('/questions'),
+                ApiService.get('/interviews')
             ]);
             setCandidates(candData);
             setInterviewers(adminData.filter(u => u.role === 'interviewer'));
             setQuestions(qData);
+            setInterviews(intData);
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -47,8 +55,8 @@ const CandidatesList = () => {
 
     const stats = {
         total: candidates.length,
-        shortlisted: candidates.filter(c => c.status === 'shortlisted').length,
-        rejected: candidates.filter(c => c.status === 'rejected').length,
+        shortlisted: candidates.filter(c => c.status === 'shortlisted' || c.status === 'interview scheduled').length,
+        rejected: candidates.filter(c => c.status === 'rejected' || c.status === 'not selected').length,
         pending: candidates.filter(c => c.status === 'applied' || c.status === 'pending').length
     };
 
@@ -98,9 +106,10 @@ const CandidatesList = () => {
                 status: 'scheduled',
                 createdAt: now.toISOString()
             });
-            await handleUpdateStatus(selectedCandidate.id, 'shortlisted');
+            await handleUpdateStatus(selectedCandidate.id, 'interview scheduled');
             setIsInterviewModalOpen(false);
             setInterviewData({ date: '', time: '', interviewerId: '' });
+            fetchData(); // Refresh all data including interviews
         } catch (error) {
             console.error('Error scheduling interview:', error);
             alert('Failed to schedule interview. Ensure an interviewer is selected.');
@@ -120,7 +129,7 @@ const CandidatesList = () => {
     if (loading) return <div className="p-10 flex justify-center"><Loader size="lg" /></div>;
 
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
+        <div className="space-y-10 page-fade-in">
             <PageHeader
                 title="Candidates Talent Pool"
                 subtitle="Review applicant profiles, assessment scores, and manage hiring stages."
@@ -148,6 +157,8 @@ const CandidatesList = () => {
                     <CandidateCard
                         key={candidate.id}
                         candidate={candidate}
+                        interviews={interviews}
+                        interviewers={interviewers}
                         onClick={() => { setSelectedCandidate(candidate); setIsDetailModalOpen(true); }}
                         onDelete={handleDeleteCandidate}
                     />
@@ -159,6 +170,8 @@ const CandidatesList = () => {
                 onClose={() => setIsDetailModalOpen(false)}
                 candidate={selectedCandidate}
                 questions={questions}
+                interviews={interviews}
+                interviewers={interviewers}
                 onUpdateStatus={handleUpdateStatus}
                 onScheduleInterview={() => setIsInterviewModalOpen(true)}
             />

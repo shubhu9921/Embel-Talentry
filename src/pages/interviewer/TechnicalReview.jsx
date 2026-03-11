@@ -49,10 +49,10 @@ const TechnicalReview = () => {
     if (loading) return <div className="h-[60vh] flex items-center justify-center"><Loader size="lg" /></div>;
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-700">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 page-fade-in">
             <div className="lg:col-span-4 space-y-6">
-                <div className="sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md pb-4 pt-8 -mt-8 -mx-8 px-8 border-b border-slate-200/50 mb-0">
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Technical Review</h1>
+                <div className="sticky top-0 z-10 bg-slate-50/90 backdrop-blur-md pb-4 pt-4 border-b border-slate-200/50 mb-4">
+                    <h1 className="text-3xl font-black text-[#19325c] tracking-tight">Technical Review</h1>
                     <p className="text-slate-500 font-medium mt-1">Select a candidate to submit evaluation.</p>
                 </div>
 
@@ -61,6 +61,7 @@ const TechnicalReview = () => {
                         <Card
                             key={c.id}
                             onClick={() => setSelectedCandidate(c)}
+                            noPadding={true}
                             className={`p-4 cursor-pointer transition-all border-none shadow-elevation-high ${selectedCandidate?.id === c.id ? 'bg-[#ff6e00] text-white ring-4 ring-[#ff6e00]/20' : 'bg-white ring-1 ring-slate-100 hover:ring-[#ff6e00]'}`}
                         >
                             <div className="flex items-center gap-3">
@@ -86,14 +87,14 @@ const TechnicalReview = () => {
 
             <div className="lg:col-span-8">
                 {selectedCandidate ? (
-                    <Card className="p-8 border-none shadow-elevation-high ring-1 ring-slate-100 min-h-full ">
+                    <Card noPadding={true} className="p-8 border-none shadow-elevation-high ring-1 ring-slate-100 min-h-full ">
                         <div className="flex items-start justify-between mb-10">
                             <div className="flex items-center gap-5">
                                 <div className="w-16 h-16 rounded-3xl bg-orange-50 flex items-center justify-center border border-orange-100">
                                     <Terminal className="w-7 h-7 text-[#ff6e00]" />
                                 </div>
                                 <div>
-                                    <h2 className="text-3xl font-black text-slate-900 tracking-tight">{selectedCandidate.name}</h2>
+                                    <h2 className="text-3xl font-black text-[#19325c] tracking-tight">{selectedCandidate.name}</h2>
                                     <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Full Assessment Detail</p>
                                 </div>
                             </div>
@@ -173,7 +174,7 @@ const TechnicalReview = () => {
                         <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center shadow-sm mb-8">
                             <Terminal className="w-10 h-10 text-slate-200" />
                         </div>
-                        <h3 className="text-xl font-black text-slate-900 tracking-tight">Ready for Assessment</h3>
+                        <h3 className="text-xl font-black text-[#19325c] tracking-tight">Ready for Assessment</h3>
                         <p className="text-slate-500 font-medium max-w-sm mt-3">Select a candidate from the left panel to begin your technical review and record feedback.</p>
                     </div>
                 )}

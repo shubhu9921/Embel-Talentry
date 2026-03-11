@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, ShieldCheck, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin } from 'lucide-react';
+import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, ShieldCheck, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin, Eye, EyeOff } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import ApiService from '../../services/ApiService';
 
@@ -15,9 +15,12 @@ const Register = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [step, setStep] = useState(1);
+    const [showPassword, setShowPassword] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [candidateData, setCandidateData] = useState(null);
     const [vacancies, setVacancies] = useState([]);
+    const [expDropdownOpen, setExpDropdownOpen] = useState(false);
+    const [posDropdownOpen, setPosDropdownOpen] = useState(false);
 
     const preSelectedPosition = searchParams.get('position');
     const expType = watch('experienceType');
@@ -50,9 +53,18 @@ const Register = () => {
     const onSubmit = async (data) => {
         setSubmitting(true);
         try {
-            // Remove the FileList object before sending to json-server
-            // to avoid serialization issues
             const { resume, ...rest } = data;
+            let resumeData = '';
+
+            if (resume?.[0]) {
+                resumeData = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(resume[0]);
+                });
+            }
+
             const newCandidate = {
                 ...rest,
                 id: Date.now(),
@@ -60,7 +72,8 @@ const Register = () => {
                 status: 'registered',
                 assignedQuestions: [],
                 examScore: null,
-                resumeName: resumeFileName || 'Not uploaded'
+                resumeName: resumeFileName || 'Not uploaded',
+                resumeData: resumeData
             };
             await ApiService.post('/candidates', newCandidate);
             setCandidateData(newCandidate);
@@ -135,7 +148,7 @@ const Register = () => {
                                 <h3 className="text-[10px] font-black text-[#ff6e00] uppercase tracking-[0.2em] border-b border-slate-100 pb-4">Personal Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Full Name</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <User className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -145,7 +158,7 @@ const Register = () => {
                                         {errors.name && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.name.message}</p>}
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Email Address</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Mail className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -155,16 +168,17 @@ const Register = () => {
                                         {errors.email && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.email.message}</p>}
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Mobile Number</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Mobile Number</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Phone className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
                                             </div>
-                                            <input {...register('phone', { required: 'Phone is mandatory' })} placeholder="+91 00000 00000" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                                            <input {...register('phone', { required: 'Phone is mandatory', pattern: { value: /^[0-9]{10}$/, message: 'Must be exactly 10 digits' } })} placeholder="0000000000" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
                                         </div>
+                                        {errors.phone && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.phone.message}</p>}
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Date of Birth</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Date of Birth</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Calendar className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -173,17 +187,24 @@ const Register = () => {
                                         </div>
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Account Password</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Account Password</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Lock className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
                                             </div>
-                                            <input type="password" {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Min 6 characters' } })} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                                            <input type={showPassword ? "text" : "password"} {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Min 6 characters' } })} placeholder="••••••••" className="block w-full pl-11 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-slate-500 transition-colors cursor-pointer"
+                                            >
+                                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                            </button>
                                         </div>
                                         {errors.password && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.password.message}</p>}
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Country</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Country</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -193,7 +214,7 @@ const Register = () => {
                                         {errors.country && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.country.message}</p>}
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">State</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">State</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -203,7 +224,7 @@ const Register = () => {
                                         {errors.state && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.state.message}</p>}
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">City</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">City</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -219,7 +240,7 @@ const Register = () => {
                                 <h3 className="text-[10px] font-black text-[#ff6e00] uppercase tracking-[0.2em] border-b border-slate-100 pb-4">Academic Background</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">College Name</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">College Name</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <BookOpen className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -228,7 +249,7 @@ const Register = () => {
                                         </div>
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Degree</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Degree</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <GraduationCap className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -237,7 +258,7 @@ const Register = () => {
                                         </div>
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Passing Year</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Passing Year</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <History className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -246,7 +267,7 @@ const Register = () => {
                                         </div>
                                     </div>
                                     <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Final CGPA / %</label>
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Final CGPA / %</label>
                                         <div className="relative group/field">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Award className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -254,21 +275,25 @@ const Register = () => {
                                             <input {...register('cgpa', { required: 'CGPA is mandatory' })} placeholder="8.5 or 85%" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
                                         </div>
                                     </div>
-                                    <div className="space-y-2 group dropdown dropdown-hover w-full flex flex-col">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Active Backlogs?</label>
-                                        <input type="hidden" {...register('activeBacklogs')} />
-                                        <div tabIndex={0} role="button" className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold tracking-widest cursor-pointer">
-                                            <span className="text-slate-900">{hasBacklogs === 'yes' ? 'Yes, have active' : "No, I'm clear"}</span>
-                                            <ChevronDown className="w-4 h-4 text-slate-400" />
+                                    {expType !== 'experienced' && (
+                                    <div className="space-y-2 group w-full flex flex-col relative z-50">
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Active Backlogs?</label>
+                                        <div className="dropdown w-full">
+                                            <input type="hidden" {...register('activeBacklogs')} />
+                                            <div tabIndex={0} role="button" className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold tracking-widest cursor-pointer">
+                                                <span className="text-slate-900">{hasBacklogs === 'yes' ? 'Yes, have active' : "No, I'm clear"}</span>
+                                                <ChevronDown className="w-4 h-4 text-slate-400" />
+                                            </div>
+                                            <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
+                                                <li><a onClick={() => { setValue('activeBacklogs', 'no'); document.activeElement?.blur(); }} className={hasBacklogs === 'no' ? 'active' : ''}>No, I'm clear</a></li>
+                                                <li><a onClick={() => { setValue('activeBacklogs', 'yes'); document.activeElement?.blur(); }} className={hasBacklogs === 'yes' ? 'active' : ''}>Yes, have active</a></li>
+                                            </ul>
                                         </div>
-                                        <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
-                                            <li><a onClick={() => setValue('activeBacklogs', 'no')} className={hasBacklogs === 'no' ? 'active' : ''}>No, I'm clear</a></li>
-                                            <li><a onClick={() => setValue('activeBacklogs', 'yes')} className={hasBacklogs === 'yes' ? 'active' : ''}>Yes, have active</a></li>
-                                        </ul>
                                     </div>
+                                    )}
                                     {hasBacklogs === 'yes' && (
                                         <div className="space-y-2 animate-in fade-in slide-in-from-left-4 group">
-                                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Count</label>
+                                            <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Count</label>
                                             <div className="relative group/field">
                                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                     <AlertCircle className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -282,22 +307,36 @@ const Register = () => {
 
                             <div className="space-y-8">
                                 <h3 className="text-[10px] font-black text-[#ff6e00] uppercase tracking-[0.2em] border-b border-slate-100 pb-4">Professional Details</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-2 group dropdown dropdown-hover w-full flex flex-col">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Experience Type</label>
-                                        <input type="hidden" {...register('experienceType')} />
-                                        <div tabIndex={0} role="button" className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold tracking-widest cursor-pointer">
-                                            <span className="text-slate-900">{expType === 'experienced' ? 'Experienced Professional' : 'Fresher / Student'}</span>
-                                            <ChevronDown className="w-4 h-4 text-slate-400" />
+
+                                {/* Experience Type + Total Experience in 2-col grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-40">
+                                    <div className="space-y-2 group w-full flex flex-col relative">
+                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Experience Type</label>
+                                        <div
+                                            className="w-full relative"
+                                            onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setExpDropdownOpen(false); }}
+                                        >
+                                            <input type="hidden" {...register('experienceType')} />
+                                            <div
+                                                role="button"
+                                                onClick={() => setExpDropdownOpen(o => !o)}
+                                                tabIndex={0}
+                                                className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold tracking-widest cursor-pointer"
+                                            >
+                                                <span className="text-slate-900">{expType === 'experienced' ? 'Experienced Professional' : 'Fresher / Student'}</span>
+                                                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${expDropdownOpen ? 'rotate-180' : ''}`} />
+                                            </div>
+                                            {expDropdownOpen && (
+                                                <ul className="absolute top-full left-0 mt-2 w-full menu bg-white rounded-2xl z-[999] p-2 shadow-elevation-high border border-slate-100">
+                                                    <li><a onMouseDown={(e) => { e.preventDefault(); setValue('experienceType', 'fresher'); setExpDropdownOpen(false); }} className={expType === 'fresher' ? 'active' : ''}>Fresher / Student</a></li>
+                                                    <li><a onMouseDown={(e) => { e.preventDefault(); setValue('experienceType', 'experienced'); setExpDropdownOpen(false); }} className={expType === 'experienced' ? 'active' : ''}>Experienced Professional</a></li>
+                                                </ul>
+                                            )}
                                         </div>
-                                        <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
-                                            <li><a onClick={() => setValue('experienceType', 'fresher')} className={expType === 'fresher' ? 'active' : ''}>Fresher / Student</a></li>
-                                            <li><a onClick={() => setValue('experienceType', 'experienced')} className={expType === 'experienced' ? 'active' : ''}>Experienced Professional</a></li>
-                                        </ul>
                                     </div>
                                     {expType === 'experienced' && (
                                         <div className="space-y-2 animate-in fade-in slide-in-from-left-4 group">
-                                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Total Experience</label>
+                                            <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Total Experience</label>
                                             <div className="relative group/field">
                                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                     <Clock className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
@@ -306,35 +345,47 @@ const Register = () => {
                                             </div>
                                         </div>
                                     )}
-                                    <div className="col-span-1 md:col-span-2 space-y-2 group">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Target Position</label>
-                                        <div className={`relative group/field dropdown dropdown-hover w-full flex flex-col ${!!preSelectedPosition ? 'pointer-events-none opacity-50' : ''}`}>
-                                            <input type="hidden" {...register('position', { required: 'Target position is required' })} />
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10 w-5 h-full">
-                                                <Briefcase className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
+                                </div>
+
+                                {/* Target Position — React-controlled dropdown, not DaisyUI CSS-based */}
+                                <div className="space-y-2 group relative z-30">
+                                    <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Target Position</label>
+                                    <div
+                                        className="w-full relative"
+                                        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setPosDropdownOpen(false); }}
+                                    >
+                                        <input type="hidden" {...register('position', { required: 'Target position is required' })} />
+                                        <div
+                                            role="button"
+                                            tabIndex={!!preSelectedPosition ? -1 : 0}
+                                            onClick={() => { if (!preSelectedPosition) setPosDropdownOpen(o => !o); }}
+                                            className={`w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold cursor-pointer ${!!preSelectedPosition ? 'opacity-50 pointer-events-none' : ''}`}
+                                        >
+                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <Briefcase className="h-5 w-5 text-slate-300" />
                                             </div>
-                                            <div tabIndex={0} role="button" className="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold cursor-pointer">
-                                                <span className={watchPosition ? "text-slate-900 truncate pr-4" : "text-slate-400 truncate pr-4"}>
-                                                    {watchPosition ? (vacancies.find(v => v.id === watchPosition)?.title || watchPosition) : 'Select role...'}
-                                                </span>
-                                                <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
-                                            </div>
-                                            <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
-                                                <li><a onClick={() => setValue('position', '', { shouldValidate: true })} className={!watchPosition ? 'active text-slate-400' : 'text-slate-400'}>Select role...</a></li>
+                                            <span className={watchPosition ? 'text-slate-900 truncate pr-4' : 'text-slate-400 truncate pr-4'}>
+                                                {watchPosition ? (vacancies.find(v => v.id === watchPosition)?.title || watchPosition) : 'Select role...'}
+                                            </span>
+                                            <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${posDropdownOpen ? 'rotate-180' : ''}`} />
+                                        </div>
+                                        {posDropdownOpen && (
+                                            <ul className="absolute top-full left-0 mt-2 w-full menu bg-white rounded-2xl z-[999] p-2 shadow-elevation-high border border-slate-100">
+                                                <li><a onMouseDown={(e) => { e.preventDefault(); setValue('position', '', { shouldValidate: true }); setPosDropdownOpen(false); }} className={!watchPosition ? 'active text-slate-400' : 'text-slate-400'}>Select role...</a></li>
                                                 {vacancies.map(v => (
                                                     <li key={v.id}>
-                                                        <a onClick={() => setValue('position', v.id, { shouldValidate: true })} className={watchPosition === v.id ? 'active' : ''}>{v.title}</a>
+                                                        <a onMouseDown={(e) => { e.preventDefault(); setValue('position', v.id, { shouldValidate: true }); setPosDropdownOpen(false); }} className={watchPosition === v.id ? 'active' : ''}>{v.title}</a>
                                                     </li>
                                                 ))}
                                             </ul>
-                                        </div>
-                                        {errors.position && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.position.message}</p>}
+                                        )}
                                     </div>
+                                    {errors.position && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.position.message}</p>}
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
-                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">CV / Resume (PDF Only)</label>
+                            <div className="space-y-4 relative z-10">
+                                <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">CV / Resume (PDF Only)</label>
                                 <div className="relative group cursor-pointer">
                                     <input type="file" accept=".pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" {...register('resume', { required: 'CV is mandatory' })} />
                                     <div className={`p-10 border-2 border-dashed rounded-3xl transition-all flex flex-col items-center gap-4 text-center group ${resumeFileName ? 'border-[#ff6e00]/50 bg-orange-50' : 'border-slate-100 bg-slate-50 hover:border-[#ff6e00]/50'}`}>
@@ -360,7 +411,7 @@ const Register = () => {
                                 <div className="w-20 h-20 bg-emerald-50 rounded-[2.5rem] flex items-center justify-center text-emerald-500 mx-auto shadow-xl shadow-emerald-500/5">
                                     <CheckCircle2 className="w-10 h-10" />
                                 </div>
-                                <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">Application <span className="text-[#ff6e00]">Submitted!</span></h2>
+                                <h2 className="text-3xl font-black text-[#19325c] uppercase tracking-tight">Application <span className="text-[#ff6e00]">Submitted!</span></h2>
                                 <p className="text-slate-500 font-medium max-w-sm mx-auto tracking-wide text-sm">Thank you for applying! HR will connect with you as soon as possible.</p>
                             </div>
 

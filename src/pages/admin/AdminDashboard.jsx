@@ -56,7 +56,7 @@ const AdminDashboard = () => {
     if (data.loading) return <div className="p-10 flex justify-center"><Loader size="lg" /></div>;
 
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
+        <div className="space-y-10 page-fade-in">
             <PageHeader
                 title="Recruitment Overview"
                 subtitle="Track your hiring pipeline and candidate performance."

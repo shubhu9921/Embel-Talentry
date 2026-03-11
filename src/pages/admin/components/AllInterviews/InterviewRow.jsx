@@ -4,7 +4,7 @@ import Card from '../../../../components/Card';
 
 const InterviewRow = ({ interview }) => {
     return (
-        <Card className="p-6 border-none shadow-elevation-high ring-1 ring-slate-100 flex items-center justify-between group hover:ring-primary-100 transition-all">
+        <Card className="p-6 border-none ring-1 ring-slate-100 flex items-center justify-between group">
             <div className="flex items-center gap-8">
                 <div className="flex flex-col items-center justify-center p-3 bg-slate-50 rounded-2xl border border-slate-100 min-w-17.5">
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -17,7 +17,7 @@ const InterviewRow = ({ interview }) => {
 
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h3 className="font-bold text-slate-900">{interview.candidate?.name || 'Unknown Candidate'}</h3>
+                        <h3 className="font-bold text-[#19325c]">{interview.candidate?.name || 'Unknown Candidate'}</h3>
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
                         <span className="text-xs font-bold text-slate-500">{interview.candidate?.position || 'N/A'}</span>
                     </div>

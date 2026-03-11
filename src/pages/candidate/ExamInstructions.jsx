@@ -40,33 +40,37 @@ const ExamInstructions = () => {
     ];
 
     if (isFinished) {
-        const isTerminated = reason === 'Interview terminated due to suspicious activity.';
+        const isMalpractice = reason && reason !== 'Manual submission' && reason !== 'Timer expired';
 
         return (
-            <div className={`min-h-screen w-full flex flex-col items-center justify-center p-6 text-center overflow-hidden relative ${isTerminated ? 'bg-red-950' : 'bg-gradient-to-br from-[#002D5E] to-[#112240]'
+            <div className={`min-h-screen w-full flex flex-col items-center justify-center p-6 text-center overflow-hidden relative ${isMalpractice ? 'bg-red-950' : 'bg-gradient-to-br from-[#002D5E] to-[#112240]'
                 }`}>
-                <div className={`absolute top-0 left-0 w-[600px] h-[600px] rounded-full blur-[120px] -ml-64 -mt-64 pointer-events-none ${isTerminated ? 'bg-red-500/10' : 'bg-orange-500/5'
+                <div className={`absolute top-0 left-0 w-[600px] h-[600px] rounded-full blur-[120px] -ml-64 -mt-64 pointer-events-none ${isMalpractice ? 'bg-red-500/10' : 'bg-orange-500/5'
                     }`}></div>
-                <div className={`absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full blur-[120px] -mr-64 -mb-64 pointer-events-none ${isTerminated ? 'bg-red-600/10' : 'bg-blue-500/10'
+                <div className={`absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full blur-[120px] -mr-64 -mb-64 pointer-events-none ${isMalpractice ? 'bg-red-600/10' : 'bg-blue-500/10'
                     }`}></div>
 
                 <div className="relative z-10 animate-in zoom-in duration-700">
-                    <div className={`w-28 h-28 rounded-[2.5rem] flex items-center justify-center text-white mb-8 mx-auto shadow-2xl ${isTerminated ? 'bg-red-600 shadow-red-500/30 animate-pulse' : 'bg-emerald-500 shadow-emerald-500/30'
+                    <div className={`w-28 h-28 rounded-[2.5rem] flex items-center justify-center text-white mb-8 mx-auto shadow-2xl ${isMalpractice ? 'bg-red-600 shadow-red-500/30' : 'bg-emerald-500 shadow-emerald-500/30'
                         }`}>
-                        {isTerminated ? <ShieldAlert size={56} /> : <CheckCircle2 size={48} />}
+                        {isMalpractice ? <ShieldAlert size={56} className="animate-pulse" /> : <CheckCircle2 size={48} />}
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-black text-white mb-4 uppercase tracking-tighter">
-                        {isTerminated ? 'Interview Terminated' : 'Exam Submitted Successfully'}
+                        {isMalpractice ? 'Assessment Terminated' : 'Assessment Submitted'}
                     </h1>
 
-                    <p className={`text-lg max-w-md mx-auto font-medium mb-12 ${isTerminated ? 'text-red-200' : 'text-slate-400'
+                    <div className={`mb-4 px-6 py-2 rounded-full inline-block font-black uppercase tracking-widest text-[10px] ${isMalpractice ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'}`}>
+                        {isMalpractice ? 'Malpractice Detected' : 'Success'}
+                    </div>
+
+                    <p className={`text-lg max-w-md mx-auto font-medium mb-12 ${isMalpractice ? 'text-red-200' : 'text-slate-400'
                         }`}>
-                        {isTerminated
-                            ? 'Suspicious activity detected. Your assessment has been automatically terminated as per procurement integrity rules.'
-                            : 'Your assessment responses have been securely transmitted to the Embel Talentry engine.'}
+                        {isMalpractice
+                            ? `Your assessment was automatically terminated due to: ${reason}`
+                            : 'Your responses have been securely synced with the Embel Talentry engine.'}
                         <span className="block mt-4 opacity-70">
-                            Our HR team will review the proctoring logs and recordings for final decisioning.
+                            Our HR team will review the proctoring logs and recordings before finalizing your status.
                         </span>
                     </p>
 

@@ -31,9 +31,9 @@ const HRDashboard = () => {
     }, []);
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700">
+        <div className="space-y-8 page-fade-in">
             <div>
-                <h1 className="text-2xl font-black text-slate-900 tracking-tight">HR Communication Portal</h1>
+                <h1 className="text-2xl font-black text-[#19325c] tracking-tight">HR Communication Portal</h1>
                 <p className="text-slate-500 font-medium mt-1">Manage candidate emails and recruitment workflows.</p>
             </div>
 

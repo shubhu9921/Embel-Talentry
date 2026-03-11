@@ -56,8 +56,8 @@ const AppRoutes = () => {
                     <Route path="/exam" element={<ProtectedRoute allowedRoles={['candidate']}><ExamPage /></ProtectedRoute>} />
                     <Route path="/unauthorized" element={<Unauthorized />} />
 
-                    {/* Super Admin Module */}
-                    <Route path="/admin" element={<ProtectedRoute allowedRoles={['superadmin', 'admin']}><DashboardLayout role="superadmin" /></ProtectedRoute>}>
+                    {/* Admin & HR Module (Shared) */}
+                    <Route path="/admin" element={<ProtectedRoute allowedRoles={['superadmin', 'admin', 'hr']}><DashboardLayout /></ProtectedRoute>}>
                         <Route index element={<AdminDashboard />} />
                         <Route path="proctoring" element={<ProctoringDashboard />} />
                         <Route path="candidates" element={<CandidatesList />} />
@@ -65,6 +65,7 @@ const AppRoutes = () => {
                         <Route path="questions" element={<QuestionBank />} />
                         <Route path="interviews" element={<AllInterviews />} />
                         <Route path="team" element={<TeamManagement />} />
+                        <Route path="emails" element={<CommunicationPortal />} />
                         <Route path="settings" element={<Settings />} />
                         <Route path="help" element={<Help />} />
                     </Route>
@@ -78,15 +79,6 @@ const AppRoutes = () => {
                         <Route path="help" element={<Help />} />
                     </Route>
 
-                    {/* HR Module */}
-                    <Route path="/hr" element={<ProtectedRoute allowedRoles={['hr']}><DashboardLayout role="hr" /></ProtectedRoute>}>
-                        <Route index element={<HRDashboard />} />
-                        <Route path="candidates" element={<HRProfiles />} />
-                        <Route path="interviews" element={<AllInterviews />} />
-                        <Route path="emails" element={<CommunicationPortal />} />
-                        <Route path="settings" element={<Settings />} />
-                        <Route path="help" element={<Help />} />
-                    </Route>
 
                     {/* Catch-all */}
                     <Route path="*" element={<Navigate to="/" replace />} />

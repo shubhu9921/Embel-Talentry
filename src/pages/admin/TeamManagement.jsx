@@ -110,7 +110,7 @@ const TeamManagement = () => {
     if (loading) return <div className="p-10 flex justify-center"><Loader size="lg" /></div>;
 
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
+        <div className="space-y-10 page-fade-in">
             <PageHeader
                 title="Team Administration"
                 subtitle="Manage platform authorities, interview domains, and recruitment personnel."
@@ -119,7 +119,7 @@ const TeamManagement = () => {
                     <Button
                         onClick={() => handleOpenModal()}
                         icon={UserPlus}
-                        className="rounded-xl px-6 py-3 shadow-orange-500/20"
+                        className="rounded-xl px-6 py-3 shadow-2xl shadow-orange-500/20"
                     >
                         ADD TEAM MEMBER
                     </Button>
@@ -139,7 +139,7 @@ const TeamManagement = () => {
                                 placeholder="Search by name, email or role..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all shadow-xl shadow-slate-200/20"
+                                className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all shadow-2xl shadow-slate-200/20"
                             />
                         </div>
                         <div className="p-6 bg-orange-50 rounded-3xl border border-orange-100/50">

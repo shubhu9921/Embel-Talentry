@@ -4,7 +4,7 @@ import Card from '../../../../components/Card';
 
 const VacancyCard = ({ vacancy, applicantsCount, onToggleStatus, onDelete, onEdit }) => {
     return (
-        <Card className="p-6 border-none shadow-elevation-high ring-1 ring-slate-100 flex flex-col group hover:ring-[#ff6e00] transition-all duration-500">
+        <Card className="p-6 border-none ring-1 ring-slate-100 flex flex-col group">
             <div className="flex items-start justify-between mb-4">
                 <div className="w-12 h-12 rounded-2xl bg-orange-100/50 text-[#ff6e00] flex items-center justify-center group-hover:bg-[#ff6e00] group-hover:text-white transition-all duration-300">
                     <Briefcase className="w-6 h-6" />
@@ -35,7 +35,7 @@ const VacancyCard = ({ vacancy, applicantsCount, onToggleStatus, onDelete, onEdi
             </div>
 
             <div className="flex-1">
-                <h3 className="text-lg font-black text-slate-900 leading-tight group-hover:text-[#ff6e00] transition-colors">{vacancy.title}</h3>
+                <h3 className="text-lg font-black text-[#19325c] leading-tight group-hover:text-[#ff6e00] transition-colors">{vacancy.title}</h3>
                 <div className="flex items-center gap-2 mt-2">
                     <span className={`w-2 h-2 rounded-full ${vacancy.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></span>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">

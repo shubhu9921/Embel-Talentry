@@ -5,12 +5,12 @@ const KpiCard = ({ title, value, change, trend, icon: Icon, onClick, className =
     return (
         <Card
             onClick={onClick}
-            className={`p-4 shadow-premium hover:translate-y-1 transition-all duration-300 border-none cursor-pointer group bg-white ${className}`}
+            className={`p-4 border-none cursor-pointer group bg-white ${className}`}
         >
             <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block truncate">{title}</span>
-                    <p className="text-2xl font-black text-slate-900 mt-1 truncate">{value}</p>
+                    <span className="text-[10px] font-black text-[#19325c] uppercase tracking-widest block truncate">{title}</span>
+                    <p className="text-2xl font-black text-[#19325c] mt-1 truncate">{value}</p>
 
                     {change && (
                         <div className="flex items-center gap-1.5 mt-2">

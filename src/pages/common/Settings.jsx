@@ -7,9 +7,9 @@ const Settings = () => {
     const user = JSON.parse(localStorage.getItem('admin_user')) || {};
 
     return (
-        <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in duration-700">
+        <div className="max-w-4xl mx-auto space-y-10 page-fade-in">
             <div>
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Account Settings</h1>
+                <h1 className="text-3xl font-black text-[#19325c] tracking-tight">Account Settings</h1>
                 <p className="text-slate-500 font-medium mt-1">Manage your professional profile and system preferences.</p>
             </div>
 
@@ -31,7 +31,7 @@ const Settings = () => {
 
                 <div className="md:col-span-3 space-y-6">
                     <Card className="p-8 border-none ring-1 ring-slate-100 shadow-elevation-high">
-                        <h3 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-3">
+                        <h3 className="text-xl font-black text-[#19325c] mb-6 flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-[#ff6e00]">
                                 <User className="w-5 h-5" />
                             </div>

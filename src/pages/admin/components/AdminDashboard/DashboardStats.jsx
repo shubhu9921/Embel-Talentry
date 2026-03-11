@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, FileUser, CheckCircle2, Clock } from 'lucide-react';
 import KpiCard from '../../../../components/KpiCard';
 
 const DashboardStats = ({ data = {} }) => {
+    const navigate = useNavigate();
     const getTrend = (val) => String(val || '').startsWith('-') ? 'down' : 'up';
 
     return (
@@ -13,6 +15,7 @@ const DashboardStats = ({ data = {} }) => {
                 change={data?.candidateTrend}
                 trend={getTrend(data?.candidateTrend)}
                 icon={Users}
+                onClick={() => navigate('/admin/candidates?status=all')}
             />
             <KpiCard
                 title="Active Assessments"
@@ -20,6 +23,7 @@ const DashboardStats = ({ data = {} }) => {
                 change={data?.assessmentTrend}
                 trend={getTrend(data?.assessmentTrend)}
                 icon={FileUser}
+                onClick={() => navigate('/admin/candidates?status=applied')}
             />
             <KpiCard
                 title="Interviews Completed"
@@ -27,6 +31,7 @@ const DashboardStats = ({ data = {} }) => {
                 change={data?.interviewTrend}
                 trend={getTrend(data?.interviewTrend)}
                 icon={CheckCircle2}
+                onClick={() => navigate('/admin/interviews')}
             />
             <KpiCard
                 title="Avg. Time to Hire"
@@ -34,6 +39,7 @@ const DashboardStats = ({ data = {} }) => {
                 change={data?.timeTrend}
                 trend={getTrend(data?.timeTrend)}
                 icon={Clock}
+                onClick={() => navigate('/admin/candidates')}
             />
         </div>
     );

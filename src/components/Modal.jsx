@@ -16,7 +16,7 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
             <div className={`bg-white rounded-3xl shadow-2xl w-full ${sizes[size]} overflow-hidden animate-in zoom-in-95 duration-200`}>
                 <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-slate-900 font-sans">{title}</h3>
+                    <h3 className="text-lg font-semibold text-[#19325c] font-sans">{title}</h3>
                     <button
                         onClick={onClose}
                         className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"

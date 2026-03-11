@@ -15,6 +15,7 @@ const Vacancies = () => {
     const [candidates, setCandidates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [filter, setFilter] = useState('all');
     const [formData, setFormData] = useState({ id: '', title: '', description: '', isOpen: true });
 
     useEffect(() => {
@@ -42,6 +43,12 @@ const Vacancies = () => {
         active: vacancies.filter(v => v.isOpen).length,
         applicants: candidates.length
     };
+
+    const filteredVacancies = React.useMemo(() => {
+        if (filter === 'active') return vacancies.filter(v => v.isOpen);
+        if (filter === 'closed') return vacancies.filter(v => !v.isOpen);
+        return vacancies; // 'all' or any unrecognised value → show everything
+    }, [vacancies, filter]);
 
     const getApplicantsForVacancy = (positionId) => {
         return candidates.filter(c => c.position === positionId).length;
@@ -87,8 +94,9 @@ const Vacancies = () => {
     };
 
 
+
     return (
-        <div className="space-y-10 animate-in fade-in duration-700">
+        <div className="space-y-10 page-fade-in">
             <PageHeader
                 title="Active Vacancies"
                 subtitle="Manage open positions and recruitment status for Embel Talentry."
@@ -107,10 +115,10 @@ const Vacancies = () => {
                 }
             />
 
-            <VacancyStats stats={stats} />
+            <VacancyStats stats={stats} setFilter={setFilter} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {vacancies.map((vacancy) => (
+                {filteredVacancies.map((vacancy) => (
                     <VacancyCard
                         key={vacancy.id}
                         vacancy={vacancy}

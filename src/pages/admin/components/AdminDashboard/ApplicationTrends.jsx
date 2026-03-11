@@ -4,13 +4,13 @@ import Card from '../../../../components/Card';
 
 const ApplicationTrends = ({ totalCandidates }) => {
     return (
-        <Card className="lg:col-span-2 p-8 border-none ring-1 ring-slate-100 shadow-premium hover:shadow-2xl transition-all duration-300">
+        <Card className="lg:col-span-2 p-8 ring-1 ring-slate-100">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-orange-100/50 rounded-lg text-[#ff6e00]">
                         <TrendingUp size={20} />
                     </div>
-                    <h3 className="font-bold text-slate-900">Application Trends</h3>
+                    <h3 className="font-bold text-[#19325c]">Application Trends</h3>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full bg-[#ff6e00]"></span>

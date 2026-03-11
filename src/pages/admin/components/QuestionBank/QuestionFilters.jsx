@@ -1,5 +1,6 @@
 import React from 'react';
 import { Filter, ChevronDown, CheckSquare, Square } from 'lucide-react';
+import Card from '../../../../components/Card';
 
 const QuestionFilters = ({
     selectedPosition,
@@ -9,8 +10,8 @@ const QuestionFilters = ({
     stats: { active = 0, inactive = 0 } = {}
 }) => {
     return (
-        <div className="lg:col-span-3 bg-white rounded-4xl shadow-elevation-high border border-slate-100 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex-1 w-full md:w-auto">
+        <Card className="lg:col-span-3 border-none flex flex-col md:flex-row items-center justify-between gap-6" noPadding>
+            <div className="flex-1 w-full md:w-auto p-6 pb-0 md:pb-6">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Filter by Vacancy</p>
                 <div className="relative dropdown dropdown-hover w-full">
                     <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
@@ -39,7 +40,7 @@ const QuestionFilters = ({
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="flex items-center gap-2 w-full md:w-auto p-6 pt-0 md:pt-6">
                 <button
                     onClick={() => onBulkSelect(true)}
                     className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 bg-orange-50 text-[#ff6e00] font-black rounded-2xl text-[10px] uppercase tracking-widest hover:bg-orange-100 transition-all active:scale-95"
@@ -53,7 +54,7 @@ const QuestionFilters = ({
                     <Square size={16} /> Deactivate All
                 </button>
             </div>
-        </div>
+        </Card>
     );
 };
 

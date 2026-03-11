@@ -75,7 +75,8 @@ const ExamPage = () => {
                 examScore: Math.round(score),
                 status: 'applied',
                 submissionReason: reason,
-                submittedAt: new Date().toISOString()
+                submittedAt: new Date().toISOString(),
+                assignedQuestions: questions.map(q => q.id)
             };
 
             await ApiService.patch(`/candidates/${candidate.id}`, updateData);
@@ -504,7 +505,7 @@ const ExamPage = () => {
 
             {
                 isSubmitting && (
-                    <div className="fixed inset-0 z-110 bg-[#002D5E]/95 backdrop-blur-xl flex flex-col items-center justify-center text-white p-10 animate-in fade-in duration-700">
+                    <div className="fixed inset-0 z-110 bg-[#002D5E]/95 backdrop-blur-xl flex flex-col items-center justify-center text-white p-10 page-fade-in">
                         <div className="relative mb-12">
                             <div className="w-24 h-24 border-8 border-white/20 border-t-orange-500 rounded-full animate-spin"></div>
                             <ShieldCheck className="w-10 h-10 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />

@@ -1,15 +1,20 @@
 import React from 'react';
-import { Mail, Trash2, Briefcase, Phone } from 'lucide-react';
+import { Mail, Trash2, Briefcase, Phone, Calendar } from 'lucide-react';
 import Card from '../../../../components/Card';
 import Badge from '../../../../components/Badge';
 
-const CandidateCard = ({ candidate, onClick, onDelete }) => {
+const CandidateCard = ({ candidate, interviews = [], interviewers = [], onClick, onDelete }) => {
+    const interview = interviews.find(i => String(i.candidateId) === String(candidate.id));
+    const interviewer = interview ? interviewers.find(i => String(i.id) === String(interview.interviewerId)) : null;
+
     const getStatusVariant = (status) => {
         switch (status) {
             case 'applied': return 'success';
             case 'shortlisted': return 'warning';
-            case 'rejected': return 'danger';
-            case 'hired': return 'primary';
+            case 'interview scheduled': return 'primary';
+            case 'rejected':
+            case 'not selected': return 'danger';
+            case 'hired': return 'success';
             default: return 'neutral';
         }
     };
@@ -27,7 +32,7 @@ const CandidateCard = ({ candidate, onClick, onDelete }) => {
                         {candidate.name?.charAt(0) || '?'}
                     </div>
                     <div className="space-y-1.5">
-                        <h3 className="text-xl font-black text-slate-900 group-hover:text-[#ff6e00] transition-colors">{candidate.name || 'Anonymous candidate'}</h3>
+                        <h3 className="text-xl font-black text-[#19325c] group-hover:text-[#ff6e00] transition-colors">{candidate.name || 'Anonymous candidate'}</h3>
                         <div className="flex items-center gap-2 text-slate-400">
                             <Mail className="w-3.5 h-3.5" />
                             <span className="text-xs font-bold">{candidate.email || 'No email provided'}</span>
@@ -53,6 +58,32 @@ const CandidateCard = ({ candidate, onClick, onDelete }) => {
                     </div>
                 </div>
             </div>
+            
+            {interview && (
+                <div className="mb-6 p-4 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between group/int animate-in fade-in slide-in-from-top-2 duration-500 relative z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-white text-[#19325c] flex items-center justify-center shadow-sm border border-blue-50 group-hover/int:bg-blue-500 group-hover/int:text-white transition-colors">
+                            <Calendar className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-[9px] font-black text-blue-400 uppercase tracking-widest">Technical Interview</p>
+                            <p className="text-xs font-bold text-[#19325c]">
+                                {interviewer ? interviewer.name : 'Interviewer TBD'}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-4 pr-1">
+                        <div className="text-right">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Date</p>
+                            <p className="text-[11px] font-bold text-slate-700">{interview.date || 'TBD'}</p>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Time</p>
+                            <p className="text-[11px] font-bold text-slate-700">{interview.time || 'TBD'}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="grid grid-cols-2 gap-6 mt-6 pt-6 border-t border-slate-100 relative z-10">
                 <div className="space-y-2">

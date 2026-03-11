@@ -51,7 +51,7 @@ const ProctoringDashboard = () => {
     if (loading) return <div className="p-10 flex justify-center"><Loader size="lg" /></div>;
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700">
+        <div className="space-y-8 page-fade-in">
             <PageHeader
                 title={<>Live Proctoring <span className="text-orange-500">Center</span></>}
                 subtitle="Real-time integrity monitoring and malpractice detection."

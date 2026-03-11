@@ -1,5 +1,67 @@
 {
-  "candidates": [],
+  "candidates": [
+    {
+      "activeBacklogs": "no",
+      "experienceType": "fresher",
+      "name": "test",
+      "email": "test@gmail.com",
+      "phone": "1234567890",
+      "dob": "2026-03-05",
+      "password": "123456789",
+      "country": "indian ",
+      "state": "maharastra",
+      "city": "pune",
+      "college": "sddf",
+      "education": "cxvdf",
+      "passingYear": "sad",
+      "cgpa": "ds",
+      "position": "frontend",
+      "id": 1773221813148,
+      "createdAt": "2026-03-11T09:36:53.148Z",
+      "status": "registered",
+      "assignedQuestions": [],
+      "examScore": null,
+      "resumeName": "Shubham_Kshirsagar_Cover_Letter_1.pdf",
+      "resumeData": "data:application/pdf;base64,JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUgo+PgplbmRvYmoKMiAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjEgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iagozIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YyIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKNCAwIG9iago8PAovQ29udGVudHMgOCAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCA3IDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9QYWdlTW9kZSAvVXNlTm9uZSAvUGFnZXMgNyAwIFIgL1R5cGUgL0NhdGFsb2cKPj4KZW5kb2JqCjYgMCBvYmoKPDwKL0F1dGhvciAoXChhbm9ueW1vdXNcKSkgL0NyZWF0aW9uRGF0ZSAoRDoyMDI2MDMxMTA3MTIxNiswMCcwMCcpIC9DcmVhdG9yIChcKHVuc3BlY2lmaWVkXCkpIC9LZXl3b3JkcyAoKSAvTW9kRGF0ZSAoRDoyMDI2MDMxMTA3MTIxNiswMCcwMCcpIC9Qcm9kdWNlciAoUmVwb3J0TGFiIFBERiBMaWJyYXJ5IC0gXChvcGVuc291cmNlXCkpIAogIC9TdWJqZWN0IChcKHVuc3BlY2lmaWVkXCkpIC9UaXRsZSAoXChhbm9ueW1vdXNcKSkgL1RyYXBwZWQgL0ZhbHNlCj4+CmVuZG9iago3IDAgb2JqCjw8Ci9Db3VudCAxIC9LaWRzIFsgNCAwIFIgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCjggMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggMjY3Mgo+PgpzdHJlYW0KR2F0bTxDS0s3XScpZytaVyVZTENiaEByY2dOcSxCS25PISw1X2QsIWswLGk1QmhOPHU1bj9Icj1SVlkiNUlYa2YkWSstWGkuKW80XG8oTyhcbElSRj5sNkFTNUwsJ1tZMz42WDdaPmdIUGg9PiNkYV01Kz82K0dZQGJtUnJGJ0w+RjonImpiMlxaPj5pTmhLaURBODhPcjZYVS0zUHRJK09BZ0ZHUGlLJGlWZFVoamM5amwiSG1mXyhJbS5vP1AuNSg7ZVs4SFJOX05kSnI3Mj82KzFsMTwkOVZeLj1GcTNxXnEiQkxrYCc2IkEwcywvPmc3QG5hVyJCc1RyVypSb3M3ZyJHUGw+XSkiUTdwZiMjOVRiXzAsOk5SLnVkT2l0aVFOSmcvRVU8JVAyJj41dXJUaC8wJGYudCg6cFpiTU1gRVxdIyYlWV5xWTFNUG4iW2RxSWBlLHBpa0loUDlWT1VKLTRHJThJJj4lTWolbj5NPVU6bCVGTjF1K2FPOCc5ZWNzTG4sJDtCISlNTUtEZTsmJyErLUJnSzVpWmBeVi5OPyknV29Jb2lESWVtWUZtbkRicUchUzdSVSNOIlBVQlc5QF1LJChRMEAiMkgpcFBHKlJNVkBxTEQ7OUxhTG84cDBuY1xGJGM1aCdSMzloKCpZYmZRVTJhSVkpJTY0TV4+UTFgNjlEaHM2WD89RzVBaitUMEdiSWlIVkRCUigpdEBvWHBgJ29Fbj9hU2ZhJD1UIXAjOy9Bby5ickJFXFNnI2g5L3ImYnBIcTBgJGZvXTpAPmJeR1ZTNT1qLXNxInFNT1Y5PW9pPVNzM1kkOWA2N1xXajNcNVk8MVlHLU9hYF1PN19kRFJjQ2YhXDUuSDpLWWctJDVqOj9ldUgtaTFAV0JVZC8pISZKRCtXRTEqR29vPzxdMnI2Y1tmUE1tYnJyMCRBS283LmxES2d1IlRwJUorc1lycF5zKmtiJl5hR1w2YVlUJTNrdFlJYDZaJUB0W0loRTdMakNbN1NkTVVvUS1IIS9MXmM/LTFPIixtY2QkVzgzTU06a0dDTTk5YUlnNj49KDUwR15KW0NoY3E1VGJNRHBzOCJsR2BLQj9sN0ciN1JQOTtmJlllRVYtNDolW3JyakJSXzwxVFFNMUJyUm4yb1NfRTRvUUVpNipCXmM2VSlDMVxtcC1xQTIyYWNWa2stPiwtIjFNaW8sdXFrTGYpQUldVEYqdFRkLWBLYU1jSmVyOk9fKDc+TSRsUkklTjtzNjtBW2MpcF05Vls3NWVMMShWIVdLbDVPWURnSysvQ0hRSkMmVV9gVFBWI2tpW1pDO11hb2VDNUVMay5MUmhmKjUpWE9TXEZZPClsQj9KdVpDNW4+LyVyOmZXSzY8NnMnOC4zaHVab2s6KjUrMCEnY0dXZ2hCLyE/LDNbRCVoRDdIdGUwKjIhKi9NcDBxSWJTKltjPEtsImErPVp1U2FzZ0laXENeRDRCIjRaVUo2X1MyUSEzOlNVLk0tL2A0L21mMTZuJiZkQ2whMT5WaVhaVlIjWC1dQ1hMcDBDVHQ8RDR0P2YwYXRudS0mYlhqOj09QiknNyFJaTI8cm1gMStyLXM6L2tQMDBhJVBUWEFxQytANDV0OWVbZVhoKC1rLFk4UGldXTg8dF9YYihNTnFYIWtqcD8xPjxXb085cVwnMUJwLTotSSZAKCVaXUpla049NUwlQEVmTDtNY2VVVGliakc2Q0JXMnU2cixdbC5ePGkzRC51X0I2PVtDNmQuK0pjYUhSXWVAP3FCaUBDMWsqWEZZKztPXDRSL3FKISY1OFdGY24zcjRkIS9VOFZxUUMsNl9IVUUyP2JaS3BuLFNSVikkalImT1IoWyUlJkhDIUpbSUZRIWhUb1ByMW1yXyhOSGtiS0E2NVI3UzwtLUluQlxNRV0iYjZuMyZdQigyTzVvMmhwJF8vOmZxV1ZFbzhDJ1dzaD5ZT0FQRkY0Nlclay1LRzA1UUptSG5oWClfQTtfXTxVaTo5MV1JPzNeLExlUjxNK0A7J1InYGpuaCFHUVlwaTomU2EramhIOW1fdUVVVGVPJ1ViZi1UIWtvPS44OkJ0LF4vZGRLdSU7ZE0oI1NOVkkzTGg6ZnRMV2ZxTDhzXmUuaXVCZFNbUyxGVTVZTUcsbGo7VzcoMHBOazZMb0VvX081MTxSakdyL1UhUDNEc3EpbTM2WnAlLz9gMVBaRGEwIlJlN0JHa1pYPi8tU0cjaCdOI2ktUG5EaE1vUW0vQyUqTWBWWWtNVjBBOWg4RFtUSEY6JypoQWAqYHJOcUFjX01MOD1DZFJvLHEiIkorJz5hPC1AR1JVWGdNPD5JbmlWbXBhViRVS2tWcT50OkZrSS1QRDNVTT4iOGJdYzFNJFNRNmBhKGcqREdebFprQnM3PipSYmhSRzReRjohRWsmJzJNb0trcWtyKyxnRFMlMT5BbyVUQChkJDVDXjo1aFg8OVhDJlQ1MFNlLUA/UWc8TDFjLmM3MVA0IjJlOyg4PE9aa1Y8U005WGphK3RIbl5EWCZFNUBVa1RaJTxYQG0oYl9tbUFINzEsSVgxbShMSFxjOGYpMmY8QmxjO2owKTM1P0shOk8rWTZbXFBWZkBoa11SNXJEYkVVSVxQckIoKVlWKChSPE1LUzRNakk4NlgndS8lKigrSGhbdSM5Xi9xX25OIlo6bEphTWg/OUZoWipDS1I4XmBBIVsoJy9UNFppJm08STFzLUM3JGVzOSdeQCE7VkokKC5dJkQ6R0VqbTMsWGRbU047JCoqZ0ZyYWkzZVRsaCNqUUMuLEJQMjsoLVRPTTtKOS5Ba0pkKHNVWWpdJG4nViJIZ2Y+L0ZQRWk0SFonYkFlIk5NTltkXzhKMW0wR1pJKyRubmAnPFsxKSRRL09cdC9nO1klWFwhIm0zJFg6bTllQHIxLWc/MWkyci1sXzFRakNeS0lbLVU3cTdqbUo6bixDXHBNKThTX1p1WG1fL1JeVFdLTVwmKyxAYFRRZWIiWk9IQ3RZMy51RERWWj5SVz48Q2cmJkg8dShdMl4rJEYyNm9NSlVmUFFAJ2pAc14yUHI2b1c1WElxLyZoWDkrJilzMF9rM0p0aVpfNSksYW50VShGNUhdSFAyO1JfOFhkbV0xaCl1JThvPydXSFUtU14maTJIWDExR19STUdRSXJqVGUyYCpJWGk5bTVoIUI9MGAyUGozVWo5Ok9WV2U8SjBxQmktXHRBNjM5OztPTVw8RFcsV2hsRV5lJUNvUmY4RFlvIjhvK0BmZkVHUCFVMnE4JVVBcnJKdWtpUWEnJTZhNk9AOjZGM0Y1J11XaSdTXiQrbStqQ2kzQ25oY01uMmUnczQzTF5db0BKaSxPRm4xTT11a1trUyxbKzFsK3VyP0pyRDRrbWBoY11kLFRvVVhJbFklQDA4UypaL3FUTHRsaDNLT2diQjBLWVZEO1FrNi4uW0duX1o0aGBNU05QJllDJk9FW2VyYVA/Wkx0NHBMSzUkUztjakdAPDRyYVFRLE05cT1GNi1TPCFSUS8lQ3N0fj5lbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA5CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MSAwMDAwMCBuIAowMDAwMDAwMTAyIDAwMDAwIG4gCjAwMDAwMDAyMDkgMDAwMDAgbiAKMDAwMDAwMDMyMSAwMDAwMCBuIAowMDAwMDAwNTI0IDAwMDAwIG4gCjAwMDAwMDA1OTIgMDAwMDAgbiAKMDAwMDAwMDg3MiAwMDAwMCBuIAowMDAwMDAwOTMxIDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPGMzODJmNzZiZDZiZjliMjRjZDRmZjkyN2U2ZTE5NTc5PjxjMzgyZjc2YmQ2YmY5YjI0Y2Q0ZmY5MjdlNmUxOTU3OT5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChvcGVuc291cmNlKQoKL0luZm8gNiAwIFIKL1Jvb3QgNSAwIFIKL1NpemUgOQo+PgpzdGFydHhyZWYKMzY5NAolJUVPRgo="
+    },
+    {
+      "activeBacklogs": "no",
+      "experienceType": "fresher",
+      "name": "test5",
+      "email": "test5@gmail.com",
+      "phone": "1234567890",
+      "dob": "2026-03-04",
+      "password": "123456789",
+      "country": "india",
+      "state": "sddcvf",
+      "city": "sdf",
+      "college": "dfvfe",
+      "education": "fdv",
+      "passingYear": "dsfv",
+      "cgpa": "dfv",
+      "position": "frontend",
+      "id": 1773223310288,
+      "createdAt": "2026-03-11T10:01:50.288Z",
+      "status": "interview scheduled",
+      "assignedQuestions": [
+        1,
+        4,
+        5,
+        8,
+        6,
+        3,
+        9,
+        2,
+        10,
+        7
+      ],
+      "examScore": 0,
+      "resumeName": "Shubham_Kshirsagar_Cover_Letter.pdf",
+      "resumeData": "data:application/pdf;base64,JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUgo+PgplbmRvYmoKMiAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjEgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iagozIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YyIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKNCAwIG9iago8PAovQ29udGVudHMgOCAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCA3IDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9QYWdlTW9kZSAvVXNlTm9uZSAvUGFnZXMgNyAwIFIgL1R5cGUgL0NhdGFsb2cKPj4KZW5kb2JqCjYgMCBvYmoKPDwKL0F1dGhvciAoXChhbm9ueW1vdXNcKSkgL0NyZWF0aW9uRGF0ZSAoRDoyMDI2MDMxMTA3MTA0OSswMCcwMCcpIC9DcmVhdG9yIChcKHVuc3BlY2lmaWVkXCkpIC9LZXl3b3JkcyAoKSAvTW9kRGF0ZSAoRDoyMDI2MDMxMTA3MTA0OSswMCcwMCcpIC9Qcm9kdWNlciAoUmVwb3J0TGFiIFBERiBMaWJyYXJ5IC0gXChvcGVuc291cmNlXCkpIAogIC9TdWJqZWN0IChcKHVuc3BlY2lmaWVkXCkpIC9UaXRsZSAoXChhbm9ueW1vdXNcKSkgL1RyYXBwZWQgL0ZhbHNlCj4+CmVuZG9iago3IDAgb2JqCjw8Ci9Db3VudCAxIC9LaWRzIFsgNCAwIFIgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCjggMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggMjE4OQo+PgpzdHJlYW0KR2F0bTw+RWRkXCZxOF9GZDRcKU1GJFM9VFAsR1glWThuVUhDX2RYYldxTCE4IixyQCFuam5AImIhLylJTjVUUldNOmtqQ1gnZ1c8ZShyb1hIYl5kREl1XGVLRi8jLTFdbWYuK2ozaEk1TmM0X01xKy51WVgiUk9McExGaDxbZC9XIjc4W1U3T2NPKGBDSDhoZUtGVi5mKXUwTmteIU1kS1RARGotPjw7WDBmSW9fdFFYIWBiRTZcQnFuWm5ROD1cXzFdOTsqaURALVNKJDUxQVJXM3FUV05IUzBeMCsyWFlnRS0yUnBfOGl1Iic/UDptXmVTPmEoPDxRb09IbT1OJjEwcjBITEk6UlVOK1EsJ3RyXkVUI20tR3FPWys4OUMnSkMoU3AtMjd1NnA/YCghI0xPNmR1NC5xZk5ATi8vLUw1bXJRO1oyU3QoamtmbFFpX1pBdSJBRChFXj0kYlc6WHBaT2BaIlJzcTszQi8sLXQxOGovTT9sYXFtX2VvWygzUTRoVSgvPnVVNVYlPyRXXm9RPTUpMCwpPF5jVT1JLl1iXFRRRFRmaj5hTT0zITA6QkM7RV81WUYzbVFOKS9UNkUoSy90cjlrLzVfMD40MTlUJ2tXQW9yN0hTI0BMajhfbCJrYSdlTjlfN2g4T0Q8J2pDR2glXEkudCpoWjsoVEg+blIwJC8sMGQmQHQ1XUQ9M1ElYWUnPUdcbWAsZ1c/XS5GP1cuWXJAIW1ZKCxUSig+PG4kVWlxTCRuWTohQz5UMSNZKEkyJzVqcTxUJ0hoWEchalo6Nl4icU1EMidlU04yY0A5Y14qXCNdJnBxcmU6QTlEY1BzIVZbMC5wXFk5LTAkP3FhWDs5MVI+VWsnTlZvLDdrV2RuXilaUiosKUJYdFM/LD1WKEJUUi4tPkVVJllqU18xQDAwVD8kPEs0L2AzcklsMF5UNShUSU1Ka0xSRj1OIkQiWUE/Q2JCKjBFMG5OITZvJWJQcTFtOENBTDRnJk07NTJWSmVXVF8tOT8hcmhuaCFrTFA1JWplLlg0dFIrMChcKj5DNyRgOlhzNy5GW183MD1jNS9Ub3JfSiZhKjAnckVhNz9UXF1qZCVEKykoNSxxRVRYISVMOTA+Uj1gNFM+TTplQWllSGxBSnB0TFMyUGFlbGxgOWJSYF5rSDlMbFNkNUdKUlYuQ1ByXUNzP1d1Qz9TSDZraFNkNF9fPCFjPCMwTzBqJGVxOjpeQm1ySCtHUTJHdC09VkE2RUtQNkAjMWBgbE0iaDNFdEhyVVhCWF1cWXRNJWxfVU9OYWMnSF1qdUlDRTFaTC1xPjtCSjdGPClfYWpMJmYxZlJEWzg3V1lNIVM4ZS4qK20maGhBcVpuQG02Zz5UXF5wYCxWWyhmX2tvSl4kPE0xX2JPRU0mV2c/KkhlRShrVV1jOiZvQUQwS2NmPE5jcDBrInM7PFk9NUhvQGJEJWkvZVgzMixXJz8sIUNnLzknZWgzcTxXZzRPZUg4KC8yI29jUVB1X1ttO1BsXkEwaTx0dHFoQ1BzVmlCXSMvcFkkazlsMiVoL1hpLXJEb1dOJTYuXj11YiV1PGMhYThkY1x1Y0hSPVtUY01VPDwjMCs2Y0ZuLkJaaT9MYEJSIUVHKCJhOS5XZkY9ODcucTtRWU8mOXQwMGZoc0UxLUgldTMhJGkqLCdvYEwqRiI+WWEnbDJgT1pxXVlJZy4jQ1Y9VldzXl84WlMpUSYyVm8kV2BXPERZLV1RZV1Lcl5uW1VqQ1otZzVAQmAyQ3BaVUgkRiRXKiJcLGEsXEJuSC0lPUpJQk5GRVtbSCZtWjRTTVdjJDgjRTRHKiJfZ1JGTTMydG5QY0YmbXBROG5TYlsmR1hdbmIkbGlnMS1SVTlbOCFaa1RzJS40NnN0YHFKQzpkPV0+LTdQKG5FQ0ArMUEmT0pnPzFbRE9GcSxtL2Y5c2glNnJJWzoqcm0mQmo5NFI7VEdUZDE8byRYPiZncChBMGFnTkUkTG1ccGJmIWlialAvTEgiXSVwdVMqTUI1PFclPEZZS2NRWzBPXkdIL2coW184QCxgUEk2W2wwS2tkTDhfcVE8Q2w+YldGWlBUO3BDMk1bNUhbdUQscDBJblpHQ1YmJE1TJ18lOlVKNmBtIj5fcTFEQlRpZmpDWi00J0FoUW9eXUUlRjUwXiE4alJpbksnY2BFKWBeV2xbbVktRExxODY+YVFQLTFpNFFOYlpbOGFjITtuRmoxW1gjPStVLTdCQU5KMkMrZjgrOnJGakA/OFhdSy8zXz5lPkNxSyVpbTE8OSF1PyM3byZWLiVVJUVTVUglVE8pOkREcGdBPGY7TkA9dFBKOTZJZF9WM0NYSFcxXnU2Vl8uIig6PWNSLUtvQCM1VzhKR1lCci1BV0olXiduJzFhQWxRNkRTcWprZk1MZSI3I0liXm5NamYxZUZoW04wOEg4TltpKTBXPmsyY0AhOm43TDBGYl1jYzlBLDlbbCo3SVZWUUpJWU9YaCNzbUQ+UDA5LzNmc1ZqKHNJNzBsNl11YWJkIWYlaz0hTGJzJG1GcClgP0wyZVFXajZRZEBTSWZrVmY4ZWN1NGg2W0J0ZDlIImEpJkchbWBXK2xrak1eNUE6SnAlW0lFVXFHMkJbMVwxRWFOWVdDKXVKPC09cmBUaF4iX1dqS1UoPU5aV1NbO09uMSxvXi0tLTVLJDNNSitMWkZaYyQrczNfMGFgWXErNzVVV1UyPmQ7KVNlTFdPcGVIZnAlaVY3RzBYISklUFk0VCU+WnM5MEwma0M8XmQnM0teISJWVGRrTzdHVW5vRiVZYFJmTDBsQCErWXEkUSMmZVo/QD9FOiFDTXMhPzNKN3BsMVhgbkBPTHM1WzVqbiJkOXBwXy84UllQcy5DLXFWI0gkUTxwUVtLfj5lbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA5CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MSAwMDAwMCBuIAowMDAwMDAwMTAyIDAwMDAwIG4gCjAwMDAwMDAyMDkgMDAwMDAgbiAKMDAwMDAwMDMyMSAwMDAwMCBuIAowMDAwMDAwNTI0IDAwMDAwIG4gCjAwMDAwMDA1OTIgMDAwMDAgbiAKMDAwMDAwMDg3MiAwMDAwMCBuIAowMDAwMDAwOTMxIDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPDRmZmRmYmVkMDAxNWQzNWFjNTdlMThjZWVkMjVjZjU2Pjw0ZmZkZmJlZDAwMTVkMzVhYzU3ZTE4Y2VlZDI1Y2Y1Nj5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChvcGVuc291cmNlKQoKL0luZm8gNiAwIFIKL1Jvb3QgNSAwIFIKL1NpemUgOQo+PgpzdGFydHhyZWYKMzIxMQolJUVPRgo=",
+      "submissionReason": "CRITICAL MALPRACTICE: Fullscreen Exited",
+      "submittedAt": "2026-03-11T10:08:06.798Z"
+    }
+  ],
   "vacancies": [
     {
       "id": "frontend",
@@ -22,8 +84,8 @@
   ],
   "questions": [
     {
-      "id": 2,
-      "position": "fullstack",
+      "id": 1,
+      "position": "frontend",
       "level": "Intermediate",
       "type": "mcq",
       "text": "Which React hook is used for side effects?",
@@ -34,7 +96,22 @@
         "useReducer"
       ],
       "correct": "useEffect",
-      "selected": false
+      "selected": true
+    },
+    {
+      "id": 2,
+      "position": "frontend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "What does JSX stand for?",
+      "options": [
+        "JavaScript XML",
+        "Java Syntax Extension",
+        "JSON XML",
+        "JavaScript X-link"
+      ],
+      "correct": "JavaScript XML",
+      "selected": true
     },
     {
       "id": 3,
@@ -49,10 +126,130 @@
         "To memoize DOM elements"
       ],
       "correct": "To memoize expensive calculations",
-      "selected": false
+      "selected": true
     },
     {
       "id": 4,
+      "position": "frontend",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "How do you optimize a React component to prevent unnecessary re-renders?",
+      "options": [
+        "useRef",
+        "React.memo",
+        "useState",
+        "useMemo only"
+      ],
+      "correct": "React.memo",
+      "selected": true
+    },
+    {
+      "id": 5,
+      "position": "frontend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "Which CSS property is used to create a flexbox layout?",
+      "options": [
+        "float: flex",
+        "display: flex",
+        "layout: flex",
+        "flex: true"
+      ],
+      "correct": "display: flex",
+      "selected": true
+    },
+    {
+      "id": 6,
+      "position": "frontend",
+      "level": "Basic",
+      "type": "mcq",
+      "text": "Which of these is NOT a valid Tailwind CSS spacing utility?",
+      "options": [
+        "m-4",
+        "p-2",
+        "w-1/2",
+        "gap-auto"
+      ],
+      "correct": "gap-auto",
+      "selected": true
+    },
+    {
+      "id": 7,
+      "position": "frontend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "In React, what is the 'Virtual DOM'?",
+      "options": [
+        "A direct copy of the real DOM",
+        "A lightweight representation of the real DOM",
+        "A browser extension",
+        "A styling engine"
+      ],
+      "correct": "A lightweight representation of the real DOM",
+      "selected": true
+    },
+    {
+      "id": 8,
+      "position": "frontend",
+      "level": "Basic",
+      "type": "mcq",
+      "text": "Which command is used to start a local development server for a Vite project?",
+      "options": [
+        "npm dev",
+        "npm run dev",
+        "npm start",
+        "npm run build"
+      ],
+      "correct": "npm run dev",
+      "selected": true
+    },
+    {
+      "id": 9,
+      "position": "frontend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "What is the purpose of 'key' prop in React lists?",
+      "options": [
+        "To style elements",
+        "To uniquely identify items for the reconciliation process",
+        "To set the index",
+        "To bind data"
+      ],
+      "correct": "To uniquely identify items for the reconciliation process",
+      "selected": true
+    },
+    {
+      "id": 10,
+      "position": "frontend",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "Which of the following describes 'Prop Drilling' in React?",
+      "options": [
+        "Passing props to parent",
+        "Passing props through multiple nested components",
+        "Fetching data from API",
+        "Using Context API"
+      ],
+      "correct": "Passing props through multiple nested components",
+      "selected": true
+    },
+    {
+      "id": 11,
+      "position": "backend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "Which Node.js module is used for handling file paths?",
+      "options": [
+        "fs",
+        "path",
+        "url",
+        "os"
+      ],
+      "correct": "path",
+      "selected": true
+    },
+    {
+      "id": 12,
       "position": "backend",
       "level": "Basic",
       "type": "mcq",
@@ -64,40 +261,290 @@
         "404"
       ],
       "correct": "204",
-      "selected": false
+      "selected": true
     },
     {
-      "id": 5,
+      "id": 13,
+      "position": "backend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "What is the primary purpose of Express.js?",
+      "options": [
+        "Database management",
+        "Routing and middleware framework for Node.js",
+        "Frontend rendering",
+        "State management"
+      ],
+      "correct": "Routing and middleware framework for Node.js",
+      "selected": true
+    },
+    {
+      "id": 14,
+      "position": "backend",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "In PostgreSQL, what is the purpose of an INDEX?",
+      "options": [
+        "To sort data",
+        "To speed up data retrieval",
+        "To encrypt data",
+        "To create a primary key"
+      ],
+      "correct": "To speed up data retrieval",
+      "selected": true
+    },
+    {
+      "id": 15,
+      "position": "backend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "Which of these is a NoSQL database?",
+      "options": [
+        "MySQL",
+        "PostgreSQL",
+        "MongoDB",
+        "Oracle"
+      ],
+      "correct": "MongoDB",
+      "selected": true
+    },
+    {
+      "id": 16,
+      "position": "backend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "What is JWT used for in web development?",
+      "options": [
+        "Database querying",
+        "Authentication and secure information exchange",
+        "Frontend styling",
+        "File compression"
+      ],
+      "correct": "Authentication and secure information exchange",
+      "selected": true
+    },
+    {
+      "id": 17,
+      "position": "backend",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "Which of the following is an example of an asynchronous operation in Node.js?",
+      "options": [
+        "fs.readFileSync",
+        "Array.map",
+        "Math.random",
+        "fs.readFile"
+      ],
+      "correct": "fs.readFile",
+      "selected": true
+    },
+    {
+      "id": 18,
+      "position": "backend",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "What does SQL stand for?",
+      "options": [
+        "Standard Query Language",
+        "Structured Query Language",
+        "Session Query Language",
+        "System Query Level"
+      ],
+      "correct": "Structured Query Language",
+      "selected": true
+    },
+    {
+      "id": 19,
+      "position": "backend",
+      "level": "Basic",
+      "type": "mcq",
+      "text": "Which HTTP method is typically used to create a new resource?",
+      "options": [
+        "GET",
+        "PUT",
+        "PATCH",
+        "POST"
+      ],
+      "correct": "POST",
+      "selected": true
+    },
+    {
+      "id": 20,
+      "position": "backend",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "What is the purpose of the 'next()' function in Express middleware?",
+      "options": [
+        "Terminate the request",
+        "Pass control to the next middleware function",
+        "Send a JSON response",
+        "Connect to the database"
+      ],
+      "correct": "Pass control to the next middleware function",
+      "selected": true
+    },
+    {
+      "id": 21,
+      "position": "fullstack",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "What does the MERN stack stand for?",
+      "options": [
+        "MySQL, Express, React, Node",
+        "MongoDB, Express, React, Node",
+        "MongoDB, Ember, Ruby, Node",
+        "Modern, Easy, Reliable, Native"
+      ],
+      "correct": "MongoDB, Express, React, Node",
+      "selected": true
+    },
+    {
+      "id": 22,
       "position": "fullstack",
       "level": "Advanced",
       "type": "mcq",
-      "text": "Describe the difference between an Abstract Class and an Interface in Java?",
+      "text": "How do you handle cross-origin requests in an Express backend?",
       "options": [
-        "Abstract classes can have state",
-        "Interfaces can have state",
-        "Both are exactly the same",
-        "None of the above"
+        "Using CORS middleware",
+        "Changing the browser settings",
+        "Using a VPN",
+        "Hardcoding the IP"
       ],
-      "correct": "Abstract classes can have state",
-      "selected": false
+      "correct": "Using CORS middleware",
+      "selected": true
     },
     {
-      "id": 1773039113905,
-      "position": "backend",
+      "id": 23,
+      "position": "fullstack",
+      "level": "Intermediate",
       "type": "mcq",
-      "level": "Basic",
-      "text": "zxdfd",
+      "text": "What is the role of a Redux 'reducer'?",
       "options": [
-        "sdfwe",
-        "sdfew",
-        "dfdw",
-        "dasfdwf"
+        "To fetch data",
+        "To update the state based on actions",
+        "To render components",
+        "To reduce file size"
       ],
-      "correct": "",
-      "selected": false
+      "correct": "To update the state based on actions",
+      "selected": true
+    },
+    {
+      "id": 24,
+      "position": "fullstack",
+      "level": "Basic",
+      "type": "mcq",
+      "text": "Which file is used to manage dependencies in a Node.js project?",
+      "options": [
+        "index.js",
+        "package.json",
+        "styles.css",
+        "main.py"
+      ],
+      "correct": "package.json",
+      "selected": true
+    },
+    {
+      "id": 25,
+      "position": "fullstack",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "What is the primary difference between an Abstract Class and an Interface in OOP?",
+      "options": [
+        "Abstract classes can have state and implemented methods",
+        "Interfaces are only for styling",
+        "They are identical",
+        "Interfaces cannot have method names"
+      ],
+      "correct": "Abstract classes can have state and implemented methods",
+      "selected": true
+    },
+    {
+      "id": 26,
+      "position": "fullstack",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "What is the purpose of 'useEffect' in the MERN stack?",
+      "options": [
+        "For database migrations",
+        "To synchronize a component with an external system/API",
+        "To style the backend",
+        "To encrypt passwords"
+      ],
+      "correct": "To synchronize a component with an external system/API",
+      "selected": true
+    },
+    {
+      "id": 27,
+      "position": "fullstack",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "What is 'State' in React?",
+      "options": [
+        "Static data",
+        "An object that holds information that may change over component's lifecycle",
+        "A database record",
+        "Local browser history"
+      ],
+      "correct": "An object that holds information that may change over component's lifecycle",
+      "selected": true
+    },
+    {
+      "id": 28,
+      "position": "fullstack",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "What is 'Sequelize' in Node.js development?",
+      "options": [
+        "A frontend framework",
+        "A promise-based Node.js ORM for Postgres, MySQL, etc.",
+        "A database engine",
+        "A security protocol"
+      ],
+      "correct": "A promise-based Node.js ORM for Postgres, MySQL, etc.",
+      "selected": true
+    },
+    {
+      "id": 29,
+      "position": "fullstack",
+      "level": "Basic",
+      "type": "mcq",
+      "text": "What does DOM stand for?",
+      "options": [
+        "Data Object Model",
+        "Document Object Model",
+        "Domain Object Management",
+        "Document Overlay Module"
+      ],
+      "correct": "Document Object Model",
+      "selected": true
+    },
+    {
+      "id": 30,
+      "position": "fullstack",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "In a Fullstack app, what is the role of 'environment variables'?",
+      "options": [
+        "To store UI colors",
+        "To store sensitive config like API keys and DB URLs securely",
+        "To speed up JavaScript",
+        "To monitor user behavior"
+      ],
+      "correct": "To store sensitive config like API keys and DB URLs securely",
+      "selected": true
     }
   ],
-  "interviews": [],
+  "interviews": [
+    {
+      "candidateId": 1773223310288,
+      "interviewerId": 2,
+      "date": "2026-03-19",
+      "time": "16:04",
+      "status": "scheduled",
+      "createdAt": "2026-03-11T10:32:33.801Z",
+      "id": 1
+    }
+  ],
   "admin_users": [
     {
       "id": 1,
@@ -105,16 +552,17 @@
       "password": "admin123",
       "role": "superadmin",
       "name": "Alex Rivera",
-      "lastLogin": "2026-03-10T05:51:53.125Z"
+      "lastLogin": "2026-03-11T06:56:54.016Z"
     },
     {
-      "name": "teat",
+      "name": "test",
       "email": "test@gmail.com",
       "password": "test123",
       "role": "interviewer",
       "domain": "frontend",
       "createdAt": "2026-03-10T05:44:15.761Z",
-      "id": 2
+      "id": 2,
+      "lastLogin": "2026-03-11T07:33:58.833Z"
     },
     {
       "name": "hr manager",
@@ -123,7 +571,8 @@
       "role": "hr",
       "domain": "",
       "createdAt": "2026-03-10T05:52:31.326Z",
-      "id": 3
+      "id": 3,
+      "lastLogin": "2026-03-11T07:34:59.255Z"
     }
   ],
   "settings": {

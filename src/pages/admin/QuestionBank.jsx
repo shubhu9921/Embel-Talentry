@@ -124,7 +124,7 @@ const QuestionBank = () => {
 
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
+        <div className="space-y-6 page-fade-in">
             <PageHeader
                 title="Question Bank"
                 subtitle="Manage and curate vacancy-specific assessment pools."
@@ -148,8 +148,7 @@ const QuestionBank = () => {
                                 setRows([{ tempId: Date.now(), text: '', options: ['', '', '', ''], correct: '' }]);
                                 setIsModalOpen(true);
                             }}
-                            variant="secondary"
-                            className="rounded-xl px-6"
+                            className="rounded-xl shadow-orange-500/20 shadow-2xl"
                         >
                             Architect Questions
                         </Button>

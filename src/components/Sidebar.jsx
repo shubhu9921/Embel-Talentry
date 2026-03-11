@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Users, FileQuestion, Briefcase, Award,
@@ -15,6 +15,7 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
         { label: 'Question Bank', path: '/admin/questions', icon: FileQuestion },
         { label: 'Candidates', path: '/admin/candidates', icon: Users },
         { label: 'Interviews', path: '/admin/interviews', icon: Award },
+        { label: 'Email Portal', path: '/admin/emails', icon: FileQuestion },
         { label: 'Team', path: '/admin/team', icon: Users },
     ];
 
@@ -24,14 +25,12 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
         { label: 'Technical Review', path: '/interviewer/reviews', icon: Award },
     ];
 
-    const hrLinks = [
-        { label: 'Home', path: '/hr', icon: LayoutDashboard },
-        { label: 'Candidates', path: '/hr/candidates', icon: Users },
-        { label: 'Interviews', path: '/hr/interviews', icon: Award },
-        { label: 'Email Portal', path: '/hr/emails', icon: FileQuestion },
-    ];
+    let links = role === 'interviewer' ? interviewerLinks : adminLinks;
 
-    const links = role === 'superadmin' ? adminLinks : role === 'interviewer' ? interviewerLinks : hrLinks;
+    // Filter out "Team" for HR role
+    if (role === 'hr') {
+        links = links.filter(l => l.label !== 'Team');
+    }
 
     const handleLogout = () => {
         localStorage.removeItem('admin_user');
@@ -55,7 +54,12 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                             <img src="https://www.embel.co.in/images/logos/logo-embel.png" alt="Embel" className="h-full w-full object-contain" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="font-black text-base text-slate-800 tracking-tight leading-none uppercase">Embel</span>
+                            <div className="font-black text-base tracking-tight leading-none uppercase">
+                                <span className="text-[#ff6e00]">E</span>
+                                <span className="text-[#19325c]">m</span>
+                                <span className="text-[#ff6e00]">b</span>
+                                <span className="text-[#19325c]">el</span>
+                            </div>
                             <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest mt-0.5">Talentry</span>
                         </div>
                     </div>
@@ -72,7 +76,7 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
             <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden no-scrollbar flex flex-col gap-0.5 mt-4">
                 {!collapsed && (
                     <div className="px-5 mb-2">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Hiring Process</span>
+                        <span className="text-[10px] font-black text-[#19325c] uppercase tracking-[0.2em]">Hiring Process</span>
                     </div>
                 )}
 
@@ -81,18 +85,18 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                         key={link.path}
                         to={link.path}
                         title={collapsed ? link.label : ""}
-                        end={link.path === '/admin' || link.path === '/interviewer' || link.path === '/hr'}
+                        end={link.path === '/admin' || link.path === '/interviewer'}
                         className={({ isActive }) => `
                             flex items-center gap-3 w-full py-3 transition-all duration-200 group shrink-0
                             ${collapsed ? "justify-center rounded-lg mx-2 w-auto" : "pl-4 rounded-r-full rounded-l-none mr-2"}
                             ${isActive
                                 ? "bg-[#19325c] text-white font-bold border-l-4 border-[#ff6e00]"
-                                : "text-slate-600 font-medium hover:bg-[#19325c] hover:text-white hover:font-bold border-l-4 border-transparent"}
+                                : "text-slate-950 font-bold hover:bg-[#19325c] hover:text-white border-l-4 border-transparent"}
                         `}
                     >
                         {({ isActive }) => (
                             <>
-                                <link.icon size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-700 group-hover:text-[#ff6e00] transition-colors"} />
+                                <link.icon size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} />
                                 <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`}>{link.label}</span>
                             </>
                         )}
@@ -103,43 +107,43 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                 <div className="mt-6">
                     {!collapsed && (
                         <div className="px-5 mb-2">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Management</span>
+                            <span className="text-[10px] font-black text-[#19325c] uppercase tracking-[0.2em]">Management</span>
                         </div>
                     )}
 
                     <NavLink
-                        to={`${role === 'superadmin' ? '/admin' : `/${role}`}/settings`}
+                        to={`${(role === 'superadmin' || role === 'admin' || role === 'hr') ? '/admin' : `/${role}`}/settings`}
                         title={collapsed ? "Settings" : ""}
                         className={({ isActive }) => `
                             flex items-center gap-3 w-full py-3 transition-all duration-200 group shrink-0
                             ${collapsed ? "justify-center rounded-lg mx-2 w-auto" : "pl-4 rounded-r-full rounded-l-none mr-2"}
                             ${isActive
                                 ? "bg-[#19325c] text-white font-bold border-l-4 border-[#ff6e00]"
-                                : "text-slate-600 font-medium hover:bg-[#19325c] hover:text-white hover:font-bold border-l-4 border-transparent"}
+                                : "text-slate-950 font-bold hover:bg-[#19325c] hover:text-white border-l-4 border-transparent"}
                         `}
                     >
                         {({ isActive }) => (
                             <>
-                                <Settings size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-700 group-hover:text-[#ff6e00] transition-colors"} />
+                                <Settings size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} />
                                 <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`}>Settings</span>
                             </>
                         )}
                     </NavLink>
 
                     <NavLink
-                        to={`${role === 'superadmin' ? '/admin' : `/${role}`}/help`}
+                        to={`${(role === 'superadmin' || role === 'admin' || role === 'hr') ? '/admin' : `/${role}`}/help`}
                         title={collapsed ? "Support" : ""}
                         className={({ isActive }) => `
                             flex items-center gap-3 w-full py-3 transition-all duration-200 group shrink-0
                             ${collapsed ? "justify-center rounded-lg mx-2 w-auto" : "pl-4 rounded-r-full rounded-l-none mr-2"}
                             ${isActive
                                 ? "bg-[#19325c] text-white font-bold border-l-4 border-[#ff6e00]"
-                                : "text-slate-600 font-medium hover:bg-[#19325c] hover:text-white hover:font-bold border-l-4 border-transparent"}
+                                : "text-slate-950 font-bold hover:bg-[#19325c] hover:text-white border-l-4 border-transparent"}
                         `}
                     >
                         {({ isActive }) => (
                             <>
-                                <HelpCircle size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-700 group-hover:text-[#ff6e00] transition-colors"} />
+                                <HelpCircle size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} />
                                 <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`}>Support</span>
                             </>
                         )}
@@ -157,9 +161,9 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                         ${collapsed ? "p-3" : "w-full py-3 pl-4"}
                     `}
                 >
-                    <LogOut size={18} className="text-slate-600 group-hover:text-rose-600 transition-colors" />
+                    <LogOut size={18} className="text-slate-950 group-hover:text-rose-600 transition-colors" />
                     {!collapsed && (
-                        <span className="text-[13px] font-bold text-slate-600 group-hover:text-rose-600 uppercase tracking-wider">Sign Out</span>
+                        <span className="text-[13px] font-black text-slate-950 group-hover:text-rose-600 uppercase tracking-wider">Sign Out</span>
                     )}
                 </button>
             </div>

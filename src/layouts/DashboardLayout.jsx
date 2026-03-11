@@ -3,9 +3,12 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
-const DashboardLayout = ({ role }) => {
+const DashboardLayout = () => {
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
+    const VALID_ROLES = ['superadmin', 'hr', 'interviewer'];
+    const rawRole = sessionStorage.getItem('userRole');
+    const role = VALID_ROLES.includes(rawRole) ? rawRole : '';
 
     useEffect(() => {
         // SSR safety: access window only after mount
