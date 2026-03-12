@@ -16,7 +16,7 @@ const JobBoard = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await ApiService.get('/vacancies');
+                const response = await ApiService.get('/api/vacancies');
                 setJobs(response.filter(j => j.isOpen));
                 setFilteredJobs(response.filter(j => j.isOpen));
             } catch (error) {

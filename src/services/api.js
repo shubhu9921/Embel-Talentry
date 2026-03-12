@@ -1,16 +1,23 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8082',
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
 api.interceptors.request.use((config) => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.token) {
-        config.headers.Authorization = `Bearer ${user.token}`;
+    try {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            const { token } = JSON.parse(userData);
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+        }
+    } catch (error) {
+        console.error('Error in API interceptor:', error);
     }
     return config;
 });

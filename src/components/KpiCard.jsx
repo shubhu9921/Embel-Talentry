@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Card from './Card';
 
 const KpiCard = ({ title, value, change, trend, icon: Icon, onClick, className = '' }) => {
@@ -27,6 +28,16 @@ const KpiCard = ({ title, value, change, trend, icon: Icon, onClick, className =
             </div>
         </Card>
     );
+};
+
+KpiCard.propTypes = {
+    title: PropTypes.string.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    change: PropTypes.string,
+    trend: PropTypes.oneOf(['up', 'down']),
+    icon: PropTypes.elementType,
+    onClick: PropTypes.func,
+    className: PropTypes.string
 };
 
 export default KpiCard;

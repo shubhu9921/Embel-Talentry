@@ -16,7 +16,7 @@ const Vacancies = () => {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [filter, setFilter] = useState('all');
-    const [formData, setFormData] = useState({ id: '', title: '', description: '', isOpen: true });
+    const [formData, setFormData] = useState({ id: '', position: '', description: '', isOpen: true });
 
     useEffect(() => {
         fetchData();
@@ -26,8 +26,8 @@ const Vacancies = () => {
         setLoading(true);
         try {
             const [vData, cData] = await Promise.all([
-                ApiService.get('/vacancies'),
-                ApiService.get('/candidates')
+                ApiService.get('/api/vacancies'),
+                ApiService.get('/api/candidates')
             ]);
             setVacancies(vData);
             setCandidates(cData);
@@ -58,9 +58,9 @@ const Vacancies = () => {
         e.preventDefault();
         try {
             if (formData.id && vacancies.find(v => v.id === formData.id)) {
-                await ApiService.put(`/vacancies/${formData.id}`, formData);
+                await ApiService.put(`/api/vacancies/${formData.id}`, formData);
             } else {
-                await ApiService.post('/vacancies', {
+                await ApiService.post('/api/vacancies', {
                     ...formData,
                     id: `v-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
                 });
@@ -76,7 +76,7 @@ const Vacancies = () => {
     const handleToggleStatus = async (vacancy) => {
         try {
             const updated = { ...vacancy, isOpen: !vacancy.isOpen };
-            await ApiService.put(`/vacancies/${vacancy.id}`, updated);
+            await ApiService.put(`/api/vacancies/${vacancy.id}`, updated);
             setVacancies(prev => prev.map(v => v.id === vacancy.id ? updated : v));
         } catch (error) {
             console.error('Error toggling status:', error);
@@ -84,9 +84,9 @@ const Vacancies = () => {
     };
 
     const handleDelete = async (vacancyId) => {
-        if (!window.confirm('Are you sure you want to delete this vacancy?')) return;
+        if (!globalThis.confirm('Are you sure you want to delete this vacancy?')) return;
         try {
-            await ApiService.delete(`/vacancies/${vacancyId}`);
+            await ApiService.delete(`/api/vacancies/${vacancyId}`);
             setVacancies(prev => prev.filter(v => v.id !== vacancyId));
         } catch (error) {
             console.error('Error deleting vacancy:', error);
@@ -98,13 +98,13 @@ const Vacancies = () => {
     return (
         <div className="space-y-10 page-fade-in">
             <PageHeader
-                title="Active Vacancies"
+                title="Active Recruitment Vacancies"
                 subtitle="Manage open positions and recruitment status for Embel Talentry."
                 icon={Briefcase}
                 actions={
                     <Button
                         onClick={() => {
-                            setFormData({ id: '', title: '', description: '', isOpen: true });
+                            setFormData({ id: '', position: '', description: '', isOpen: true });
                             setIsModalOpen(true);
                         }}
                         icon={Plus}

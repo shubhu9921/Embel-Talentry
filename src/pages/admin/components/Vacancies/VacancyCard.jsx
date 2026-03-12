@@ -36,7 +36,7 @@ const VacancyCard = ({ vacancy, applicantsCount, onToggleStatus, onDelete, onEdi
             </div>
 
             <div className="flex-1">
-                <h3 className="text-lg font-black text-[#19325c] leading-tight group-hover:text-[#ff6e00] transition-colors">{vacancy.title}</h3>
+                <h3 className="text-lg font-black text-[#19325c] leading-tight group-hover:text-[#ff6e00] transition-colors">{vacancy.position || vacancy.title}</h3>
                 <div className="flex items-center gap-2 mt-2">
                     <span className={`w-2 h-2 rounded-full ${vacancy.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></span>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">

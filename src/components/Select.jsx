@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ChevronDown } from 'lucide-react';
 import Dropdown from './Dropdown';
 
@@ -14,8 +15,12 @@ const Select = ({
     contentClassName = '',
     error,
     required = false,
-    searchable = false
+    searchable = false,
+    id: providedId
 }) => {
+    const internalId = React.useId();
+    const selectId = providedId || internalId;
+    const listboxId = `${selectId}-listbox`;
     const [searchTerm, setSearchTerm] = React.useState('');
 
     // Determine the label to display
@@ -28,26 +33,33 @@ const Select = ({
     const trigger = (
         <div className="space-y-2">
             {label && (
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+                <label 
+                    htmlFor={selectId}
+                    className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1"
+                >
                     {label}
                     {required && <span className="text-rose-500 ml-1 font-black">*</span>}
                 </label>
             )}
-            <div className={`
-                relative w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl 
-                flex items-center justify-between transition-all group
-                hover:border-orange-500/30 hover:bg-white
-                ${error ? 'border-rose-500/50' : 'focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/5'}
-                ${triggerClassName || className}
-            `}>
-                <div className="flex items-center gap-3 overflow-hidden">
+            <button 
+                id={selectId}
+                type="button"
+                className={`
+                    relative w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl 
+                    flex items-center justify-between transition-all group
+                    hover:border-orange-500/30 hover:bg-white
+                    ${error ? 'border-rose-500/50' : 'focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5'}
+                    ${triggerClassName || className}
+                `}
+            >
+                <div className="flex items-center gap-3 overflow-hidden text-left pointer-events-none">
                     {Icon && <Icon className="w-5 h-5 text-slate-400 group-hover:text-orange-500 transition-colors" />}
                     <span className={`text-sm font-bold truncate ${(value === undefined || value === null || value === '') ? 'text-slate-400' : 'group-hover:text-orange-600 transition-colors'}`}>
                         {getDisplayValue()}
                     </span>
                 </div>
-                <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-orange-500 transition-all duration-300" />
-            </div>
+                <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-orange-500 transition-all duration-300 pointer-events-none" />
+            </button>
             {error && <p className="text-[10px] font-bold text-rose-500 px-1 uppercase tracking-wider">{error}</p>}
         </div>
     );
@@ -72,7 +84,11 @@ const Select = ({
                         />
                     </div>
                 )}
-                <div className="overflow-y-auto p-1.5 scrollbar-hide">
+                <ul 
+                    id={listboxId}
+                    role="listbox"
+                    className="overflow-y-auto p-1.5 scrollbar-hide"
+                >
                     {(() => {
                         const filteredOptions = options.filter(opt => {
                             if (!searchTerm) return true;
@@ -84,32 +100,52 @@ const Select = ({
                             return <div className="p-4 text-center text-slate-400 text-xs font-bold">No results found</div>;
                         }
 
-                        return filteredOptions.map((opt, idx) => {
-                        const optValue = typeof opt === 'object' ? (opt.id || opt.value) : opt;
+                        return filteredOptions.map((opt) => {
+                        const optValue = typeof opt === 'object' ? (opt.id || opt.value || opt.label) : opt;
                         const optLabel = typeof opt === 'object' ? (opt.label || opt.name) : opt;
                         const isActive = value === optValue;
 
                         return (
-                            <div
-                                key={idx}
-                                onClick={() => onSelect(optValue)}
-                                className={`
-                                    flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all
-                                    ${isActive 
-                                        ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
-                                        : 'text-slate-600 hover:bg-orange-50 hover:text-orange-600'
-                                    }
-                                `}
-                            >
-                                <span className="text-sm font-bold truncate">{optLabel}</span>
-                            </div>
+                                <li key={String(optValue)} className="w-full">
+                                    <button
+                                        type="button"
+                                        role="option"
+                                        aria-selected={isActive}
+                                        onClick={() => onSelect(optValue)}
+                                        className={`
+                                            flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all w-full text-left
+                                            ${isActive 
+                                                ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
+                                                : 'text-slate-600 hover:bg-orange-50 hover:text-orange-600'
+                                            }
+                                        `}
+                                    >
+                                        <span className="text-sm font-bold truncate">{optLabel}</span>
+                                    </button>
+                                </li>
                         );
                         });
                     })()}
-                </div>
+                </ul>
             </div>
         </Dropdown>
     );
+};
+
+Select.propTypes = {
+    label: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    options: PropTypes.array,
+    onSelect: PropTypes.func.isRequired,
+    placeholder: PropTypes.string,
+    icon: PropTypes.elementType,
+    className: PropTypes.string,
+    triggerClassName: PropTypes.string,
+    contentClassName: PropTypes.string,
+    error: PropTypes.string,
+    required: PropTypes.bool,
+    searchable: PropTypes.bool,
+    id: PropTypes.string
 };
 
 export default Select;

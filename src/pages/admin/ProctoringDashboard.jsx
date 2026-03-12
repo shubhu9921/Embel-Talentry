@@ -18,9 +18,9 @@ const ProctoringDashboard = () => {
 
     const fetchData = async () => {
         try {
-            const data = await ApiService.get('/candidates');
+            const data = await ApiService.get('/api/candidates');
             // Filter candidates who have proctoring logs or are currently in exam
-            setCandidates(data.filter(c => c.status === 'applied' || (c.proctoringLogs && c.proctoringLogs.length > 0)));
+            setCandidates(data.filter(c => c.status === 'APPLIED' || (c.proctoringLogs && c.proctoringLogs.length > 0)));
         } catch (error) {
             console.error('Error fetching proctoring data:', error);
         } finally {
@@ -29,24 +29,41 @@ const ProctoringDashboard = () => {
     };
 
     useEffect(() => {
-        fetchData();
-        const interval = setInterval(fetchData, 5000); // Poll every 5 seconds
-        return () => clearInterval(interval);
+        let isMounted = true;
+        let timeoutId = null;
+
+        const pollData = async () => {
+            await fetchData();
+            if (isMounted) {
+                timeoutId = setTimeout(pollData, 5000);
+            }
+        };
+
+        pollData();
+        return () => {
+            isMounted = false;
+            if (timeoutId) clearTimeout(timeoutId);
+        };
     }, []);
 
-    const filteredCandidates = candidates.filter(c =>
-        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.position.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredCandidates = React.useMemo(() => {
+        const lowerSearch = searchTerm.toLowerCase();
+        return candidates.filter(c =>
+            c.name.toLowerCase().includes(lowerSearch) ||
+            (c.position || '').toLowerCase().includes(lowerSearch)
+        );
+    }, [candidates, searchTerm]);
 
-    const getViolationCount = (logs) => logs ? logs.length : 0;
-    const isTerminated = (c) => c.submissionReason === 'Interview terminated due to suspicious activity.';
-
-    const stats = {
-        violationCount: filteredCandidates.reduce((acc, c) => acc + getViolationCount(c.proctoringLogs), 0),
-        terminatedCount: filteredCandidates.filter(isTerminated).length,
-        clearCount: filteredCandidates.filter(c => getViolationCount(c.proctoringLogs) === 0).length
-    };
+    const stats = React.useMemo(() => {
+        const getViolationCount = (logs) => logs ? logs.length : 0;
+        const isTerminated = (candidate) => candidate.submissionReason === 'Interview terminated due to suspicious activity.';
+        
+        return {
+            violationCount: filteredCandidates.reduce((acc, c) => acc + getViolationCount(c.proctoringLogs), 0),
+            terminatedCount: filteredCandidates.filter(isTerminated).length,
+            clearCount: filteredCandidates.filter(c => getViolationCount(c.proctoringLogs) === 0).length
+        };
+    }, [filteredCandidates]);
 
 
     if (loading) return <div className="p-10 flex justify-center"><Loader size="lg" /></div>;
@@ -54,7 +71,7 @@ const ProctoringDashboard = () => {
     return (
         <div className="space-y-8 page-fade-in">
             <PageHeader
-                title={<>Live Proctoring <span className="text-orange-500">Center</span></>}
+                title="Live Proctoring Center"
                 subtitle="Real-time integrity monitoring and malpractice detection."
                 icon={ShieldAlert}
                 actions={

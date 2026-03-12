@@ -1,6 +1,7 @@
 import React from 'react';
 import { User, Bell, Shield, Cloud, Save } from 'lucide-react';
 import Card from '../../components/Card';
+import PageHeader from '../../components/PageHeader';
 import Button from '../../components/Button';
 
 const Settings = () => {
@@ -20,10 +21,12 @@ const Settings = () => {
 
     return (
         <div className="max-w-4xl mx-auto space-y-10 page-fade-in">
-            <div>
-                <h1 className="text-3xl font-black text-[#19325c] tracking-tight">Account Settings</h1>
-                <p className="text-slate-500 font-medium mt-1">Manage your professional profile and system preferences.</p>
-            </div>
+            <PageHeader
+                title="Account Settings"
+                subtitle="Manage your professional profile and system preferences."
+                icon={Shield}
+                className="bg-transparent border-none px-0 mb-0"
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-1 space-y-2">

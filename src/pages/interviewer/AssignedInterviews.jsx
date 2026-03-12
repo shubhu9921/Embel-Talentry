@@ -13,16 +13,17 @@ const AssignedInterviews = () => {
     useEffect(() => {
         const fetchInterviews = async () => {
             try {
-                const [intData, candData] = await Promise.all([
-                    ApiService.get('/interviews'),
-                    ApiService.get('/candidates')
-                ]);
+                const candData = await ApiService.get('/api/candidates');
 
-                const myInterviews = (intData || [])
-                    .filter(i => String(i.interviewerId) === String(user.id))
-                    .map(i => ({
-                        ...i,
-                        candidate: candData.find(c => c.id === i.candidateId)
+                const myInterviews = (candData || [])
+                    .filter(c => (c.status === 'SCHEDULED' || c.status === 'INTERVIEW_PENDING' || c.status === 'INTERVIEW_COMPLETED') && String(c.interviewerId) === String(user.id))
+                    .map(c => ({
+                        id: `int-${c.id}`,
+                        candidateId: c.id,
+                        candidate: c,
+                        date: c.interviewDate || 'TBD',
+                        time: c.interviewTime || 'TBD',
+                        status: c.status === 'INTERVIEW_COMPLETED' ? 'COMPLETED' : 'SCHEDULED'
                     }));
 
                 setInterviews(myInterviews);
@@ -38,7 +39,7 @@ const AssignedInterviews = () => {
     const stats = {
         total: interviews.length,
         today: interviews.filter(i => i.date === new Date().toISOString().split('T')[0]).length,
-        completed: interviews.filter(i => i.status === 'completed').length
+        completed: interviews.filter(i => i.status === 'COMPLETED').length
     };
 
     if (loading) return <div className="h-[60vh] flex items-center justify-center"><Loader size="lg" /></div>;

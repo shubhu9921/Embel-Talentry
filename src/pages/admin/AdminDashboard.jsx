@@ -24,24 +24,16 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const [candidates, interviews] = await Promise.all([
-                    ApiService.get('/candidates'),
-                    ApiService.get('/interviews')
-                ]);
-
-                const total = (candidates || []).length;
-                const assessments = (candidates || []).filter(c => c.examScore !== null).length;
-                // Only count truly completed interviews
-                const trulyCompletedInterviews = (interviews || []).filter(i => i.status === 'completed').length;
+                const dashboardData = await ApiService.get('/api/admin/dashboard/stats');
 
                 setData({
-                    totalCandidates: total, // Keep as number for the component to handle formatting if needed
-                    activeAssessments: assessments,
-                    interviewsCompleted: trulyCompletedInterviews,
-                    avgTimeToHire: '12d',
-                    candidateTrend: '+5%', // Simplified mock for now
-                    assessmentTrend: '+2%',
-                    interviewTrend: '+0%',
+                    totalCandidates: dashboardData.totalCandidates || 0,
+                    activeAssessments: dashboardData.activeAssessments || 0,
+                    interviewsCompleted: dashboardData.interviewsCompleted || 0,
+                    avgTimeToHire: dashboardData.avgTimeToHire || '0d',
+                    candidateTrend: dashboardData.candidateTrend || '+0%',
+                    assessmentTrend: dashboardData.assessmentTrend || '+0%',
+                    interviewTrend: dashboardData.interviewTrend || '+0%',
                     loading: false
                 });
             } catch (error) {

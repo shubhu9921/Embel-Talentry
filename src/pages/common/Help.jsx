@@ -1,14 +1,17 @@
 import React from 'react';
 import { HelpCircle, BookOpen, MessageSquare, PhoneCall, ChevronRight } from 'lucide-react';
 import Card from '../../components/Card';
+import PageHeader from '../../components/PageHeader';
 
 const Help = () => {
     return (
         <div className="max-w-4xl mx-auto space-y-10 page-fade-in">
-            <div>
-                <h1 className="text-3xl font-black text-[#19325c] tracking-tight">Help & Support</h1>
-                <p className="text-slate-500 font-medium mt-1">Get the most out of Embel Talentry hiring platform.</p>
-            </div>
+            <PageHeader
+                title="Help & Support"
+                subtitle="Get the most out of Embel Talentry hiring platform."
+                icon={HelpCircle}
+                className="bg-transparent border-none px-0 mb-0"
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="p-8 border-none ring-1 ring-slate-100 shadow-elevation-high hover:ring-[#ff6e00] transition-all cursor-pointer group ">

@@ -34,11 +34,18 @@ const TeamManagement = () => {
     const fetchData = async () => {
         try {
             const [users, jobs] = await Promise.all([
-                ApiService.get('/admin_users'),
-                ApiService.get('/vacancies')
+                ApiService.get('/api/admin/users'),
+                ApiService.get('/api/vacancies')
             ]);
-            setTeam(users.filter(u => u.role !== 'superadmin'));
-            setVacancies(jobs);
+            
+            // Phase 7: Map Backend roles to Frontend roles
+            const mappedUsers = (users || []).map(u => ({
+                ...u,
+                role: u.role === 'ROLE_HR' ? 'hr' : u.role === 'ROLE_INTERVIEWER' ? 'interviewer' : 'superadmin'
+            }));
+
+            setTeam(mappedUsers.filter(u => u.role !== 'superadmin'));
+            setVacancies(jobs || []);
         } catch (error) {
             console.error('Error fetching team data:', error);
         } finally {
@@ -73,13 +80,15 @@ const TeamManagement = () => {
         e.preventDefault();
         setSubmitting(true);
         try {
+            const payload = {
+                ...formData,
+                role: formData.role === 'hr' ? 'ROLE_HR' : 'ROLE_INTERVIEWER'
+            };
+
             if (editingMember) {
-                await ApiService.patch(`/admin_users/${editingMember.id}`, formData);
+                await ApiService.put(`/api/admin/users/${editingMember.id}`, payload);
             } else {
-                await ApiService.post('/admin_users', {
-                    ...formData,
-                    createdAt: new Date().toISOString()
-                });
+                await ApiService.post('/api/admin/users', payload);
             }
             await fetchData();
             setShowModal(false);
@@ -93,7 +102,7 @@ const TeamManagement = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to remove this team member?')) return;
         try {
-            await ApiService.delete(`/admin_users/${id}`);
+            await ApiService.delete(`/api/admin/users/${id}`);
             setTeam(prev => prev.filter(u => u.id !== id));
         } catch (error) {
             console.error('Error deleting team member:', error);

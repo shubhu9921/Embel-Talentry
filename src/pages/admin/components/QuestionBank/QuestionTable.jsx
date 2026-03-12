@@ -17,7 +17,7 @@ const QuestionTable = ({
                     <thead>
                         <tr className="bg-slate-50 border-b border-slate-100">
                             <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest w-20 text-center">Active</th>
-                            <th className="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest min-w-[300px]">Question Details</th>
+                            <th className="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest min-w-75">Question Details</th>
                             <th className="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Vacancy</th>
                             <th className="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Difficulty</th>
                             <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle2, AlertCircle, User } from 'lucide-react';
 import ApiService from '../../services/ApiService';
+import PageHeader from '../../components/PageHeader';
 import KpiCard from '../../components/KpiCard';
 
 const InterviewerDashboard = () => {
@@ -27,23 +28,22 @@ const InterviewerDashboard = () => {
         }
         const fetchStats = async () => {
             try {
-                const [candidates, interviewsData] = await Promise.all([
-                    ApiService.get('/candidates'),
-                    ApiService.get('/interviews')
-                ]);
-                const interviews = interviewsData || [];
+                const candidates = await ApiService.get('/api/candidates');
 
-                const pending = candidates.filter(c => c.examScore !== null && c.status === 'pending').length;
+                const pending = (candidates || []).filter(c => c.status === 'INTERVIEW_PENDING').length;
                 const today = new Date().toISOString().split('T')[0];
-                const completedToday = interviews.filter(i => 
-                    String(i.interviewerId) === String(user.id) && 
-                    i.date === today && 
-                    i.status === 'completed'
+                
+                const myInterviews = (candidates || []).filter(c => 
+                    String(c.interviewerId) === String(user.id) && 
+                    (c.status === 'SCHEDULED' || c.status === 'INTERVIEW_PENDING' || c.status === 'INTERVIEW_COMPLETED')
+                );
+
+                const completedToday = myInterviews.filter(i => 
+                    i.interviewDate === today && 
+                    i.status === 'INTERVIEW_COMPLETED'
                 ).length;
 
-                const assignedRounds = interviews.filter(i => 
-                    String(i.interviewerId) === String(user.id)
-                ).length;
+                const assignedRounds = myInterviews.length;
 
                 setStats({
                     pending,
@@ -60,11 +60,12 @@ const InterviewerDashboard = () => {
     }, [user.id]);
 
     return (
-        <div className="space-y-8 page-fade-in">
-            <div className="pb-4 pt-4 border-b border-slate-200/50 mb-4">
-                <h1 className="text-2xl font-black text-[#19325c] tracking-tight">Interviewer Workspace</h1>
-                <p className="text-slate-500 font-medium mt-1">Review assigned candidates and conduct technical assessments.</p>
-            </div>
+        <div className="space-y-10 page-fade-in">
+            <PageHeader
+                title="Interviewer Assessment Workspace"
+                subtitle="Review assigned candidates and conduct technical assessments."
+                icon={User}
+            />
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <KpiCard

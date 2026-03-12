@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const Dropdown = ({ 
     trigger, 
@@ -31,8 +32,9 @@ const Dropdown = ({
     };
 
     return (
-        <div className={`relative inline-block ${className}`} ref={dropdownRef}>
+        <div className="relative inline-block" ref={dropdownRef}>
             <div 
+                className={`cursor-pointer ${className}`}
                 onClick={() => setIsOpen(!isOpen)}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -40,11 +42,10 @@ const Dropdown = ({
                         setIsOpen(!isOpen);
                     }
                 }}
-                tabIndex={0}
-                className="cursor-pointer focus:outline-none"
-                role="button"
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
+                role="button"
+                tabIndex={0}
             >
                 {trigger}
             </div>
@@ -58,12 +59,24 @@ const Dropdown = ({
                         animate-in fade-in zoom-in-95 duration-200
                     `}
                     onClick={closeOnClick ? () => setIsOpen(false) : undefined}
+                    onKeyDown={closeOnClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') setIsOpen(false); } : undefined}
+                    tabIndex={closeOnClick ? 0 : -1}
+                    role={closeOnClick ? "button" : undefined}
                 >
                     {children}
                 </div>
             )}
         </div>
     );
+};
+
+Dropdown.propTypes = {
+    trigger: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
+    align: PropTypes.oneOf(['left', 'right', 'center']),
+    className: PropTypes.string,
+    contentClassName: PropTypes.string,
+    closeOnClick: PropTypes.bool
 };
 
 export default Dropdown;

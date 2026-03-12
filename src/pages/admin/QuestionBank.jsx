@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Plus, Search, ArrowLeft } from 'lucide-react';
+import { Plus, Search, ArrowLeft } from 'lucide-react';
 import ApiService from '../../services/ApiService';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
@@ -25,6 +25,12 @@ const QuestionBank = () => {
 
     const [bulkConfig, setBulkConfig] = useState({ position: '', level: 'Basic' });
     const [rows, setRows] = useState([]);
+    const [notification, setNotification] = useState(null);
+
+    const showNotification = (message, type = 'info') => {
+        setNotification({ message, type });
+        setTimeout(() => setNotification(null), 5000);
+    };
 
     useEffect(() => {
         fetchData();
@@ -34,14 +40,23 @@ const QuestionBank = () => {
         setLoading(true);
         try {
             const [qData, vData] = await Promise.all([
-                ApiService.get('/questions'),
-                ApiService.get('/vacancies')
+                ApiService.get('/api/admin/questions'),
+                ApiService.get('/api/vacancies')
             ]);
-            setQuestions(qData);
-            setVacancies(vData);
+            
+            // Map Backend fields to Frontend expected fields
+            const mappedQuestions = (qData || []).map(q => ({
+                ...q,
+                text: q.questionText || '',
+                correct: q.correctAnswer ? String(q.correctAnswer.charCodeAt(0) - 65) : '',
+                level: q.difficulty || 'Basic'
+            }));
+
+            setQuestions(mappedQuestions);
+            setVacancies(vData || []);
         } catch (error) {
             console.error('Error fetching data:', error);
-            alert('Failed to load data from server. Please refresh.');
+            showNotification('Failed to load data from server. Please refresh.', 'error');
         } finally {
             setLoading(false);
         }
@@ -50,11 +65,18 @@ const QuestionBank = () => {
     const handleToggleSelection = async (question) => {
         try {
             const updated = { ...question, selected: !question.selected };
-            await ApiService.put(`/questions/${question.id}`, updated);
+            // Mapping back for persistence
+            const payload = {
+                ...updated,
+                questionText: updated.text,
+                correctAnswer: String.fromCharCode(65 + parseInt(updated.correct)),
+                difficulty: updated.level
+            };
+            await ApiService.put(`/api/admin/questions/${question.id}`, payload);
             setQuestions(prev => prev.map(q => q.id === question.id ? updated : q));
         } catch (error) {
             console.error('Error toggling status:', error);
-            alert('Failed to update question status. Please try again.');
+            showNotification('Failed to update question status.', 'error');
         }
     };
 
@@ -74,28 +96,32 @@ const QuestionBank = () => {
                 }
             }
 
-            setQuestions(prev => prev.map(q => {
+            const mappedQuestions = questions.map(q => {
                 const update = updatedQuestions.find(u => u.id === q.id);
-                return update ? update : q;
-            }));
+                return update || q;
+            });
+            setQuestions(mappedQuestions);
 
-            if (updatedQuestions.length < filtered.length) {
-                alert(`Updated ${updatedQuestions.length} of ${filtered.length} questions. Some failed.`);
-            }
+            const message = updatedQuestions.length < filtered.length 
+                ? `Updated ${updatedQuestions.length} of ${filtered.length} questions. Some failed.`
+                : 'Bulk update successful!';
+            const type = updatedQuestions.length < filtered.length ? 'warning' : 'success';
+            showNotification(message, type);
         } catch (error) {
             console.error('Error in bulk update:', error);
-            alert('Failed to perform bulk update. Please check your connection.');
+            showNotification('Failed to perform bulk update.', 'error');
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Delete this question?')) return;
+        if (!globalThis.confirm('Delete this question?')) return;
         try {
-            await ApiService.delete(`/questions/${id}`);
+            await ApiService.delete(`/api/admin/questions/${id}`);
             setQuestions(prev => prev.filter(q => q.id !== id));
+            showNotification('Question deleted successfully.', 'success');
         } catch (error) {
             console.error('Error deleting:', error);
-            alert('Failed to delete question. It might be referenced elsewhere.');
+            showNotification('Failed to delete question.', 'error');
         }
     };
 
@@ -107,21 +133,31 @@ const QuestionBank = () => {
         setSubmitting(true);
         try {
             if (formData.id) {
-                await ApiService.put(`/questions/${formData.id}`, formData);
+                const payload = {
+                    ...formData,
+                    questionText: formData.text,
+                    correctAnswer: String.fromCharCode(65 + parseInt(formData.correct)),
+                    difficulty: formData.level
+                };
+                await ApiService.put(`/api/admin/questions/${formData.id}`, payload);
+                showNotification('Question updated successfully.', 'success');
             } else {
-                if (!bulkConfig.position) return alert('Please select a target vacancy first.');
+                if (!bulkConfig.position) return showNotification('Please select a target vacancy first.', 'warning');
                 
                 const validRows = rows.filter(r => r.text.trim());
-                if (validRows.length === 0) return alert('Please add at least one question.');
+                if (validRows.length === 0) return showNotification('Please add at least one question.', 'warning');
 
-                await Promise.all(validRows.map(row => ApiService.post('/questions', {
-                    ...row,
-                    position: bulkConfig.position,
-                    level: bulkConfig.level,
-                    type: 'mcq',
-                    id: `q-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-                    selected: false
-                })));
+                await Promise.all(validRows.map(row => {
+                    const payload = {
+                        questionText: row.text,
+                        correctAnswer: String.fromCharCode(65 + parseInt(row.correct)),
+                        difficulty: bulkConfig.level,
+                        position: bulkConfig.position,
+                        type: 'mcq'
+                    };
+                    return ApiService.post('/api/admin/questions', payload);
+                }));
+                showNotification(`${validRows.length} questions added successfully.`, 'success');
             }
             fetchData();
             setViewMode('pool');
@@ -130,7 +166,7 @@ const QuestionBank = () => {
             setBulkConfig({ position: '', level: 'Basic' });
         } catch (error) {
             console.error('Error saving:', error);
-            alert('Failed to save. Please check your network and try again.');
+            showNotification('Failed to save. Please check your network.', 'error');
         } finally {
             setSubmitting(false);
         }
@@ -151,13 +187,16 @@ const QuestionBank = () => {
         setViewMode('architect');
     };
 
-    const filteredQuestions = questions.filter(q => {
-        const matchesSearch = q.text.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesPosition = selectedPosition === 'all' || q.position === selectedPosition;
-        return matchesSearch && matchesPosition;
-    });
+    const filteredQuestions = React.useMemo(() => {
+        const lowerSearch = searchTerm.toLowerCase();
+        return questions.filter(q => {
+            const matchesSearch = q.text.toLowerCase().includes(lowerSearch);
+            const matchesPosition = selectedPosition === 'all' || q.position === selectedPosition;
+            return matchesSearch && matchesPosition;
+        });
+    }, [questions, searchTerm, selectedPosition]);
 
-    const activeCount = questions.filter(q => q.selected).length;
+    const activeCount = React.useMemo(() => questions.filter(q => q.selected).length, [questions]);
     if (loading) return <Loader />;
 
     return (
@@ -233,6 +272,27 @@ const QuestionBank = () => {
                     onBack={() => setViewMode('pool')}
                 />
             )}
+
+            {notification && (() => {
+                const { type, message } = notification;
+                let bgClass = 'bg-emerald-50 border-emerald-100 text-emerald-600';
+                let dotClass = 'bg-emerald-500';
+
+                if (type === 'error') {
+                    bgClass = 'bg-rose-50 border-rose-100 text-rose-600';
+                    dotClass = 'bg-rose-500';
+                } else if (type === 'warning') {
+                    bgClass = 'bg-orange-50 border-orange-100 text-orange-600';
+                    dotClass = 'bg-orange-500';
+                }
+
+                return (
+                    <div className={`fixed bottom-8 right-8 px-6 py-4 rounded-2xl shadow-2xl z-50 animate-in slide-in-from-bottom-4 duration-300 flex items-center gap-3 border ${bgClass}`}>
+                        <div className={`w-2 h-2 rounded-full ${dotClass}`} />
+                        <span className="text-sm font-bold">{message}</span>
+                    </div>
+                );
+            })()}
         </div>
     );
 };

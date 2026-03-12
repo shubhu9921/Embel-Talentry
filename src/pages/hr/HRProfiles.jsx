@@ -17,7 +17,8 @@ const HRProfiles = () => {
     useEffect(() => {
         const fetchCandidates = async () => {
             try {
-                const data = await ApiService.get('/candidates');
+                // Guide Section 9: fetch only candidates ready for HR decision
+                const data = await ApiService.getHrCandidates();
                 setCandidates(data);
             } catch (error) {
                 console.error('Error fetching candidates:', error);
@@ -30,8 +31,8 @@ const HRProfiles = () => {
 
     const stats = {
         total: candidates.length,
-        hired: candidates.filter(c => c.status === 'hired').length,
-        rejected: candidates.filter(c => c.status === 'rejected').length
+        hired: candidates.filter(c => c.status === 'SELECTED').length,
+        rejected: candidates.filter(c => c.status === 'REJECTED').length
     };
 
     const filteredCandidates = candidates.filter(c => {
@@ -43,10 +44,10 @@ const HRProfiles = () => {
 
     const getStatusBadge = (status) => {
         const styles = {
-            applied: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
-            shortlisted: 'bg-orange-50 text-[#ff6e00] ring-orange-100',
-            rejected: 'bg-red-50 text-red-600 ring-red-100',
-            hired: 'bg-indigo-50 text-indigo-600 ring-indigo-100'
+            INTERVIEW_COMPLETED: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+            SHORTLISTED: 'bg-orange-50 text-[#ff6e00] ring-orange-100',
+            REJECTED: 'bg-red-50 text-red-600 ring-red-100',
+            SELECTED: 'bg-indigo-50 text-indigo-600 ring-indigo-100'
         };
         return (
             <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ring-1 ${styles[status] || 'bg-slate-50 text-slate-500 ring-slate-100'}`}>
@@ -319,14 +320,28 @@ const HRProfiles = () => {
 
                         <div className="pt-8 border-t border-slate-100 flex items-center justify-end gap-3">
                             <Button
-                                onClick={() => setIsDetailModalOpen(false)}
-                                variant="outline"
-                                className="px-8 rounded-xl border-slate-200 text-slate-500"
+                                onClick={async () => {
+                                    if (globalThis.confirm('Select this candidate for hiring?')) {
+                                        await ApiService.submitHrDecision({ candidateId: selectedCandidate.id, decision: 'SELECTED', notes: 'Final selection by HR' });
+                                        setIsDetailModalOpen(false);
+                                        window.location.reload();
+                                    }
+                                }}
+                                className="px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 border-none shadow-xl shadow-emerald-900/10"
                             >
-                                Close
+                                Hire Candidate
                             </Button>
-                            <Button className="px-8 rounded-xl bg-[#19325c] hover:bg-[#112445] border-none shadow-xl shadow-blue-900/10">
-                                Send Notification
+                            <Button
+                                onClick={async () => {
+                                    if (globalThis.confirm('Reject this candidate?')) {
+                                        await ApiService.submitHrDecision({ candidateId: selectedCandidate.id, decision: 'REJECTED', notes: 'Rejected by HR' });
+                                        setIsDetailModalOpen(false);
+                                        window.location.reload();
+                                    }
+                                }}
+                                className="px-8 rounded-xl bg-red-600 hover:bg-red-700 border-none shadow-xl shadow-red-900/10"
+                            >
+                                Reject
                             </Button>
                         </div>
                     </div>

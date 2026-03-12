@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, Filter, Users } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { Search, Filter } from 'lucide-react';
 import ApiService from '../../services/ApiService';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
@@ -36,16 +36,15 @@ const CandidatesList = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [candData, adminData, qData, intData] = await Promise.all([
-                ApiService.get('/candidates'),
-                ApiService.get('/admin_users'),
-                ApiService.get('/questions'),
-                ApiService.get('/interviews')
+            const [candData, adminData, qData] = await Promise.all([
+                ApiService.get('/api/candidates'),
+                ApiService.get('/api/admin/users'),
+                ApiService.get('/api/admin/questions')
             ]);
-            setCandidates(candData);
-            setInterviewers(adminData.filter(u => u.role === 'interviewer'));
-            setQuestions(qData);
-            setInterviews(intData);
+            setCandidates(candData || []);
+            setInterviewers((adminData || []).filter(u => u.role === 'interviewer' || u.role === 'INTERVIEWER'));
+            setQuestions(qData || []);
+            setInterviews([]); // Resetting interviews as per Phase 3 directive if backend doesn't support it yet
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -53,26 +52,31 @@ const CandidatesList = () => {
         }
     };
 
-    const statusGroups = React.useMemo(() => ({
-        shortlisted: ['shortlisted', 'interview scheduled'],
-        rejected: ['rejected', 'not selected'],
-        applied: ['applied', 'pending', 'registered']
-    }), []);
+const STATUS_GROUPS = {
+    shortlisted: ['SHORTLISTED', 'SCHEDULED', 'INTERVIEW_PENDING', 'INTERVIEW_COMPLETED'],
+    rejected: ['REJECTED'],
+    applied: ['APPLIED', 'EXAM_COMPLETED']
+};
 
     const stats = React.useMemo(() => ({
         total: candidates.length,
-        shortlisted: candidates.filter(c => statusGroups.shortlisted.includes(c.status)).length,
-        rejected: candidates.filter(c => statusGroups.rejected.includes(c.status)).length,
-        pending: candidates.filter(c => statusGroups.applied.includes(c.status)).length
-    }), [candidates, statusGroups]);
+        shortlisted: candidates.filter(c => STATUS_GROUPS.shortlisted.includes(c.status)).length,
+        rejected: candidates.filter(c => STATUS_GROUPS.rejected.includes(c.status)).length,
+        pending: candidates.filter(c => STATUS_GROUPS.applied.includes(c.status)).length
+    }), [candidates]);
 
     const handleUpdateStatus = async (id, status, extraData = {}) => {
         try {
-            const updatePayload = { status, ...extraData };
-            await ApiService.patch(`/candidates/${id}`, updatePayload);
-            setCandidates(prev => prev.map(c => c.id === id ? { ...c, ...updatePayload } : c));
+            // Phase 9: If status is SELECTED or REJECTED, use the HR Decision API
+            if (status === 'SELECTED' || status === 'REJECTED') {
+                await ApiService.submitHrDecision(id, status, extraData.notes || 'Decision via TalentSphere Admin');
+            } else {
+                await ApiService.put(`/api/candidates/${id}/status`, { status, ...extraData });
+            }
+            
+            setCandidates(prev => prev.map(c => c.id === id ? { ...c, status, ...extraData } : c));
             if (selectedCandidate?.id === id) {
-                setSelectedCandidate(prev => ({ ...prev, ...updatePayload }));
+                setSelectedCandidate(prev => ({ ...prev, status, ...extraData }));
             }
         } catch (error) {
             console.error('Error updating status:', error);
@@ -81,9 +85,9 @@ const CandidatesList = () => {
     };
 
     const handleDeleteCandidate = async (id) => {
-        if (!window.confirm('Are you sure you want to permanently delete this candidate?')) return;
+        if (!globalThis.confirm('Are you sure you want to permanently delete this candidate?')) return;
         try {
-            await ApiService.delete(`/candidates/${id}`);
+            await ApiService.delete(`/api/candidates/${id}`);
             setCandidates(prev => prev.filter(c => c.id !== id));
             if (selectedCandidate?.id === id) {
                 setIsDetailModalOpen(false);
@@ -104,15 +108,12 @@ const CandidatesList = () => {
             const now = new Date();
             if (selectedDateTime <= now) return alert('Interview must be scheduled for a future date/time.');
 
-            await ApiService.post('/interviews', {
-                candidateId: selectedCandidate.id,
-                interviewerId: parseInt(interviewData.interviewerId),
+            await ApiService.scheduleInterview(selectedCandidate.id, {
+                interviewerId: Number.parseInt(interviewData.interviewerId, 10),
                 date: interviewData.date,
-                time: interviewData.time,
-                status: 'scheduled',
-                createdAt: now.toISOString()
+                time: interviewData.time
             });
-            await handleUpdateStatus(selectedCandidate.id, 'interview scheduled');
+            await handleUpdateStatus(selectedCandidate.id, 'SCHEDULED');
             setIsInterviewModalOpen(false);
             setInterviewData({ date: '', time: '', interviewerId: '' });
             fetchData(); // Refresh all data including interviews
@@ -123,14 +124,15 @@ const CandidatesList = () => {
     };
 
     const filteredCandidates = React.useMemo(() => {
+        const lowerSearch = searchTerm.toLowerCase();
         return candidates.filter(c => {
-            const matchesSearch = (c.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (c.email || '').toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSearch = (c.name || '').toLowerCase().includes(lowerSearch) ||
+                (c.email || '').toLowerCase().includes(lowerSearch);
             const matchesStatus = statusFilter === 'all' || 
-                                 (statusGroups[statusFilter] ? statusGroups[statusFilter].includes(c.status) : c.status === statusFilter);
+                                 (STATUS_GROUPS[statusFilter] ? STATUS_GROUPS[statusFilter].includes(c.status) : c.status === statusFilter);
             return matchesSearch && matchesStatus;
         });
-    }, [candidates, searchTerm, statusFilter, statusGroups]);
+    }, [candidates, searchTerm, statusFilter]);
 
 
     if (loading) return <div className="p-10 flex justify-center"><Loader size="lg" /></div>;

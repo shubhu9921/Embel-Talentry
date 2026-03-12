@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const Button = ({
     children,
@@ -44,6 +45,17 @@ const Button = ({
             {children}
         </button>
     );
+};
+
+Button.propTypes = {
+    children: PropTypes.node,
+    variant: PropTypes.oneOf(['primary', 'secondary', 'outline', 'danger', 'success', 'ghost']),
+    size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg']),
+    loading: PropTypes.bool,
+    className: PropTypes.string,
+    icon: PropTypes.elementType,
+    disabled: PropTypes.bool,
+    'aria-label': PropTypes.string
 };
 
 export default Button;

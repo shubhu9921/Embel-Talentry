@@ -16,17 +16,23 @@ const AllInterviews = () => {
     useEffect(() => {
         const fetchAllData = async () => {
             try {
-                const [intData, candData, adminData] = await Promise.all([
-                    ApiService.get('/interviews'),
-                    ApiService.get('/candidates'),
-                    ApiService.get('/admin_users')
+                const [candData, adminData] = await Promise.all([
+                    ApiService.get('/api/candidates'),
+                    ApiService.get('/api/admin/users')
                 ]);
 
-                const enrichedInterviews = intData.map(i => ({
-                    ...i,
-                    candidate: candData.find(c => c.id === i.candidateId),
-                    interviewer: adminData.find(a => a.id === i.interviewerId)
-                }));
+                // Map candidates with interview info to the "Interview" structure
+                const enrichedInterviews = (candData || [])
+                    .filter(c => c.status === 'SCHEDULED' || c.status === 'INTERVIEW_PENDING' || c.status === 'INTERVIEW_COMPLETED')
+                    .map(c => ({
+                        id: `int-${c.id}`,
+                        candidateId: c.id,
+                        candidate: c,
+                        interviewer: adminData?.find(a => String(a.id) === String(c.interviewerId)),
+                        date: c.interviewDate || 'TBD',
+                        time: c.interviewTime || 'TBD',
+                        status: c.status === 'INTERVIEW_COMPLETED' ? 'completed' : 'scheduled'
+                    }));
 
                 setInterviews(enrichedInterviews);
             } catch (error) {

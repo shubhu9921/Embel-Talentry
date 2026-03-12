@@ -9,13 +9,13 @@ const CandidateCard = ({ candidate, interviews = [], interviewers = [], onClick,
     const interviewer = interview ? interviewers.find(i => String(i.id) === String(interview.interviewerId)) : null;
 
     const getStatusVariant = (status) => {
-        switch (status) {
-            case 'applied': return 'success';
-            case 'shortlisted': return 'warning';
-            case 'interview scheduled': return 'primary';
-            case 'rejected':
-            case 'not selected': return 'danger';
-            case 'hired': return 'success';
+        const s = String(status).toUpperCase();
+        switch (s) {
+            case 'APPLIED': return 'success';
+            case 'SHORTLISTED': return 'warning';
+            case 'SCHEDULED': return 'primary';
+            case 'REJECTED': return 'danger';
+            case 'SELECTED': return 'success';
             default: return 'neutral';
         }
     };
@@ -95,7 +95,7 @@ const CandidateCard = ({ candidate, interviews = [], interviewers = [], onClick,
                         </div>
                         <div>
                             <p className="text-[9px] font-black text-orange-400 uppercase tracking-widest">Assessment Integrity</p>
-                            <p className="text-xs font-bold text-slate-700 truncate max-w-[150px]">
+                            <p className="text-xs font-bold text-slate-700 truncate max-w-37.5">
                                 {candidate.submissionReason}
                             </p>
                         </div>

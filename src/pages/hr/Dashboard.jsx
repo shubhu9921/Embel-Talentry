@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Users } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import PageHeader from '../../components/PageHeader';
 import KpiCard from '../../components/KpiCard';
+import { Layout } from 'lucide-react';
 
 const HRDashboard = () => {
+    // ... stats logic ...
     const [stats, setStats] = useState({
         emailsSent: 0,
         toNotify: 0,
@@ -13,9 +15,9 @@ const HRDashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const candidates = await ApiService.get('/candidates');
+                const candidates = await ApiService.get('/api/candidates');
                 const notified = candidates.filter(c => c.feedback !== null).length;
-                const toNotify = candidates.filter(c => (c.status === 'shortlisted' || c.status === 'rejected') && c.feedback === null).length;
+                const toNotify = candidates.filter(c => (c.status === 'SHORTLISTED' || c.status === 'REJECTED') && c.feedback === null).length;
 
                 setStats({
                     emailsSent: notified + 120,
@@ -32,10 +34,11 @@ const HRDashboard = () => {
 
     return (
         <div className="space-y-8 page-fade-in">
-            <div>
-                <h1 className="text-2xl font-black text-[#19325c] tracking-tight">HR Communication Portal</h1>
-                <p className="text-slate-500 font-medium mt-1">Manage candidate emails and recruitment workflows.</p>
-            </div>
+            <PageHeader
+                title="HR Communication Portal"
+                subtitle="Manage candidate emails and recruitment workflows."
+                icon={Mail}
+            />
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <KpiCard

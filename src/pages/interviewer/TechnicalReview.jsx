@@ -14,9 +14,9 @@ const TechnicalReview = () => {
     useEffect(() => {
         const fetchReviewCandidates = async () => {
             try {
-                const data = await ApiService.get('/candidates');
-                // Only show candidates who have finished the exam or are shortlisted
-                setCandidates(data.filter(c => c.status === 'shortlisted' || c.status === 'applied'));
+                const data = await ApiService.get('/api/candidates');
+                // Guide Section 8: Only show candidates pending interview
+                setCandidates(data.filter(c => c.status === 'INTERVIEW_PENDING'));
             } catch (error) {
                 console.error('Error fetching review candidates:', error);
             } finally {
@@ -30,14 +30,14 @@ const TechnicalReview = () => {
         if (!feedback.decision || !feedback.rating) return;
 
         try {
-            await ApiService.patch(`/candidates/${selectedCandidate.id}`, {
-                status: feedback.decision === 'hire' ? 'hired' : 'rejected',
-                feedback: {
-                    interviewerRating: feedback.rating,
-                    technicalNotes: feedback.notes,
-                    submittedAt: new Date().toISOString()
-                }
+            // Guide Section 8: Submit feedback using dedicated DTO
+            await ApiService.submitInterviewerFeedback({
+                candidateId: selectedCandidate.id,
+                technicalScore: feedback.rating,
+                communicationScore: 7, // Placeholder or add 2nd rating
+                recommendation: feedback.decision === 'hire' ? 'SELECTED' : 'REJECTED'
             });
+            
             setCandidates(candidates.filter(c => c.id !== selectedCandidate.id));
             setSelectedCandidate(null);
             setFeedback({ rating: 0, notes: '', decision: '' });

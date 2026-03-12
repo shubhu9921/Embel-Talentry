@@ -123,45 +123,56 @@ const QuestionArchitect = ({
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-[calc(100vh-200px)] items-start pb-12">
             {/* Sidebar: Question List */}
-            <div className="lg:col-span-3 space-y-4 h-full">
-                <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest pl-1">Build Queue ({currentRows.length})</h3>
-                    <Button variant="ghost" size="xs" icon={Plus} onClick={addRow} className="text-emerald-500 hover:bg-emerald-50">Add</Button>
+            <div className="lg:col-span-3 space-y-6 h-full sticky top-8">
+                <div className="flex items-center justify-between px-2">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Build Queue <span className="text-[#ff6e00]">({currentRows.length})</span></h3>
+                    <Button 
+                        variant="ghost" 
+                        size="xs" 
+                        icon={Plus} 
+                        onClick={addRow} 
+                        className="bg-orange-50 text-[#ff6e00] hover:bg-[#ff6e00] hover:text-white rounded-xl shadow-sm transition-all"
+                    >
+                        ADD
+                    </Button>
                 </div>
-                <div className="space-y-2 max-h-[70vh] overflow-y-auto pr-2 scrollbar-hide">
+                <div className="space-y-3 max-h-[75vh] overflow-y-auto pr-2 custom-scrollbar">
                     {currentRows.map((row, idx) => (
                         <div 
                             key={row.tempId}
                             onClick={() => setActiveRowIndex(idx)}
                             className={`
-                                group p-4 rounded-2xl border-2 transition-all cursor-pointer relative
+                                group p-5 rounded-[1.5rem] border-2 transition-all cursor-pointer relative
                                 ${activeRowIndex === idx 
-                                    ? 'bg-white border-[#ff6e00] shadow-xl shadow-orange-500/10 z-10' 
-                                    : 'bg-slate-50 border-transparent hover:border-slate-200'
+                                    ? 'bg-white border-[#ff6e00] shadow-2xl shadow-orange-500/10 scale-[1.02] z-10' 
+                                    : 'bg-slate-50/50 border-transparent hover:bg-white hover:border-slate-200'
                                 }
                             `}
                         >
-                            <div className="flex items-start gap-3">
+                            <div className="flex items-start gap-4">
                                 <div className={`
-                                    w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0
-                                    ${activeRowIndex === idx ? 'bg-[#ff6e00] text-white' : 'bg-slate-200 text-slate-500'}
+                                    w-8 h-8 rounded-xl flex items-center justify-center text-[11px] font-black shrink-0 shadow-sm
+                                    ${activeRowIndex === idx ? 'bg-[#ff6e00] text-white' : 'bg-white text-slate-400 border border-slate-100'}
                                 `}>
                                     {idx + 1}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className={`text-[11px] font-bold truncate ${activeRowIndex === idx ? 'text-slate-900' : 'text-slate-400'}`}>
+                                    <p className={`text-[12px] font-black truncate leading-tight ${activeRowIndex === idx ? 'text-[#19325c]' : 'text-slate-400'}`}>
                                         {row.text || 'Draft Question...'}
                                     </p>
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">
+                                    <p className={`text-[10px] font-black uppercase tracking-widest mt-1.5 ${activeRowIndex === idx ? 'text-[#ff6e00]' : 'text-slate-300'}`}>
                                         {row.correct !== '' ? `Answer: ${String.fromCharCode(65 + parseInt(row.correct))}` : 'No Answer Set'}
                                     </p>
                                 </div>
                                 {currentRows.length > 1 && (
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); removeRow(idx); }}
-                                        className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-all"
+                                        className={`
+                                            p-1.5 rounded-lg hover:bg-rose-50 hover:text-rose-500 transition-all
+                                            ${activeRowIndex === idx ? 'text-slate-300' : 'text-transparent group-hover:text-slate-300'}
+                                        `}
                                     >
-                                        <Trash2 size={12} />
+                                        <Trash2 size={14} />
                                     </button>
                                 )}
                             </div>
@@ -172,22 +183,22 @@ const QuestionArchitect = ({
 
             {/* Main Form: Redesigned Grid */}
             <div className="lg:col-span-9">
-                <Card className="border-none shadow-elevation-high p-8 rounded-[2.5rem] bg-white overflow-visible">
-                    <div className="flex items-center justify-between mb-8 pb-6 border-b border-slate-50">
-                        <div className="flex items-center gap-4">
-                            <button onClick={onBack} className="p-2 hover:bg-slate-50 rounded-full text-slate-400 hover:text-slate-600 transition-all">
-                                <ArrowLeft size={20} />
+                <Card className="border-none shadow-2xl shadow-slate-200/50 p-10 rounded-[2.5rem] bg-white overflow-visible ring-1 ring-slate-100">
+                    <div className="flex items-center justify-between mb-10 pb-8 border-b border-slate-50">
+                        <div className="flex items-center gap-5">
+                            <button onClick={onBack} className="p-3 bg-slate-50 hover:bg-orange-50 rounded-2xl text-slate-400 hover:text-[#ff6e00] transition-all shadow-sm">
+                                <ArrowLeft size={18} />
                             </button>
                             <div>
-                                <h2 className="text-xl font-bold text-[#19325c]">Architect Assessment</h2>
-                                <p className="text-xs font-medium text-slate-400">Assemble vacancy-specific logic and questions.</p>
+                                <h2 className="text-2xl font-black text-[#19325c] tracking-tight">Architect <span className="text-[#ff6e00]">Assessment</span></h2>
+                                <p className="text-xs font-medium text-slate-400 mt-0.5">Assemble vacancy-specific logic and questions.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto overflow-visible">
+                    <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto overflow-visible">
                         {/* Row 1: Vacancy | Level */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <Select 
                                 label="Target Vacancy" 
                                 value={bulkConfig.position} 
@@ -205,7 +216,7 @@ const QuestionArchitect = ({
                         </div>
 
                         {/* Row 2: Import CSV */}
-                        <div className="flex justify-center">
+                        <div className="flex justify-center py-2">
                             <input type="file" ref={fileInputRef} onChange={handleCSVImport} accept=".csv" className="hidden" />
                             <Button 
                                 type="button"
@@ -213,29 +224,30 @@ const QuestionArchitect = ({
                                 size="md" 
                                 icon={Upload} 
                                 onClick={() => fileInputRef.current.click()}
-                                className="rounded-2xl px-12 border-2 border-slate-100 group-hover:border-[#ff6e00] transition-all bg-slate-50/50 hover:bg-white"
+                                className="rounded-2xl px-12 border-2 border-slate-100 hover:border-[#ff6e00] hover:text-[#ff6e00] transition-all bg-slate-50/30 hover:bg-white font-black text-[10px] tracking-widest"
                             >
-                                Import CSV Assessment Pool
+                                IMPORT CSV ASSESSMENT POOL
                             </Button>
                         </div>
 
                         {/* Row 3: Question text */}
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Question Content</label>
                             <textarea 
                                 required 
                                 value={currentRow.text} 
                                 onChange={e => updateCurrentRow('text', e.target.value)} 
                                 placeholder="What is the output of...?" 
-                                className="w-full p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold h-32 outline-none focus:border-[#ff6e00] focus:bg-white transition-all shadow-inner-sm resize-none" 
+                                rows={5}
+                                className="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-3xl text-sm font-bold outline-none focus:border-[#ff6e00] focus:bg-white focus:ring-4 focus:ring-orange-500/5 transition-all shadow-inner-sm resize-none" 
                             />
                         </div>
 
                         {/* Row 4 & 5: Options A | B and C | D */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {currentRow.options.map((opt, i) => (
                                 <div key={i} className="relative group">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-7 h-7 bg-white border border-slate-100 rounded-lg flex items-center justify-center text-[10px] font-black text-slate-400 group-focus-within:border-[#ff6e00] group-focus-within:text-[#ff6e00] transition-all">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-white border border-slate-100 rounded-xl flex items-center justify-center text-[11px] font-black text-slate-400 group-focus-within:border-[#ff6e00] group-focus-within:text-[#ff6e00] group-focus-within:scale-110 transition-all shadow-sm">
                                         {String.fromCharCode(65 + i)}
                                     </div>
                                     <input 
@@ -243,14 +255,14 @@ const QuestionArchitect = ({
                                         value={opt} 
                                         onChange={e => updateOption(i, e.target.value)} 
                                         placeholder={`Option ${String.fromCharCode(65 + i)}`} 
-                                        className="w-full pl-14 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold outline-none focus:border-[#ff6e00] focus:bg-white transition-all" 
+                                        className="w-full pl-16 pr-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold outline-none focus:border-[#ff6e00] focus:bg-white focus:ring-4 focus:ring-orange-500/5 transition-all" 
                                     />
                                 </div>
                             ))}
                         </div>
 
                         {/* Row 6: Correct Answer */}
-                        <div className="max-w-md mx-auto w-full">
+                        <div className="max-w-md mx-auto w-full pt-4">
                             <Select 
                                 label="Designate Correct Answer" 
                                 value={currentRow.correct} 
@@ -265,16 +277,16 @@ const QuestionArchitect = ({
                         </div>
 
                         {/* Row 7: Actions */}
-                        <div className="flex items-center justify-center gap-4 pt-8 border-t border-slate-50 mt-4">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10 border-t border-slate-50 mt-6">
                             <Button 
                                 type="button" 
-                                variant="outline" 
+                                variant="ghost" 
                                 size="lg" 
                                 icon={Plus} 
                                 onClick={addRow}
-                                className="rounded-2xl px-8 border-2 border-dashed border-slate-200 hover:border-[#ff6e00] hover:text-[#ff6e00] transition-all bg-transparent"
+                                className="text-slate-400 hover:text-[#ff6e00] hover:bg-orange-50 font-black text-xs tracking-widest px-8"
                             >
-                                Add Another Question
+                                ADD ANOTHER QUESTION
                             </Button>
                             <Button 
                                 variant="secondary" 
@@ -282,9 +294,9 @@ const QuestionArchitect = ({
                                 icon={Send} 
                                 onClick={onSubmit}
                                 loading={submitting}
-                                className="rounded-2xl px-12 shadow-orange-glow hover:shadow-orange-glow-hover"
+                                className="rounded-2xl px-16 shadow-2xl shadow-orange-500/20 py-5 min-w-[280px]"
                             >
-                                Publish Pool ({currentRows.length})
+                                PUBLISH POOL ({currentRows.length})
                             </Button>
                         </div>
                     </div>

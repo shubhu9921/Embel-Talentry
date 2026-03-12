@@ -30,20 +30,28 @@ const CandidateDetailModal = ({
                 <div className="flex items-center justify-between w-full gap-4">
                     <div className="flex items-center gap-3">
                         <Button
-                            onClick={() => onUpdateStatus(candidate.id, 'rejected')}
+                            onClick={() => onUpdateStatus(candidate.id, 'REJECTED')}
                             variant="danger"
                             icon={XCircle}
-                            disabled={candidate.status === 'rejected'}
+                            disabled={candidate.status === 'REJECTED'}
                         >
                             Reject
                         </Button>
                         <Button
-                            onClick={() => onUpdateStatus(candidate.id, 'shortlisted')}
+                            onClick={() => onUpdateStatus(candidate.id, 'SHORTLISTED')}
                             variant="success"
                             icon={CheckCircle2}
-                            disabled={candidate.status === 'shortlisted'}
+                            disabled={candidate.status === 'SHORTLISTED' || candidate.status === 'SELECTED'}
                         >
-                            Approve
+                            Shortlist
+                        </Button>
+                        <Button
+                            onClick={() => onUpdateStatus(candidate.id, 'INTERVIEW_PENDING')}
+                            variant="secondary"
+                            icon={ShieldCheck}
+                            disabled={candidate.status === 'INTERVIEW_PENDING' || candidate.status === 'SCHEDULED'}
+                        >
+                            Move to Interview
                         </Button>
                     </div>
                     <Button
@@ -51,9 +59,9 @@ const CandidateDetailModal = ({
                         variant="primary"
                         size="md"
                         icon={Calendar}
-                        disabled={candidate.status === 'interview scheduled'}
+                        disabled={candidate.status === 'SCHEDULED'}
                     >
-                        {candidate.status === 'interview scheduled' ? 'Scheduled' : 'Schedule Interview'}
+                        {candidate.status === 'SCHEDULED' ? 'Scheduled' : 'Schedule Interview'}
                     </Button>
                 </div>
             }
@@ -71,10 +79,12 @@ const CandidateDetailModal = ({
                                 <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
                                 <Badge
                                     variant={
-                                        candidate.status === 'applied' ? 'success' :
-                                            candidate.status === 'shortlisted' ? 'warning' :
-                                                candidate.status === 'interview scheduled' ? 'primary' :
-                                                    'danger'
+                                        candidate.status === 'APPLIED' ? 'success' :
+                                            candidate.status === 'EXAM_COMPLETED' ? 'secondary' :
+                                                candidate.status === 'SHORTLISTED' ? 'warning' :
+                                                    candidate.status === 'INTERVIEW_PENDING' ? 'primary' :
+                                                        candidate.status === 'SCHEDULED' ? 'primary' :
+                                                            candidate.status === 'SELECTED' ? 'success' : 'danger'
                                     }
                                     size="sm"
                                     className="uppercase tracking-widest"

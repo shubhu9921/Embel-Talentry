@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Search, ChevronDown, X } from 'lucide-react';
 
 const Autocomplete = ({
@@ -13,8 +14,12 @@ const Autocomplete = ({
     required = false,
     className = "",
     containerClassName = "",
-    strict = false
+    strict = false,
+    id: providedId
 }) => {
+    const internalId = React.useId();
+    const inputId = providedId || internalId;
+    const listboxId = `${inputId}-listbox`;
     const [isOpen, setIsOpen] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
     const [searchTerm, setSearchTerm] = useState(value || '');
@@ -133,7 +138,10 @@ const Autocomplete = ({
     return (
         <div className={`space-y-2 relative ${containerClassName}`} ref={containerRef}>
             {label && (
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+                <label 
+                    htmlFor={inputId}
+                    className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1"
+                >
                     {label}
                     {required && <span className="text-rose-500 ml-1 font-black">*</span>}
                 </label>
@@ -147,12 +155,19 @@ const Autocomplete = ({
                     )}
                 </div>
                 <input
+                    id={inputId}
                     type="text"
                     value={searchTerm}
                     onChange={handleInputChange}
                     onFocus={() => setIsOpen(true)}
                     onBlur={handleBlur}
                     placeholder={placeholder}
+                    autoComplete="off"
+                    role="combobox"
+                    aria-expanded={isOpen}
+                    aria-haspopup="listbox"
+                    aria-autocomplete="list"
+                    aria-controls={isOpen ? listboxId : undefined}
                     className={`
                         block w-full pl-11 pr-12 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl 
                         text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] 
@@ -180,41 +195,75 @@ const Autocomplete = ({
 
             {/* Suggestions Popover */}
             {isOpen && suggestions.length > 0 && (
-                <div className="absolute z-[100] w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                    <div className="max-h-60 overflow-y-auto p-1.5 scrollbar-hide">
+                <div className="absolute z-100 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                    <ul 
+                        id={listboxId}
+                        role="listbox"
+                        className="max-h-60 overflow-y-auto p-1.5 scrollbar-hide"
+                    >
                         {suggestions.map((opt, idx) => {
-                            const optLabel = typeof opt === 'object' ? (opt.label || opt.name) : opt;
+                            const optId = typeof opt === 'object' ? (opt.id || opt.value || idx) : opt;
+                            const isSelected = value === (typeof opt === 'object' ? (opt.id || opt.value) : opt);
+                            
                             return (
-                                <div
-                                    key={typeof opt === 'object' ? (opt.id || opt.value || idx) : opt}
+                                <li
+                                    key={optId}
                                     onClick={() => handleSelect(opt)}
                                     onKeyDown={(e) => { if (e.key === 'Enter') handleSelect(opt); }}
                                     tabIndex={0}
                                     role="option"
-                                    aria-selected={value === (typeof opt === 'object' ? (opt.id || opt.value) : opt)}
+                                    aria-selected={isSelected}
                                     className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all text-slate-600 hover:bg-orange-50 hover:text-orange-600 group/item outline-none focus:bg-orange-50 focus:text-orange-600"
                                 >
                                     <span className="text-sm font-bold truncate group-hover/item:translate-x-1 transition-transform">
                                         {(() => {
-                                            const label = String(typeof opt === 'object' ? (opt.label || opt.name) : opt);
-                                            if (!searchTerm) return label;
-                                            const escapedSearch = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                                            const parts = label.split(new RegExp(`(${escapedSearch})`, 'gi'));
-                                            return parts.map((part, i) => 
-                                                part.toLowerCase() === searchTerm.toLowerCase() 
-                                                    ? <span key={`${idx}-${i}`} className="text-[#ff6e00] underline decoration-2 underline-offset-4">{part}</span> 
-                                                    : part
+                                            const labelText = String(typeof opt === 'object' ? (opt.label || opt.name) : opt);
+                                            if (!searchTerm) return <span>{labelText}</span>;
+                                            
+                                            const escapedSearch = searchTerm.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+                                            const parts = labelText.split(new RegExp(`(${escapedSearch})`, 'gi'));
+                                            
+                                            return (
+                                                <>
+                                                    {parts.map((part, i) => {
+                                                        const isMatch = part.toLowerCase() === searchTerm.toLowerCase();
+                                                        return (
+                                                            <span 
+                                                                key={`${idx}-${i}`} 
+                                                                className={isMatch ? "text-[#ff6e00] underline decoration-2 underline-offset-4" : ""}
+                                                            >
+                                                                {part}
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </>
                                             );
                                         })()}
                                     </span>
-                                </div>
+                                </li>
                             );
                         })}
-                    </div>
+                    </ul>
                 </div>
             )}
         </div>
     );
+};
+
+Autocomplete.propTypes = {
+    label: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onChange: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    options: PropTypes.array,
+    placeholder: PropTypes.string,
+    icon: PropTypes.elementType,
+    error: PropTypes.string,
+    required: PropTypes.bool,
+    className: PropTypes.string,
+    containerClassName: PropTypes.string,
+    strict: PropTypes.bool,
+    id: PropTypes.string
 };
 
 export default Autocomplete;

@@ -22,7 +22,6 @@ const ExamInstructions = () => {
             if (webcamStreamRef.current) {
                 webcamStreamRef.current.getTracks().forEach(track => {
                     track.stop();
-                    console.log('ExamInstructions: Calibration track stopped');
                 });
                 webcamStreamRef.current = null;
             }
@@ -118,8 +117,8 @@ const ExamInstructions = () => {
                                 Exam Protocols
                             </h3>
                             <div className="space-y-4">
-                                {rules.map((rule, idx) => (
-                                    <div key={idx} className="flex items-start gap-4 group/item">
+                                {rules.map((rule) => (
+                                    <div key={rule.text} className="flex items-start gap-4 group/item">
                                         <div className="w-6 h-6 rounded-lg bg-orange-50 flex items-center justify-center shrink-0 mt-0.5 group-hover/item:bg-[#ff6e00] transition-colors">
                                             <CheckCircle className="w-3.5 h-3.5 text-[#ff6e00] group-hover/item:text-white transition-colors" />
                                         </div>
