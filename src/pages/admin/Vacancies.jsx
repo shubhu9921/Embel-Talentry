@@ -16,7 +16,7 @@ const Vacancies = () => {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [filter, setFilter] = useState('all');
-    const [formData, setFormData] = useState({ id: '', position: '', description: '', isOpen: true });
+    const [formData, setFormData] = useState({ id: '', title: '', description: '', isOpen: true });
 
     useEffect(() => {
         fetchData();
@@ -104,7 +104,7 @@ const Vacancies = () => {
                 actions={
                     <Button
                         onClick={() => {
-                            setFormData({ id: '', position: '', description: '', isOpen: true });
+                            setFormData({ id: '', title: '', description: '', isOpen: true });
                             setIsModalOpen(true);
                         }}
                         icon={Plus}

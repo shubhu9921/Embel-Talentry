@@ -8,14 +8,21 @@ const Header = ({ role }) => {
     const navigate = useNavigate();
     const getInitialUser = () => {
         try {
-            return JSON.parse(localStorage.getItem('admin_user')) || { name: 'Alex Rivera', role: 'superadmin' };
+            return {
+                name: sessionStorage.getItem('userName') || 'User',
+                role: role || sessionStorage.getItem('userRole') || 'guest'
+            };
         } catch (e) {
-            console.error("Failed to parse user data:", e);
-            return { name: 'Alex Rivera', role: 'superadmin' };
+            return { name: 'User', role: 'guest' };
         }
     };
     const user = getInitialUser();
-    const userInitials = (user.name || 'AR').substring(0, 2).toUpperCase();
+    const userInitials = (user.name || 'U')
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase();
 
     const getNotifications = () => {
         switch (role) {
@@ -118,7 +125,10 @@ const Header = ({ role }) => {
                             {user.name}
                         </p>
                         <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-black">
-                            {user.role === 'superadmin' ? 'Super Admin' : user.role === 'interviewer' ? 'Technical Interviewer' : 'HR Manager'}
+                            {user.role === 'superadmin' ? 'Super Admin' : 
+                             user.role === 'interviewer' ? 'Technical Interviewer' : 
+                             user.role === 'hr' ? 'HR Manager' : 
+                             user.role || 'Guest'}
                         </p>
                     </div>
                     <div className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-md shadow-blue-500/20 group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">

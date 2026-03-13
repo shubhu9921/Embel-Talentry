@@ -15,7 +15,7 @@ const TeamMemberModal = ({
     onSubmit
 }) => {
     const roles = [
-        { id: 'interviewer', label: 'Interviewer' },
+        { id: 'interviewer', label: 'Technical Interviewer' },
         { id: 'hr', label: 'HR Manager' }
     ];
 

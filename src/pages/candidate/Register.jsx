@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin, Eye, EyeOff, Banknote } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import ApiService from '../../services/ApiService';
 import { geoData } from '../../utils/geoData';
@@ -107,17 +107,6 @@ const SuccessView = ({ candidateData, navigate }) => {
             </div>
 
             <div className="space-y-6 pt-4">
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-left">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Candidate ID</p>
-                        <p className="text-slate-900 font-bold truncate">#{candidateData?.id}</p>
-                    </div>
-                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-left">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Target Role</p>
-                        <p className="text-[#ff6e00] font-bold uppercase truncate">{candidateData?.position}</p>
-                    </div>
-                </div>
-
                 <Button
                     onClick={() => navigate('/')}
                     variant="primary"
@@ -165,8 +154,11 @@ const PersonalInformationSection = ({ register, errors, watchCountry, watchState
                     />
                 </div>
                 {errors.password && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.password.message}</p>}
+                <input type="hidden" {...register('country', { required: 'Country is mandatory' })} />
+                <input type="hidden" {...register('state', { required: 'State is mandatory' })} />
+                <input type="hidden" {...register('city', { required: 'City is mandatory' })} />
             </div>
-            <div className="space-y-0 relative z-[60]">
+            <div className="space-y-0 relative z-[70]">
                 <Autocomplete
                     label="Country"
                     value={watchCountry}
@@ -190,7 +182,7 @@ const PersonalInformationSection = ({ register, errors, watchCountry, watchState
                     strict={true}
                 />
             </div>
-            <div className="space-y-0 relative z-50">
+            <div className="space-y-0 relative z-[60]">
                 <Autocomplete
                     label="State"
                     value={watchState}
@@ -213,7 +205,7 @@ const PersonalInformationSection = ({ register, errors, watchCountry, watchState
                     strict={true}
                 />
             </div>
-            <div className="space-y-0 relative z-40">
+            <div className="space-y-0 relative z-[50]">
                 <Autocomplete
                     label="City"
                     value={watchCity}
@@ -233,7 +225,7 @@ const PersonalInformationSection = ({ register, errors, watchCountry, watchState
 );
 
 const AcademicBackgroundSection = ({ register, errors, expType, hasBacklogs, setValue }) => (
-    <div className="space-y-8">
+    <div className="space-y-8 relative z-[10]">
         <SectionHeader title="Academic Background" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <FormField label="College Name" icon={BookOpen} error={errors.college?.message} required>
@@ -249,20 +241,17 @@ const AcademicBackgroundSection = ({ register, errors, expType, hasBacklogs, set
                 <input {...register('cgpa', { required: 'CGPA is mandatory' })} placeholder="8.5 or 85%" className="block w-full pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
             </FormField>
             {expType !== 'experienced' && (
-                <div className="space-y-2 group w-full flex flex-col relative z-50">
-                    <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Active Backlogs?</label>
-                    <div className="dropdown w-full">
-                        <input type="hidden" {...register('activeBacklogs')} />
-                        <div tabIndex={0} role="button" className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold tracking-widest cursor-pointer">
-                            <span className="text-slate-900">{hasBacklogs === 'yes' ? 'Yes, have active' : "No, I'm clear"}</span>
-                            <ChevronDown className="w-4 h-4 text-slate-400" />
-                        </div>
-                        <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
-                            <li><a onClick={() => { setValue('activeBacklogs', 'no'); document.activeElement?.blur(); }} className={hasBacklogs === 'no' ? 'active' : ''}>No, I'm clear</a></li>
-                            <li><a onClick={() => { setValue('activeBacklogs', 'yes'); document.activeElement?.blur(); }} className={hasBacklogs === 'yes' ? 'active' : ''}>Yes, have active</a></li>
-                        </ul>
-                    </div>
-                </div>
+                <Select
+                    label="Active Backlogs?"
+                    value={hasBacklogs}
+                    options={[
+                        { id: 'no', label: "No, I'm clear" },
+                        { id: 'yes', label: 'Yes, have active' }
+                    ]}
+                    onSelect={val => setValue('activeBacklogs', val)}
+                    icon={AlertCircle}
+                    className="z-50"
+                />
             )}
             {hasBacklogs === 'yes' && (
                 <FormField label="Count" icon={AlertCircle} error={errors.backlogCount?.message}>
@@ -274,10 +263,10 @@ const AcademicBackgroundSection = ({ register, errors, expType, hasBacklogs, set
 );
 
 const ProfessionalDetailsSection = ({ register, errors, expType, watchPosition, vacancies, preSelectedPosition, setValue }) => (
-    <div className="space-y-8">
+    <div className="space-y-8 relative z-[20]">
         <SectionHeader title="Professional Details" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-0 relative z-[10]">
+            <div className="space-y-0 relative z-[25]">
                 <Select
                     label="Experience Type"
                     value={expType}
@@ -292,11 +281,19 @@ const ProfessionalDetailsSection = ({ register, errors, expType, watchPosition, 
                 />
             </div>
             {expType === 'experienced' && (
-                <FormField label="Total Experience" icon={Clock} error={errors.yearsOfExperience?.message}>
-                    <input {...register('yearsOfExperience')} placeholder="e.g. 2.5 Years" className="block w-full pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
-                </FormField>
+                <>
+                    <FormField label="Total Experience" icon={Clock} error={errors.yearsOfExperience?.message}>
+                        <input {...register('yearsOfExperience')} placeholder="e.g. 2.5 Years" className="block w-full pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                    </FormField>
+                    <FormField label="Current CTC (Annual)" icon={Banknote} error={errors.currentCTC?.message}>
+                        <input {...register('currentCTC')} placeholder="e.g. 8,00,000" className="block w-full pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                    </FormField>
+                    <FormField label="Expected CTC (Annual)" icon={Banknote} error={errors.expectedCTC?.message}>
+                        <input {...register('expectedCTC')} placeholder="e.g. 12,00,000" className="block w-full pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                    </FormField>
+                </>
             )}
-            <div className="space-y-0 relative z-[5]">
+            <div className="space-y-0 relative z-[21]">
                 <Select
                     label="Target Position"
                     value={watchPosition}
@@ -316,7 +313,7 @@ const ProfessionalDetailsSection = ({ register, errors, expType, watchPosition, 
 );
 
 const ResumeUploadSection = ({ register, errors, resumeFileName }) => (
-    <div className="space-y-4 relative z-10">
+    <div className="space-y-4 relative z-[10]">
         <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">CV / Resume (PDF Only)</label>
         <div className="relative group cursor-pointer">
             <input type="file" accept=".pdf" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" {...register('resume', { required: 'CV is mandatory' })} />
@@ -383,9 +380,9 @@ const Register = () => {
                 setVacancies(data);
 
                 if (preSelectedPosition) {
-                    const exists = activeVacancies.find(v => v.id === preSelectedPosition);
+                    const exists = data.find(v => v.id === Number.parseInt(preSelectedPosition));
                     if (exists) {
-                        setValue('position', preSelectedPosition);
+                        setValue('position', exists.id);
                     }
                 }
             } catch (error) {
@@ -419,7 +416,10 @@ const Register = () => {
                 resumeName: resumeFileName || 'Not uploaded',
                 country: rest.country,
                 state: rest.state,
-                city: rest.city
+                city: rest.city,
+                currentCTC: rest.currentCTC,
+                expectedCTC: rest.expectedCTC,
+                yearsOfExperience: rest.yearsOfExperience
             };
 
             const response = await ApiService.post('/api/candidates/register', payload);

@@ -4,9 +4,10 @@ import Card from '../../../../components/Card';
 import Badge from '../../../../components/Badge';
 import Button from '../../../../components/Button';
 
-const CandidateCard = ({ candidate, interviews = [], interviewers = [], onClick, onDelete }) => {
+const CandidateCard = ({ candidate, vacancies = [], interviews = [], interviewers = [], onClick, onDelete }) => {
     const interview = interviews.find(i => String(i.candidateId) === String(candidate.id));
     const interviewer = interview ? interviewers.find(i => String(i.id) === String(interview.interviewerId)) : null;
+    const vacancy = vacancies.find(v => String(v.id) === String(candidate.position));
 
     const getStatusVariant = (status) => {
         const s = String(status).toUpperCase();
@@ -116,7 +117,7 @@ const CandidateCard = ({ candidate, interviews = [], interviewers = [], onClick,
                         <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-[#ff6e00]">
                             <Briefcase className="w-4 h-4" />
                         </div>
-                        <span className="text-sm font-bold capitalize">{candidate.position || 'Not specified'}</span>
+                        <span className="text-sm font-bold capitalize">{vacancy?.title || 'Not specified'}</span>
                     </div>
                 </div>
                 <div className="space-y-2">

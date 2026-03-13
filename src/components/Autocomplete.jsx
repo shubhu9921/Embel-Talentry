@@ -199,7 +199,7 @@ const Autocomplete = ({
                     <ul 
                         id={listboxId}
                         role="listbox"
-                        className="max-h-60 overflow-y-auto p-1.5 scrollbar-hide"
+                        className="max-h-80 overflow-y-auto p-1.5 custom-scrollbar"
                     >
                         {suggestions.map((opt, idx) => {
                             const optId = typeof opt === 'object' ? (opt.id || opt.value || idx) : opt;

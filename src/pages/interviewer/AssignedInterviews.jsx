@@ -8,7 +8,9 @@ import Button from '../../components/Button';
 const AssignedInterviews = () => {
     const [interviews, setInterviews] = useState([]);
     const [loading, setLoading] = useState(true);
-    const user = JSON.parse(localStorage.getItem('admin_user')) || {};
+    const user = {
+        id: sessionStorage.getItem('userId') || JSON.parse(localStorage.getItem('admin_user'))?.id
+    };
 
     useEffect(() => {
         const fetchInterviews = async () => {

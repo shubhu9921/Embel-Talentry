@@ -35,10 +35,10 @@ const Select = ({
             {label && (
                 <label 
                     htmlFor={selectId}
-                    className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1"
+                    className="block text-xs font-black text-slate-900 uppercase tracking-widest ml-1"
                 >
                     {label}
-                    {required && <span className="text-rose-500 ml-1 font-black">*</span>}
+                    {required && <span className="text-red-500 ml-1 font-black">*</span>}
                 </label>
             )}
             <button 

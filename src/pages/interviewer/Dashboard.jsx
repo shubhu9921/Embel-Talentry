@@ -5,15 +5,9 @@ import PageHeader from '../../components/PageHeader';
 import KpiCard from '../../components/KpiCard';
 
 const InterviewerDashboard = () => {
-    const getInitialUser = () => {
-        try {
-            return JSON.parse(localStorage.getItem('admin_user')) || {};
-        } catch (e) {
-            console.error("Failed to parse user data:", e);
-            return {};
-        }
+    const user = {
+        id: sessionStorage.getItem('userId') || JSON.parse(localStorage.getItem('admin_user'))?.id
     };
-    const user = getInitialUser();
     const [stats, setStats] = useState({
         pending: 0,
         completedToday: 0,

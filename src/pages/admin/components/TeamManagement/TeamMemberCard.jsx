@@ -14,8 +14,12 @@ const TeamMemberCard = ({ member, vacancies, onEdit, onDelete }) => {
                     <div>
                         <div className="flex items-center gap-3">
                             <h3 className="font-black text-slate-800 text-lg tracking-tight uppercase">{member.name}</h3>
-                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${member.role === 'interviewer' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}`}>
-                                {member.role}
+                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest 
+                                ${member.role === 'interviewer' ? 'bg-purple-100 text-purple-600' : 
+                                  member.role === 'hr' ? 'bg-indigo-100 text-indigo-600' : 
+                                  'bg-slate-100 text-slate-600'}`}>
+                                {member.role === 'interviewer' ? 'Technical Interviewer' : 
+                                 member.role === 'hr' ? 'HR Manager' : member.role}
                             </span>
                         </div>
                         <div className="flex items-center gap-4 mt-1 text-slate-400 font-bold text-xs">
@@ -46,7 +50,7 @@ const TeamMemberCard = ({ member, vacancies, onEdit, onDelete }) => {
                         variant="ghost"
                         size="sm"
                         icon={Trash2}
-                        onClick={() => { if (window.confirm('Are you sure you want to remove this team member?')) onDelete(member.id); }}
+                        onClick={() => onDelete(member.id)}
                         className="text-slate-400 hover:text-red-500 hover:bg-red-50"
                         title="Remove Member"
                     />

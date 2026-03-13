@@ -18,6 +18,12 @@ const CommunicationPortal = () => {
     const [assessmentDate, setAssessmentDate] = useState('');
     const [assessmentTime, setAssessmentTime] = useState('');
     const [interviewRound, setInterviewRound] = useState('Technical');
+    
+    // Manual Credential Fields
+    const [manualName, setManualName] = useState('');
+    const [manualEmail, setManualEmail] = useState('');
+    const [manualPassword, setManualPassword] = useState('');
+    const [manualRole, setManualRole] = useState('Candidate');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,9 +46,11 @@ const CommunicationPortal = () => {
     const filteredCandidates = React.useMemo(() => {
         switch (selectedType) {
             case 'invite':
-                return candidates.filter(c => c.status === 'registered');
+                return candidates.filter(c => c.status === 'registered' || !c.status);
+            case 'credentials':
+                return []; // Manual entry mostly, but could show registered ones
             case 'shortlist':
-                return candidates.filter(c => c.examScore !== null && c.examScore >= 40); // Assuming 40 is pass mark
+                return candidates.filter(c => c.examScore !== null && c.examScore >= 40);
             case 'rejection':
                 return candidates.filter(c => c.status === 'rejected' || c.status === 'not selected');
             default:
@@ -74,6 +82,10 @@ const CommunicationPortal = () => {
             subject: 'Assessment Invitation: {company_name}',
             body: 'Dear {candidate_name}, You are invited to participate in the assessment scheduled on {assessment_date}. Please use the direct login link if you have already registered.'
         },
+        credentials: {
+            subject: 'Your Login Credentials - {company_name}',
+            body: 'Dear {candidate_name},\n\nYour account for the {role} position has been created. Use the following credentials to access the portal:\n\nLogin ID: {login_id}\nPassword: {password}\nRole: {role}\n\nExam Access Window: {assessment_date}\n\nDirect Login Link: {exam_link}\n(Note: This link will be active for 2 hours after receiving this email.)'
+        },
         shortlist: {
             subject: 'Shortlisted for {interview_round} Round',
             body: 'Congratulations {candidate_name}! You have been shortlisted for the {interview_round} interview round. Our team will contact you soon.'
@@ -87,23 +99,33 @@ const CommunicationPortal = () => {
     const getPreviewContent = (text) => {
         if (!text) return '';
         return text
-            .replace(/{candidate_name}/g, 'John Doe')
+            .replace(/{candidate_name}/g, manualName || 'John Doe')
+            .replace(/{login_id}/g, manualEmail || 'john@example.com')
+            .replace(/{password}/g, manualPassword || '********')
+            .replace(/{role}/g, manualRole)
             .replace(/{assessment_date}/g, assessmentDate ? `${assessmentDate} ${assessmentTime}` : '[Select Date/Time]')
+            .replace(/{exam_link}/g, assessmentDate ? `https://embel-talenttry.com/login?token=autologin-${manualEmail || 'john'}` : '[Will generate upon send]')
             .replace(/{interview_round}/g, interviewRound)
-            .replace(/{company_name}/g, 'Embel Talentry');
+            .replace(/{company_name}/g, 'Embel TalentTry');
     };
 
     const handleSendBulk = async () => {
-        if (selectedCandidates.length === 0) return;
+        if (selectedType !== 'credentials' && selectedCandidates.length === 0) return;
+        if (selectedType === 'credentials' && (!manualEmail || !manualName)) {
+            alert('Please provide at least Name and Email for personalized invite.');
+            return;
+        }
+
         setSending(true);
         try {
-            const template = emailTemplates[selectedType];
             const timestamp = new Date().toISOString();
-            
-            // Log activity for each candidate or as a batch?
-            // User requested: "Sent Shortlist email to X candidates" or "Sent Assessment Invite to candidate name"
             let logMessage = '';
-            if (selectedCandidates.length === 1) {
+            let count = selectedCandidates.length;
+
+            if (selectedType === 'credentials') {
+                logMessage = `Sent Personalized Credentials to ${manualName} (${manualEmail})`;
+                count = 1;
+            } else if (selectedCandidates.length === 1) {
                 const cand = candidates.find(c => c.id === selectedCandidates[0]);
                 const typeLabel = selectedType.charAt(0).toUpperCase() + selectedType.slice(1);
                 logMessage = `Sent ${typeLabel} email to ${cand?.name || 'Unknown Candidate'}`;
@@ -114,18 +136,20 @@ const CommunicationPortal = () => {
 
             await ApiService.post('/activities', {
                 type: selectedType,
-                count: selectedCandidates.length,
+                count: count,
                 message: logMessage,
                 timestamp: timestamp
             });
 
-            // Simulate actual email sending
             await new Promise(resolve => setTimeout(resolve, 1500));
             
-            setSuccessMsg(`Success! Notifications have been sent to ${selectedCandidates.length} candidates.`);
+            setSuccessMsg(`Success! Notifications have been sent successfully.`);
             setSelectedCandidates([]);
             
-            // Refresh activities
+            if (selectedType === 'credentials') {
+                setManualName(''); setManualEmail(''); setManualPassword('');
+            }
+            
             const actData = await ApiService.get('/activities?_sort=timestamp&_order=desc&_limit=5');
             setActivities(actData);
             
@@ -213,9 +237,36 @@ const CommunicationPortal = () => {
 
                     <Card className="p-8 border-none ring-1 ring-slate-100 h-full">
                         <div className="mb-8 space-y-6">
-                            {(selectedType === 'invite' || selectedType === 'shortlist') && (
+                            {(selectedType === 'invite' || selectedType === 'shortlist' || selectedType === 'credentials') && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-left-4 duration-500">
-                                    {selectedType === 'invite' ? (
+                                    {selectedType === 'credentials' ? (
+                                        <>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Candidate Name</label>
+                                                <input value={manualName} onChange={(e) => setManualName(e.target.value)} placeholder="Full Name" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Login ID (Email)</label>
+                                                <input value={manualEmail} onChange={(e) => setManualEmail(e.target.value)} placeholder="email@example.com" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assigned Role</label>
+                                                <input value={manualRole} onChange={(e) => setManualRole(e.target.value)} placeholder="e.g. Frontend Intern" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Portal Password</label>
+                                                <input value={manualPassword} onChange={(e) => setManualPassword(e.target.value)} placeholder="Set initial password" title="Initial password for candidate" className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Exam Date</label>
+                                                <input type="date" value={assessmentDate} onChange={(e) => setAssessmentDate(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Exam Time</label>
+                                                <input type="time" value={assessmentTime} onChange={(e) => setAssessmentTime(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none" />
+                                            </div>
+                                        </>
+                                    ) : selectedType === 'invite' ? (
                                         <>
                                             <div className="space-y-2">
                                                 <label htmlFor="assessment-date" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assessment Date</label>
@@ -338,12 +389,12 @@ const CommunicationPortal = () => {
                                     onClick={handleSendBulk}
                                     variant="secondary"
                                     size="lg"
-                                    disabled={selectedCandidates.length === 0}
+                                    disabled={selectedType !== 'credentials' && selectedCandidates.length === 0}
                                     loading={sending}
                                     icon={Send}
                                     className="flex-1 md:flex-none"
                                 >
-                                    Send to {selectedCandidates.length} Selected
+                                    {selectedType === 'credentials' ? 'Send Personalized Invite' : `Send to ${selectedCandidates.length} Selected`}
                                 </Button>
                             </div>
                         </div>

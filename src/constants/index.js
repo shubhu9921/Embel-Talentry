@@ -1,5 +1,5 @@
 /**
- * Global Constants for Embel TalentSphere
+ * Global Constants for Embel TalentTry
  */
 
 export const ROLES = {

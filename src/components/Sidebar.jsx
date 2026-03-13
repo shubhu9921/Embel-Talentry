@@ -61,7 +61,7 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                                 <span className="text-[#ff6e00]">b</span>
                                 <span className="text-[#19325c]">el</span>
                             </div>
-                            <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest mt-0.5">Talentry</span>
+                            <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest mt-0.5">TalentTry</span>
                         </div>
                     </div>
                 )}
@@ -179,7 +179,7 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
             {/* Footer */}
             <div className="px-4 py-3 shrink-0 text-center bg-gray-50/50 border-t border-gray-100">
                 <p className="text-[9px] font-black text-slate-400 tracking-widest">
-                    {collapsed ? "©" : "© 2026 EMBEL TECH"}
+                    {collapsed ? "©" : "© 2026 Embel TalentTry"}
                 </p>
             </div>
         </aside>

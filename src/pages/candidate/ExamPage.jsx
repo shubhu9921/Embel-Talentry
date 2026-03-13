@@ -13,7 +13,7 @@ import Timer from '../../components/Timer';
 import Loader from '../../components/Loader';
 import ApiService from '../../services/ApiService';
 
-const ViolationOverlay = ({ active, type, icon: Icon, title, message, color, onAction, actionLabel }) => {
+const ViolationOverlay = ({ active, type, icon: Icon, title, message, color, onAction, actionLabel, violations }) => {
     if (!active) return null;
     return (
         <div className={`fixed inset-0 z-150 ${color} backdrop-blur-2xl flex flex-col items-center justify-center text-white p-10 animate-in zoom-in duration-300`}>
@@ -21,6 +21,9 @@ const ViolationOverlay = ({ active, type, icon: Icon, title, message, color, onA
                 <Icon size={56} className="text-white" />
             </div>
             <h2 className="text-4xl font-black uppercase tracking-tighter mb-4 text-center">{title}</h2>
+            <div className="bg-white/20 px-6 py-2 rounded-full mb-6 border border-white/30 backdrop-blur-md">
+                <span className="text-sm font-black tracking-widest uppercase">Warning {violations} of 3</span>
+            </div>
             <p className="text-xl font-bold opacity-80 max-w-lg text-center leading-relaxed mb-10">{message}</p>
             {onAction && (
                 <Button onClick={onAction} variant="primary" size="lg" className="px-12 bg-white text-slate-900 border-none shadow-2xl">
@@ -34,7 +37,7 @@ const ViolationOverlay = ({ active, type, icon: Icon, title, message, color, onA
 const FullscreenPrompt = ({ active, onEnter }) => {
     if (!active) return null;
     return (
-        <div className="fixed inset-0 z-[100] bg-[#002D5E]/95 backdrop-blur-xl flex flex-col items-center justify-center text-white p-10 text-center">
+        <div className="fixed inset-0 z-100 bg-[#002D5E]/95 backdrop-blur-xl flex flex-col items-center justify-center text-white p-10 text-center">
             <ShieldCheck size={80} className="text-orange-500 mb-8 animate-bounce" />
             <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">Enter Fullscreen Mode</h2>
             <p className="text-slate-300 mb-10 max-w-md font-medium text-lg leading-relaxed">
@@ -127,7 +130,6 @@ const Sidebar = ({ webcamRef, violations, questions, answers, currentQuestion, s
 );
 
 const ExamPage = () => {
-    const [examId, setExamId] = useState(null);
     const [questions, setQuestions] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState({});
@@ -159,44 +161,52 @@ const ExamPage = () => {
         }
         setCandidate(storedCandidate);
 
-        const fetchExamData = async () => {
+        const fetchQuestions = async () => {
             try {
-                // Guide Section 5 - Step 1: Start the exam
-                await ApiService.startExam(storedCandidate.id);
-                
-                // Guide Section 5 - Step 2: Get assigned questions
-                const data = await ApiService.getQuestions(storedCandidate.id);
-                
-                const mappedQuestions = data.map(q => ({
-                    id: q.id,
-                    text: q.questionText,
-                    options: [q.optionA, q.optionB, q.optionC, q.optionD],
-                    type: 'mcq'
-                }));
-                
-                setQuestions(mappedQuestions);
+                const data = await ApiService.get('/questions');
+                const activePool = data.filter(q => q.position === storedCandidate.position && q.selected === true);
+                const shuffled = [...activePool].sort(() => Math.random() - 0.5);
+                setQuestions(shuffled);
             } catch (error) {
-                console.error('Error starting exam:', error);
+                console.error('Error fetching questions:', error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchExamData();
+        fetchQuestions();
     }, [navigate]);
 
     const onSubmit = useCallback(async (reason = 'Manual submission') => {
         if (isSubmitting) return;
         setIsSubmitting(true);
         try {
-            // Guide Section 5 - Step 4: Submit exam (backend scores it)
-            const result = await ApiService.submitExam(candidate.id);
-            // result = { examScore, totalQuestions, correctAnswers, percentage }
+            const isMalpractice = reason.includes('terminated') || reason.includes('MALPRACTICE');
+            
+            let score = 0;
+            if (!isMalpractice) {
+                let correctCount = 0;
+                questions.forEach((q) => {
+                    // Normalize answers for comparison
+                    const userAnswer = answers[q.id];
+                    const correctAnswer = q.correctAnswer || q.correct;
+                    if (userAnswer === correctAnswer) correctCount++;
+                });
+                score = questions.length > 0 ? (correctCount / questions.length) * 100 : 0;
+            }
 
-            // Update candidate in local storage for the results page
+            const updateData = {
+                examScore: Math.round(score),
+                status: isMalpractice ? 'DISQUALIFIED' : 'applied',
+                submissionReason: reason,
+                submittedAt: new Date().toISOString(),
+                assignedQuestions: questions.map(q => q.id)
+            };
+
+            await ApiService.patch(`/candidates/${candidate?.id}`, updateData);
+
             localStorage.setItem('candidate', JSON.stringify({
                 ...candidate,
-                examScore: result.examScore,
-                status: 'EXAM_COMPLETED' // Aligning with enum reference
+                ...updateData
             }));
 
             localStorage.removeItem(`exam_expiry_${candidate?.id}`);
@@ -211,7 +221,7 @@ const ExamPage = () => {
         } finally {
             setIsSubmitting(false);
         }
-    }, [navigate, examId, candidate, isSubmitting]);
+    }, [navigate, questions, answers, candidate, isSubmitting]);
 
     // Fix timer duration: 45 minutes
     const { seconds } = useTimer(45, () => onSubmit('Timer expired'));
@@ -219,21 +229,11 @@ const ExamPage = () => {
     const { 
         violations, isFaceMissing, isMultipleFaces, isSuspiciousMovement, 
         isVoiceDetected, isTabViolation, resetTabViolation 
-    } = useProctoring(3, onSubmit, webcamRef, candidate?.id);
+    } = useProctoring(onSubmit, webcamRef, candidate?.id, 3);
 
-    const handleAnswerSelect = async (option, idx) => {
-        const activeQ = questions[currentQuestion];
-        if (!activeQ || !candidate?.id) return;
-
-        // Guide Section 5 - Step 3: Save answers as A/B/C/D letters
-        const letter = ['A', 'B', 'C', 'D'][idx];
-        
-        try {
-            await ApiService.saveAnswer(candidate.id, activeQ.id, letter);
-            setAnswers(prev => ({ ...prev, [activeQ.id]: option }));
-        } catch (error) {
-            console.error('Failed to save answer:', error);
-        }
+    const handleAnswerSelect = (option) => {
+        const qId = questions[currentQuestion]?.id;
+        if (qId) setAnswers(prev => ({ ...prev, [qId]: option }));
     };
 
     const handleCodingChange = (code) => {
@@ -255,7 +255,7 @@ const ExamPage = () => {
             </div>
             <h2 className="text-3xl font-black text-white mb-4 uppercase tracking-tight">No Questions Available</h2>
             <p className="text-slate-400 mb-10 max-w-md font-medium">We couldn't find any questions for your selected position. Please contact HR to resolve this.</p>
-            <Button onClick={() => navigate('/login')} variant="primary" size="lg" className="bg-white text-[#002D5E] border-none shadow-2xl">Return to Login</Button>
+            <Button onClick={() => navigate('/login')} variant="primary" size="lg" className="bg-[#ff6e00] text-white border-none shadow-[0_10px_40px_rgba(255,110,0,0.3)] hover:shadow-[0_20px_60px_rgba(255,110,0,0.45)] hover:bg-[#e05d00] font-black tracking-widest px-12 rounded-2xl transition-all duration-300 transform hover:-translate-y-1">Return to Login</Button>
         </div>
     );
 
@@ -272,6 +272,7 @@ const ExamPage = () => {
                 color="bg-purple-900/95" 
                 onAction={resetTabViolation} 
                 actionLabel="Accept & Continue" 
+                violations={violations}
             />
             <ViolationOverlay 
                 active={isMultipleFaces} 
@@ -279,6 +280,7 @@ const ExamPage = () => {
                 title="Multiple Faces Detected" 
                 message="Please ensure you are alone. Integrity violation has been logged." 
                 color="bg-orange-600/90" 
+                violations={violations}
             />
             <ViolationOverlay 
                 active={isSuspiciousMovement} 
@@ -286,6 +288,7 @@ const ExamPage = () => {
                 title="Suspicious Head Movement" 
                 message="Suspicious head movement detected. Please focus on the screen." 
                 color="bg-yellow-600/90" 
+                violations={violations}
             />
             <ViolationOverlay 
                 active={isVoiceDetected} 
@@ -293,6 +296,7 @@ const ExamPage = () => {
                 title="Background Voice Detected" 
                 message="Background voice detected. Please ensure you are alone." 
                 color="bg-indigo-600/90" 
+                violations={violations}
             />
             <ViolationOverlay 
                 active={isFaceMissing} 
@@ -300,6 +304,7 @@ const ExamPage = () => {
                 title="Face Not Detected" 
                 message="You moved away from the screen. Please remain visible during the interview." 
                 color="bg-red-600/90" 
+                violations={violations}
             />
             
             <FullscreenPrompt 
@@ -342,7 +347,7 @@ const ExamPage = () => {
                                         {activeQuestion.options.map((option, idx) => (
                                             <button
                                                 key={idx}
-                                                onClick={() => handleAnswerSelect(option, idx)}
+                                                onClick={() => handleAnswerSelect(option)}
                                                 className={`w-full p-8 text-left rounded-4xl border-2 transition-all group relative overflow-hidden ${answers[activeQuestion.id] === option
                                                     ? 'bg-orange-50 border-orange-500 text-slate-900 shadow-xl shadow-orange-500/10'
                                                     : 'bg-white border-slate-100 text-slate-600 hover:border-orange-200 hover:bg-slate-50/50'

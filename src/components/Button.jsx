@@ -30,6 +30,7 @@ const Button = ({
 
     return (
         <button
+            type="button"
             {...props}
             disabled={loading || props.disabled}
             aria-label={props['aria-label'] || (typeof children === 'string' ? children : undefined)}

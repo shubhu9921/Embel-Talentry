@@ -3,11 +3,11 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ role: propRole }) => {
     const [collapsed, setCollapsed] = useState(false);
     const location = useLocation();
     const VALID_ROLES = ['superadmin', 'hr', 'interviewer'];
-    const rawRole = sessionStorage.getItem('userRole');
+    const rawRole = propRole || sessionStorage.getItem('userRole');
     const role = VALID_ROLES.includes(rawRole) ? rawRole : '';
 
     useEffect(() => {
@@ -57,7 +57,7 @@ const DashboardLayout = () => {
                 </main>
 
                 <footer className="px-8 py-6 text-center text-[10px] font-bold text-slate-400 border-t border-slate-100 bg-white/50 backdrop-blur-md uppercase tracking-widest">
-                    &copy; {new Date().getFullYear()} EMBEL TalentSphere. Optimized for Performance.
+                    &copy; {new Date().getFullYear()} Embel TalentTry. Optimized for Performance.
                 </footer>
             </div>
         </div>

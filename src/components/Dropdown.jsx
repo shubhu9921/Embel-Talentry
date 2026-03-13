@@ -32,9 +32,9 @@ const Dropdown = ({
     };
 
     return (
-        <div className="relative inline-block" ref={dropdownRef}>
+        <div className={`relative ${className}`} ref={dropdownRef}>
             <div 
-                className={`cursor-pointer ${className}`}
+                className="cursor-pointer"
                 onClick={() => setIsOpen(!isOpen)}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {

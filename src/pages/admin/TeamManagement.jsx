@@ -39,10 +39,14 @@ const TeamManagement = () => {
             ]);
             
             // Phase 7: Map Backend roles to Frontend roles
-            const mappedUsers = (users || []).map(u => ({
-                ...u,
-                role: u.role === 'ROLE_HR' ? 'hr' : u.role === 'ROLE_INTERVIEWER' ? 'interviewer' : 'superadmin'
-            }));
+            const mappedUsers = (users || []).map(u => {
+                const r = u.role?.toLowerCase() || '';
+                let displayRole = 'superadmin';
+                if (r === 'role_hr' || r === 'hr') displayRole = 'hr';
+                else if (r === 'role_interviewer' || r === 'interviewer') displayRole = 'interviewer';
+                else if (r === 'role_super_admin' || r === 'superadmin') displayRole = 'superadmin';
+                return { ...u, role: displayRole };
+            });
 
             setTeam(mappedUsers.filter(u => u.role !== 'superadmin'));
             setVacancies(jobs || []);
@@ -59,7 +63,7 @@ const TeamManagement = () => {
             setFormData({
                 name: member.name,
                 email: member.email,
-                password: member.password,
+                password: member.password || '',
                 role: member.role,
                 domain: member.domain || ''
             });

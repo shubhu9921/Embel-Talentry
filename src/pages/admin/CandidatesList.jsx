@@ -27,6 +27,7 @@ const CandidatesList = () => {
     const [interviewers, setInterviewers] = useState([]);
     const [interviews, setInterviews] = useState([]);
     const [questions, setQuestions] = useState([]);
+    const [vacancies, setVacancies] = useState([]);
     const [statusFilter, setStatusFilter] = useState(initialStatus);
 
     useEffect(() => {
@@ -36,15 +37,23 @@ const CandidatesList = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [candData, adminData, qData] = await Promise.all([
+            const [candData, adminData, qData, vData, intData] = await Promise.all([
                 ApiService.get('/api/candidates'),
                 ApiService.get('/api/admin/users'),
-                ApiService.get('/api/admin/questions')
+                ApiService.get('/api/admin/questions'),
+                ApiService.get('/api/vacancies'),
+                ApiService.get('/api/interviews')
             ]);
             setCandidates(candData || []);
-            setInterviewers((adminData || []).filter(u => u.role === 'interviewer' || u.role === 'INTERVIEWER'));
+            setVacancies(vData || []);
+            setInterviews(intData || []);
+            setInterviewers((adminData || []).filter(u => 
+                u.role === 'interviewer' || 
+                u.role === 'INTERVIEWER' || 
+                u.role === 'ROLE_INTERVIEWER'
+            ));
+            setInterviews(intData || []);
             setQuestions(qData || []);
-            setInterviews([]); // Resetting interviews as per Phase 3 directive if backend doesn't support it yet
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -54,7 +63,7 @@ const CandidatesList = () => {
 
 const STATUS_GROUPS = {
     shortlisted: ['SHORTLISTED', 'SCHEDULED', 'INTERVIEW_PENDING', 'INTERVIEW_COMPLETED'],
-    rejected: ['REJECTED'],
+    rejected: ['REJECTED', 'DISQUALIFIED'],
     applied: ['APPLIED', 'EXAM_COMPLETED']
 };
 
@@ -69,9 +78,11 @@ const STATUS_GROUPS = {
         try {
             // Phase 9: If status is SELECTED or REJECTED, use the HR Decision API
             if (status === 'SELECTED' || status === 'REJECTED') {
-                await ApiService.submitHrDecision(id, status, extraData.notes || 'Decision via TalentSphere Admin');
+                await ApiService.submitHrDecision(id, status, extraData.notes || 'Decision via TalentTry Admin');
+                // Also update the candidate's main status
+                await ApiService.patch(`/api/candidates/${id}`, { status });
             } else {
-                await ApiService.put(`/api/candidates/${id}/status`, { status, ...extraData });
+                await ApiService.patch(`/api/candidates/${id}`, { status, ...extraData });
             }
             
             setCandidates(prev => prev.map(c => c.id === id ? { ...c, status, ...extraData } : c));
@@ -108,12 +119,11 @@ const STATUS_GROUPS = {
             const now = new Date();
             if (selectedDateTime <= now) return alert('Interview must be scheduled for a future date/time.');
 
-            await ApiService.scheduleInterview(selectedCandidate.id, {
+            await handleUpdateStatus(selectedCandidate.id, 'SCHEDULED', {
                 interviewerId: Number.parseInt(interviewData.interviewerId, 10),
-                date: interviewData.date,
-                time: interviewData.time
+                interviewDate: interviewData.date,
+                interviewTime: interviewData.time
             });
-            await handleUpdateStatus(selectedCandidate.id, 'SCHEDULED');
             setIsInterviewModalOpen(false);
             setInterviewData({ date: '', time: '', interviewerId: '' });
             fetchData(); // Refresh all data including interviews
@@ -172,6 +182,7 @@ const STATUS_GROUPS = {
                     <CandidateCard
                         key={candidate.id}
                         candidate={candidate}
+                        vacancies={vacancies}
                         interviews={interviews}
                         interviewers={interviewers}
                         onClick={() => { setSelectedCandidate(candidate); setIsDetailModalOpen(true); }}
@@ -184,6 +195,7 @@ const STATUS_GROUPS = {
                 isOpen={isDetailModalOpen}
                 onClose={() => setIsDetailModalOpen(false)}
                 candidate={selectedCandidate}
+                vacancies={vacancies}
                 questions={questions}
                 interviews={interviews}
                 interviewers={interviewers}

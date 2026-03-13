@@ -18,9 +18,23 @@ const ProctoringDashboard = () => {
 
     const fetchData = async () => {
         try {
-            const data = await ApiService.get('/api/candidates');
+            const [candData, logsData] = await Promise.all([
+                ApiService.get('/api/candidates'),
+                ApiService.get('/api/proctoring_logs')
+            ]);
+            
+            // Merge logs into candidates for easy access
+            const mergedCandidates = (candData || []).map(c => ({
+                ...c,
+                proctoringLogs: (logsData || []).filter(log => String(log.candidateId) === String(c.id))
+            }));
+
             // Filter candidates who have proctoring logs or are currently in exam
-            setCandidates(data.filter(c => c.status === 'APPLIED' || (c.proctoringLogs && c.proctoringLogs.length > 0)));
+            setCandidates(mergedCandidates.filter(c => 
+                c.status === 'APPLIED' || 
+                c.status === 'DISQUALIFIED' || 
+                (c.proctoringLogs && c.proctoringLogs.length > 0)
+            ));
         } catch (error) {
             console.error('Error fetching proctoring data:', error);
         } finally {
@@ -56,12 +70,14 @@ const ProctoringDashboard = () => {
 
     const stats = React.useMemo(() => {
         const getViolationCount = (logs) => logs ? logs.length : 0;
-        const isTerminated = (candidate) => candidate.submissionReason === 'Interview terminated due to suspicious activity.';
+        const isTerminated = (candidate) => 
+            candidate.status === 'DISQUALIFIED' || 
+            candidate.submissionReason === 'Interview terminated due to suspicious activity.';
         
         return {
             violationCount: filteredCandidates.reduce((acc, c) => acc + getViolationCount(c.proctoringLogs), 0),
             terminatedCount: filteredCandidates.filter(isTerminated).length,
-            clearCount: filteredCandidates.filter(c => getViolationCount(c.proctoringLogs) === 0).length
+            clearCount: filteredCandidates.filter(c => !isTerminated(c) && getViolationCount(c.proctoringLogs) === 0).length
         };
     }, [filteredCandidates]);
 

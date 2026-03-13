@@ -8,6 +8,7 @@ const CandidateDetailModal = ({
     isOpen,
     onClose,
     candidate,
+    vacancies = [],
     questions,
     interviews = [],
     interviewers = [],
@@ -19,6 +20,7 @@ const CandidateDetailModal = ({
 
     const interview = interviews.find(i => String(i.candidateId) === String(candidate.id));
     const interviewer = interview ? interviewers.find(i => String(i.id) === String(interview.interviewerId)) : null;
+    const vacancy = vacancies.find(v => String(v.id) === String(candidate.position));
 
     return (
         <Modal
@@ -75,7 +77,7 @@ const CandidateDetailModal = ({
                         <div>
                             <h2 className="text-3xl font-black text-[#19325c] tracking-tight">{candidate.name}</h2>
                             <div className="flex items-center gap-3 mt-1.5">
-                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{candidate.position}</span>
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{vacancy?.title || candidate.position || 'Not specified'}</span>
                                 <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
                                 <Badge
                                     variant={

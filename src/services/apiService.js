@@ -1,113 +1,177 @@
-import api from './api';
+import axios from 'axios';
+
+const api = axios.create({
+    baseURL: 'http://localhost:8083'
+});
+
+const RESOURCE_MAP = {
+    'admin/questions': 'questions',
+    'admin/users': 'users',
+    'admin/vacancies': 'vacancies',
+    'hr/candidates': 'candidates',
+    'exam/questions': 'questions',
+    'candidates/register': 'candidates',
+    'candidates': 'candidates'
+};
+
+const cleanResource = (resource) => {
+    let path = resource.replace('/api', '').split('?')[0];
+    path = path.replace(/^\/+|\/+$/g, '');
+    
+    const parts = path.split('/');
+    // Check prefixes from longest to shortest
+    for (let i = parts.length; i > 0; i--) {
+        const prefix = parts.slice(0, i).join('/');
+        if (RESOURCE_MAP[prefix]) {
+            const mapped = RESOURCE_MAP[prefix];
+            const remaining = parts.slice(i).join('/');
+            return remaining ? `${mapped}/${remaining}` : mapped;
+        }
+    }
+    return path;
+};
+
+const normalizeData = (key, data) => {
+    if (!data) return data;
+    if (key === 'questions') {
+        const normalize = (q) => ({
+            ...q,
+            questionText: q.questionText || q.text || '',
+            difficulty: q.difficulty || q.level || 'Basic'
+        });
+        return Array.isArray(data) ? data.map(normalize) : normalize(data);
+    }
+    return data;
+};
 
 const ApiService = {
-    get: (url) => api.get(url).then(res => res.data).catch(err => {
-        console.error(`API Get Error [${url}]:`, err);
-        throw err;
-    }),
-    post: (url, data) => api.post(url, data).then(res => res.data).catch(err => {
-        console.error(`API Post Error [${url}]:`, err);
-        throw err;
-    }),
-    put: (url, data) => api.put(url, data).then(res => res.data).catch(err => {
-        console.error(`API Put Error [${url}]:`, err);
-        throw err;
-    }),
-    patch: (url, data) => api.patch(url, data).then(res => res.data).catch(err => {
-        console.error(`API Patch Error [${url}]:`, err);
-        throw err;
-    }),
-    delete: (url) => api.delete(url).then(res => res.data).catch(err => {
-        console.error(`API Delete Error [${url}]:`, err);
-        throw err;
-    }),
+    get: async (resource) => {
+        const key = cleanResource(resource);
+        const { data } = await api.get(key);
+        return normalizeData(key, data);
+    },
+
+    post: async (resource, data) => {
+        const key = cleanResource(resource);
+        const res = await api.post(key, data);
+        return res.data;
+    },
+
+    put: async (resource, data) => {
+        const key = cleanResource(resource);
+        const res = await api.put(key, data);
+        return res.data;
+    },
+
+    patch: async (resource, data) => {
+        const key = cleanResource(resource);
+        const res = await api.patch(key, data);
+        return res.data;
+    },
+
+    delete: async (resource) => {
+        const key = cleanResource(resource);
+        const res = await api.delete(key);
+        return res.data;
+    },
 
     async uploadResume(candidateId, formData) {
-        return api.post(`/api/candidates/${candidateId}/resume`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        console.warn('Simulating resume upload locally');
+        return { success: true, path: '/mock/resumes/uploaded.pdf' };
     },
 
-    // Specific methods
-    getUsers: () => api.get('/api/admin/users').then(res => res.data),
+    getUsers: async () => {
+        return ApiService.get('/users');
+    },
+    
     async updateAdminUser(id, data) {
-        return api.put(`/api/admin/users/${id}`, data);
+        return ApiService.put(`/users/${id}`, data);
     },
 
-    // Phase 5: Exam Flow (Guide Alignment)
     async startExam(candidateId) {
-        return api.post(`/api/exam/start/${candidateId}`);
+        return ApiService.post('/exams', { candidateId, startTime: new Date().toISOString() });
     },
 
-    async getQuestions(candidateId) {
-        return api.get(`/api/exam/questions/${candidateId}`);
+    async getQuestions() {
+        return ApiService.get('/questions');
     },
 
     async saveAnswer(candidateId, questionId, selectedAnswer) {
-        return api.post('/api/exam/answer', { candidateId, questionId, selectedAnswer });
+        return ApiService.post('/answers', { candidateId, questionId, selectedAnswer });
     },
 
     async submitExam(candidateId) {
-        return api.post(`/api/exam/submit/${candidateId}`);
+        return ApiService.patch(`/exams/${candidateId}`, { status: 'submitted' });
     },
 
-    // Phase 6 & Proctoring (Guide Alignment)
     async logProctoringEvent(candidateId, eventType, eventDetails) {
-        return api.post('/api/proctoring/log', { candidateId, eventType, eventDetails });
+        return ApiService.post('/proctoring_logs', { candidateId, eventType, eventDetails });
     },
 
-    // Phase 8 & 9: HR & Interviewer Decisions (Guide Alignment)
     async submitInterviewerFeedback(feedback) {
-        return api.post('/api/interviewer/feedback', feedback);
+        return ApiService.post('/interviewer_feedback', feedback);
     },
 
-    async submitHrDecision(decision) {
-        return api.post('/api/hr/decision', decision);
+    async submitHrDecision(candidateId, decision, comments) {
+        return ApiService.post('/hr_decisions', { candidateId, decision, comments, createdAt: new Date().toISOString() });
     },
 
     async getHrCandidates() {
-        return api.get('/api/hr/candidates');
+        return ApiService.get('/candidates');
     },
 
     async scheduleInterview(candidateId, interviewData) {
-        // Guide mentions no backend endpoint yet, keeping as placeholder or matching potential team controller
-        return api.post('/api/interviews/schedule', { candidateId, ...interviewData });
+        return ApiService.post('/interviews', { candidateId, ...interviewData });
     },
 
-    // Spring Boot Auth Integration
-    login: async (email, password) => {
+    login: async (email) => {
         try {
-            const data = await api.post('/api/auth/login', { email, password }).then(res => res.data);
+            // Check both users (staff) and candidates collections
+            const [users, candidates] = await Promise.all([
+                ApiService.get('/users'),
+                ApiService.get('/candidates')
+            ]);
             
-            if (data && data.token) {
-                // Guide Step 4: roleMap strictly matching RoleType enum
+            let user = (users || []).find(u => u.email === email);
+            let isCandidate = false;
+
+            if (!user) {
+                user = (candidates || []).find(c => c.email === email);
+                if (user) {
+                    isCandidate = true;
+                    user.role = 'ROLE_CANDIDATE'; // Assign candidate role if found in candidates table
+                }
+            }
+            
+            if (user) {
                 const roleMap = {
                     'ROLE_SUPER_ADMIN': 'superadmin',
                     'ROLE_HR':          'hr',
                     'ROLE_INTERVIEWER': 'interviewer',
+                    'ROLE_CANDIDATE':   'candidate'
                 };
                 
-                const role = roleMap[data.role] || data.role.replace('ROLE_','').toLowerCase();
+                const role = roleMap[user.role] || user.role.replace('ROLE_','').toLowerCase();
                 
-                // Guide Step 4: THIS IS CRITICAL - interceptor reads 'user'
-                localStorage.setItem('user', JSON.stringify({ token: data.token }));
-                
+                localStorage.setItem('user', JSON.stringify({ token: 'mock-token-' + role }));
                 sessionStorage.setItem('isAuthenticated', 'true');
                 sessionStorage.setItem('userRole', role);
-                sessionStorage.setItem('userId', String(data.userId));
-                sessionStorage.setItem('userName', data.name);
-                localStorage.setItem('admin_user', JSON.stringify(data));
+                sessionStorage.setItem('userId', String(user.id));
+                sessionStorage.setItem('userName', user.name);
+                localStorage.setItem('admin_user', JSON.stringify({ ...user, role: role }));
 
                 return { 
-                    user: { id: data.userId, email, role: data.role }, 
-                    type: role === 'candidate' ? 'candidate' : 'staff' 
+                    user: { 
+                        ...user,
+                        role: role
+                    }, 
+                    type: isCandidate ? 'candidate' : 'staff' 
                 };
             }
-            return null;
+            throw new Error('User not found in mock database.');
         } catch (error) {
             console.error('Login Error:', error);
-            const message = error.response?.data?.message || 'Invalid email or password.';
-            throw new Error(message);
+            throw new Error(error.message || 'Login failed.');
         }
     }
 };

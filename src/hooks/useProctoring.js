@@ -26,7 +26,9 @@ const useProctoring = (onAutoSubmit, videoRef, candidateId, maxViolations = 3) =
     const localLogsRef = useRef([]);
 
     useEffect(() => {
-        onAutoSubmitRef.current = onAutoSubmit;
+        if (typeof onAutoSubmit === 'function') {
+            onAutoSubmitRef.current = onAutoSubmit;
+        }
     }, [onAutoSubmit]);
 
     const captureScreenshot = useCallback(() => {
@@ -74,7 +76,9 @@ const useProctoring = (onAutoSubmit, videoRef, candidateId, maxViolations = 3) =
         setViolations((prev) => {
             const next = prev + 1;
             if (next >= maxViolations) {
-                onAutoSubmitRef.current?.('Interview terminated due to suspicious activity.');
+                if (typeof onAutoSubmitRef.current === 'function') {
+                    onAutoSubmitRef.current('Interview terminated due to suspicious activity.');
+                }
             }
             return next;
         });

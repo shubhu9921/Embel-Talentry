@@ -36,7 +36,6 @@ const ExamInstructions = () => {
         { icon: MonitorOff, text: "Tab switching or window blurring is strictly prohibited", color: "text-orange-500" },
         { icon: Users, text: "Multiple faces or extra people in the frame are not allowed", color: "text-purple-500" },
         { icon: ShieldAlert, text: "Malpractice detection will result in auto-submission", color: "text-red-500" },
-        { icon: CheckCircle, text: "Candidates caught violating rules will be banned for 8 months", color: "text-slate-900" },
     ];
 
     if (isFinished) {
@@ -76,10 +75,10 @@ const ExamInstructions = () => {
 
                     <Button
                         onClick={() => navigate('/login')}
-                        variant={isMalpractice ? 'danger' : 'primary'}
+                        variant="primary"
                         size="lg"
                         icon={ArrowRight}
-                        className="shadow-2xl"
+                        className="bg-[#ff6e00] text-white border-none shadow-[0_10px_40px_rgba(255,110,0,0.3)] hover:shadow-[0_20px_60px_rgba(255,110,0,0.45)] hover:bg-[#e05d00] font-black tracking-widest px-12 rounded-2xl transition-all duration-300 transform hover:-translate-y-1"
                     >
                         Return to Login
                     </Button>
