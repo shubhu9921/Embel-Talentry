@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Webcam from 'react-webcam';
-import { 
-    ChevronLeft, ChevronRight, AlertTriangle, ShieldCheck, CheckCircle2, 
-    Users, EyeOff, Mic, MonitorX 
+import {
+    ChevronLeft, ChevronRight, AlertTriangle, ShieldCheck, CheckCircle2,
+    Users, EyeOff, Mic, MonitorX
 } from 'lucide-react';
 import Button from '../../components/Button';
 import useTimer from '../../hooks/useTimer';
@@ -11,7 +11,7 @@ import useProctoring from '../../hooks/useProctoring';
 import CodingEditor from './CodingEditor';
 import Timer from '../../components/Timer';
 import Loader from '../../components/Loader';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 
 const ViolationOverlay = ({ active, type, icon: Icon, title, message, color, onAction, actionLabel, violations }) => {
     if (!active) return null;
@@ -138,8 +138,8 @@ const MobileBlockingOverlay = () => (
         </div>
         <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">Desktop Access Required</h2>
         <p className="text-slate-300 mb-10 max-w-md font-medium text-lg leading-relaxed">
-            This exam cannot be taken on a smartphone or tablet. Please switch to a 
-            <span className="text-orange-500 font-bold block mt-2">Desktop or Laptop computer</span> 
+            This exam cannot be taken on a smartphone or tablet. Please switch to a
+            <span className="text-orange-500 font-bold block mt-2">Desktop or Laptop computer</span>
             to continue with the assessment.
         </p>
     </div>
@@ -186,8 +186,10 @@ const ExamPage = () => {
 
         const fetchQuestions = async () => {
             try {
-                const data = await ApiService.get('/questions');
-                const activePool = data.filter(q => q.position === storedCandidate.position && q.selected === true);
+                const data = await ApiService.getExamQuestions(storedCandidate.id);
+                // The candidate-specific endpoint should already return relevant questions, 
+                // but we keep the filtering logic just in case the backend format varies.
+                const activePool = Array.isArray(data) ? data : (data.questions || []);
                 const shuffled = [...activePool].sort(() => Math.random() - 0.5);
                 setQuestions(shuffled);
             } catch (error) {
@@ -204,7 +206,7 @@ const ExamPage = () => {
         setIsSubmitting(true);
         try {
             const isMalpractice = reason.includes('terminated') || reason.includes('MALPRACTICE');
-            
+
             let score = 0;
             if (!isMalpractice) {
                 let correctCount = 0;
@@ -248,10 +250,10 @@ const ExamPage = () => {
 
     // Fix timer duration: 45 minutes
     const { seconds } = useTimer(45, () => onSubmit('Timer expired'));
-    
-    const { 
-        violations, isFaceMissing, isMultipleFaces, isSuspiciousMovement, 
-        isVoiceDetected, isTabViolation, resetTabViolation 
+
+    const {
+        violations, isFaceMissing, isMultipleFaces, isSuspiciousMovement,
+        isVoiceDetected, isTabViolation, resetTabViolation
     } = useProctoring(onSubmit, webcamRef, candidate?.id, 3);
 
     const handleAnswerSelect = (option) => {
@@ -289,64 +291,64 @@ const ExamPage = () => {
 
     return (
         <div ref={containerRef} className="h-screen bg-slate-50 flex flex-col font-sans antialiased overflow-hidden select-none relative">
-            <ViolationOverlay 
-                active={isTabViolation} 
-                icon={MonitorX} 
-                title="Malpractice Attempt Detected" 
-                message="You switched tabs or minimized the window. This event has been recorded." 
-                color="bg-purple-900/95" 
-                onAction={resetTabViolation} 
-                actionLabel="Accept & Continue" 
+            <ViolationOverlay
+                active={isTabViolation}
+                icon={MonitorX}
+                title="Malpractice Attempt Detected"
+                message="You switched tabs or minimized the window. This event has been recorded."
+                color="bg-purple-900/95"
+                onAction={resetTabViolation}
+                actionLabel="Accept & Continue"
                 violations={violations}
             />
-            <ViolationOverlay 
-                active={isMultipleFaces} 
-                icon={Users} 
-                title="Multiple Faces Detected" 
-                message="Please ensure you are alone. Integrity violation has been logged." 
-                color="bg-orange-600/90" 
+            <ViolationOverlay
+                active={isMultipleFaces}
+                icon={Users}
+                title="Multiple Faces Detected"
+                message="Please ensure you are alone. Integrity violation has been logged."
+                color="bg-orange-600/90"
                 violations={violations}
             />
-            <ViolationOverlay 
-                active={isSuspiciousMovement} 
-                icon={EyeOff} 
-                title="Suspicious Head Movement" 
-                message="Suspicious head movement detected. Please focus on the screen." 
-                color="bg-yellow-600/90" 
+            <ViolationOverlay
+                active={isSuspiciousMovement}
+                icon={EyeOff}
+                title="Suspicious Head Movement"
+                message="Suspicious head movement detected. Please focus on the screen."
+                color="bg-yellow-600/90"
                 violations={violations}
             />
-            <ViolationOverlay 
-                active={isVoiceDetected} 
-                icon={Mic} 
-                title="Background Voice Detected" 
-                message="Background voice detected. Please ensure you are alone." 
-                color="bg-indigo-600/90" 
+            <ViolationOverlay
+                active={isVoiceDetected}
+                icon={Mic}
+                title="Background Voice Detected"
+                message="Background voice detected. Please ensure you are alone."
+                color="bg-indigo-600/90"
                 violations={violations}
             />
-            <ViolationOverlay 
-                active={isFaceMissing} 
-                icon={AlertTriangle} 
-                title="Face Not Detected" 
-                message="You moved away from the screen. Please remain visible during the interview." 
-                color="bg-red-600/90" 
+            <ViolationOverlay
+                active={isFaceMissing}
+                icon={AlertTriangle}
+                title="Face Not Detected"
+                message="You moved away from the screen. Please remain visible during the interview."
+                color="bg-red-600/90"
                 violations={violations}
             />
-            
-            <FullscreenPrompt 
-                active={!loading && typeof document !== 'undefined' && !document.fullscreenElement} 
-                onEnter={enterFullscreen} 
+
+            <FullscreenPrompt
+                active={!loading && typeof document !== 'undefined' && !document.fullscreenElement}
+                onEnter={enterFullscreen}
             />
 
             <ExamHeader candidate={candidate} violations={violations} seconds={seconds} onSubmit={() => onSubmit('Manual submission')} />
 
             <div className="flex-1 flex overflow-hidden relative">
-                <Sidebar 
-                    webcamRef={webcamRef} 
-                    violations={violations} 
-                    questions={questions} 
-                    answers={answers} 
-                    currentQuestion={currentQuestion} 
-                    setCurrentQuestion={setCurrentQuestion} 
+                <Sidebar
+                    webcamRef={webcamRef}
+                    violations={violations}
+                    questions={questions}
+                    answers={answers}
+                    currentQuestion={currentQuestion}
+                    setCurrentQuestion={setCurrentQuestion}
                 />
 
                 <main className="flex-1 overflow-y-auto bg-slate-50/30 p-8 md:p-12 relative">

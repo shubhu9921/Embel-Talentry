@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import PageHeader from '../../components/PageHeader';
 import Loader from '../../components/Loader';
 import { Layout } from 'lucide-react';
@@ -26,18 +26,19 @@ const AdminDashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 const [candidates, vacancies, interviews] = await Promise.all([
-                    ApiService.get('/api/candidates'),
-                    ApiService.get('/api/vacancies'),
-                    ApiService.get('/api/interviews')
+                    ApiService.getAllCandidates(),
+                    ApiService.getAdminVacancies(),
+                    ApiService.getAllInterviews(),
+                    ApiService.getDashboardStats()
                 ]);
 
                 // Dynamic calculations
                 const totalCandidates = candidates.length || 0;
-                const activeAssessments = candidates.filter(c => 
+                const activeAssessments = candidates.filter(c =>
                     c.status === 'APPLIED' || c.status === 'EXAM_COMPLETED' || c.status === 'SCHEDULED'
                 ).length;
                 const interviewsCompleted = (interviews || []).length;
-                
+
                 // Calculate Trends (Current week vs previous week)
                 const now = new Date();
                 const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);

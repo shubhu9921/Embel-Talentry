@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Mail, CheckCircle2, AlertTriangle, Clock, History, FileText, ChevronRight } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
@@ -13,12 +13,12 @@ const CommunicationPortal = () => {
     const [sending, setSending] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
     const [activities, setActivities] = useState([]);
-    
+
     // Dynamic Fields
     const [assessmentDate, setAssessmentDate] = useState('');
     const [assessmentTime, setAssessmentTime] = useState('');
     const [interviewRound, setInterviewRound] = useState('Technical');
-    
+
     // Manual Credential Fields
     const [manualName, setManualName] = useState('');
     const [manualEmail, setManualEmail] = useState('');
@@ -64,7 +64,7 @@ const CommunicationPortal = () => {
     }, [selectedType]);
 
     const toggleCandidate = (id) => {
-        setSelectedCandidates(prev => 
+        setSelectedCandidates(prev =>
             prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
         );
     };
@@ -142,17 +142,17 @@ const CommunicationPortal = () => {
             });
 
             await new Promise(resolve => setTimeout(resolve, 1500));
-            
+
             setSuccessMsg(`Success! Notifications have been sent successfully.`);
             setSelectedCandidates([]);
-            
+
             if (selectedType === 'credentials') {
                 setManualName(''); setManualEmail(''); setManualPassword('');
             }
-            
+
             const actData = await ApiService.get('/activities?_sort=timestamp&_order=desc&_limit=5');
             setActivities(actData);
-            
+
             setTimeout(() => setSuccessMsg(''), 5000);
         } catch (error) {
             console.error('Error sending emails:', error);
@@ -212,9 +212,9 @@ const CommunicationPortal = () => {
                                         {new Date(act.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                     </p>
                                     <p className="text-xs font-medium mt-1 text-slate-300">
-                                        {act.message.split(new RegExp(`(${act.type})`, 'i')).map((part, index) => 
-                                            part.toLowerCase() === act.type.toLowerCase() ? 
-                                            <span key={index} className="text-[#ff6e00] font-bold">{part}</span> : part
+                                        {act.message.split(new RegExp(`(${act.type})`, 'i')).map((part, index) =>
+                                            part.toLowerCase() === act.type.toLowerCase() ?
+                                                <span key={index} className="text-[#ff6e00] font-bold">{part}</span> : part
                                         )}
                                     </p>
                                 </div>
@@ -270,9 +270,9 @@ const CommunicationPortal = () => {
                                         <>
                                             <div className="space-y-2">
                                                 <label htmlFor="assessment-date" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assessment Date</label>
-                                                <input 
+                                                <input
                                                     id="assessment-date"
-                                                    type="date" 
+                                                    type="date"
                                                     value={assessmentDate}
                                                     onChange={(e) => setAssessmentDate(e.target.value)}
                                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] outline-none transition-all"
@@ -280,9 +280,9 @@ const CommunicationPortal = () => {
                                             </div>
                                             <div className="space-y-2">
                                                 <label htmlFor="assessment-time" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assessment Time</label>
-                                                <input 
+                                                <input
                                                     id="assessment-time"
-                                                    type="time" 
+                                                    type="time"
                                                     value={assessmentTime}
                                                     onChange={(e) => setAssessmentTime(e.target.value)}
                                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] outline-none transition-all"
@@ -292,7 +292,7 @@ const CommunicationPortal = () => {
                                     ) : (
                                         <div className="space-y-2 col-span-2">
                                             <label htmlFor="interview-round" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Interview Round</label>
-                                            <select 
+                                            <select
                                                 id="interview-round"
                                                 value={interviewRound}
                                                 onChange={(e) => setInterviewRound(e.target.value)}
@@ -336,7 +336,7 @@ const CommunicationPortal = () => {
                                     </Button>
                                 )}
                             </div>
-                            
+
                             <div className="max-h-[240px] overflow-y-auto pr-2 custom-scrollbar space-y-2">
                                 {filteredCandidates.length > 0 ? filteredCandidates.map((c) => (
                                     <Button

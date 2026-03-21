@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Star, CheckCircle2, Globe, Shield, Zap, Play } from 'lucide-react';
 import Navbar from '../../components/public/Navbar';
 import JobCard from '../../components/public/JobCard';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 
 const LandingPage = () => {
     const [jobs, setJobs] = useState([]);
@@ -12,7 +12,7 @@ const LandingPage = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await ApiService.get('/api/vacancies');
+                const response = await ApiService.getOpenVacancies();
                 setJobs(response.filter(j => j.isOpen).slice(0, 3));
             } catch (error) {
                 console.error("Error fetching jobs:", error);

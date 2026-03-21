@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle2, XCircle, Star, MessageSquare, Terminal, Award } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
@@ -14,7 +14,7 @@ const TechnicalReview = () => {
     useEffect(() => {
         const fetchReviewCandidates = async () => {
             try {
-                const data = await ApiService.get('/api/candidates');
+                const data = await ApiService.getAllCandidates();
                 // Guide Section 8: Only show candidates pending interview
                 setCandidates(data.filter(c => c.status === 'INTERVIEW_PENDING'));
             } catch (error) {
@@ -37,7 +37,7 @@ const TechnicalReview = () => {
                 communicationScore: 7, // Placeholder or add 2nd rating
                 recommendation: feedback.decision === 'hire' ? 'SELECTED' : 'REJECTED'
             });
-            
+
             setCandidates(candidates.filter(c => c.id !== selectedCandidate.id));
             setSelectedCandidate(null);
             setFeedback({ rating: 0, notes: '', decision: '' });

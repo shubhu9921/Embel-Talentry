@@ -7,22 +7,27 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Mock persistent auth
-        const savedUser = localStorage.getItem('user');
-        if (savedUser) {
-            setUser(JSON.parse(savedUser));
+        const token = localStorage.getItem('token');
+        const savedUser = localStorage.getItem('admin_user');
+        if (token && savedUser) {
+            try {
+                setUser(JSON.parse(savedUser));
+            } catch {
+                localStorage.clear();
+            }
         }
         setLoading(false);
     }, []);
 
     const login = (userData) => {
         setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('admin_user', JSON.stringify(userData));
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('user');
+        localStorage.clear();
+        sessionStorage.clear();
     };
 
     return (

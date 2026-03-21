@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Briefcase } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import PageHeader from '../../components/PageHeader';
@@ -26,8 +26,8 @@ const Vacancies = () => {
         setLoading(true);
         try {
             const [vData, cData] = await Promise.all([
-                ApiService.get('/api/vacancies'),
-                ApiService.get('/api/candidates')
+                ApiService.getAdminVacancies(),
+                ApiService.getAllCandidates()
             ]);
             setVacancies(vData);
             setCandidates(cData);
@@ -58,9 +58,9 @@ const Vacancies = () => {
         e.preventDefault();
         try {
             if (formData.id && vacancies.find(v => v.id === formData.id)) {
-                await ApiService.put(`/api/vacancies/${formData.id}`, formData);
+                await ApiService.updateVacancy(formData.id, formData);
             } else {
-                await ApiService.post('/api/vacancies', {
+                await ApiService.createVacancy({
                     ...formData,
                     id: `v-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
                 });
@@ -76,7 +76,7 @@ const Vacancies = () => {
     const handleToggleStatus = async (vacancy) => {
         try {
             const updated = { ...vacancy, isOpen: !vacancy.isOpen };
-            await ApiService.put(`/api/vacancies/${vacancy.id}`, updated);
+            await ApiService.updateVacancy(vacancy.id, updated);
             setVacancies(prev => prev.map(v => v.id === vacancy.id ? updated : v));
         } catch (error) {
             console.error('Error toggling status:', error);
@@ -86,7 +86,7 @@ const Vacancies = () => {
     const handleDelete = async (vacancyId) => {
         if (!globalThis.confirm('Are you sure you want to delete this vacancy?')) return;
         try {
-            await ApiService.delete(`/api/vacancies/${vacancyId}`);
+            await ApiService.deleteVacancy(vacancyId);
             setVacancies(prev => prev.filter(v => v.id !== vacancyId));
         } catch (error) {
             console.error('Error deleting vacancy:', error);

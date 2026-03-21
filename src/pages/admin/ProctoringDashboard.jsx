@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Search, Filter } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import PageHeader from '../../components/PageHeader';
@@ -19,10 +19,10 @@ const ProctoringDashboard = () => {
     const fetchData = async () => {
         try {
             const [candData, logsData] = await Promise.all([
-                ApiService.get('/api/candidates'),
-                ApiService.get('/api/proctoring_logs')
+                ApiService.getAllCandidates(),
+                ApiService.getAllProctoringEvents()
             ]);
-            
+
             // Merge logs into candidates for easy access
             const mergedCandidates = (candData || []).map(c => ({
                 ...c,
@@ -30,9 +30,9 @@ const ProctoringDashboard = () => {
             }));
 
             // Filter candidates who have proctoring logs or are currently in exam
-            setCandidates(mergedCandidates.filter(c => 
-                c.status === 'APPLIED' || 
-                c.status === 'DISQUALIFIED' || 
+            setCandidates(mergedCandidates.filter(c =>
+                c.status === 'APPLIED' ||
+                c.status === 'DISQUALIFIED' ||
                 (c.proctoringLogs && c.proctoringLogs.length > 0)
             ));
         } catch (error) {
@@ -70,10 +70,10 @@ const ProctoringDashboard = () => {
 
     const stats = React.useMemo(() => {
         const getViolationCount = (logs) => logs ? logs.length : 0;
-        const isTerminated = (candidate) => 
-            candidate.status === 'DISQUALIFIED' || 
+        const isTerminated = (candidate) =>
+            candidate.status === 'DISQUALIFIED' ||
             candidate.submissionReason === 'Interview terminated due to suspicious activity.';
-        
+
         return {
             violationCount: filteredCandidates.reduce((acc, c) => acc + getViolationCount(c.proctoringLogs), 0),
             terminatedCount: filteredCandidates.filter(isTerminated).length,

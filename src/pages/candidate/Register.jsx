@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin, Eye, EyeOff, Banknote } from 'lucide-react';
+import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin, Eye, EyeOff, Banknote, MonitorOff } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import { geoData } from '../../utils/geoData';
 import Button from '../../components/Button';
 import Select from '../../components/Select';
@@ -58,9 +58,9 @@ const FormField = ({ label, icon: Icon, error, children, required }) => {
                         <Icon className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
                     </div>
                 )}
-                {React.cloneElement(children, { 
-                    id, 
-                    className: `${children.props.className || ''} ${Icon ? 'pl-11' : 'pl-4'}` 
+                {React.cloneElement(children, {
+                    id,
+                    className: `${children.props.className || ''} ${Icon ? 'pl-11' : 'pl-4'}`
                 })}
             </div>
             {error && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{error}</p>}
@@ -121,7 +121,7 @@ const SuccessView = ({ candidateData, navigate }) => {
     );
 };
 
-const PersonalInformationSection = ({ register, errors, watchCountry, watchState, watchCity, allCountries, statesForCountry, citiesForState, setValue, showPassword, setShowPassword }) => (
+const PersonalInformationSection = ({ register, errors, watch, watchCountry, watchState, watchCity, allCountries, statesForCountry, citiesForState, setValue, showPassword, setShowPassword }) => (
     <div className="space-y-8">
         <SectionHeader title="Personal Information" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -140,14 +140,14 @@ const PersonalInformationSection = ({ register, errors, watchCountry, watchState
             <div className="md:col-span-2 p-6 bg-orange-50/50 border border-orange-100 rounded-3xl space-y-4">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-[#ff6e00] rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <MonitorX className="w-5 h-5" />
+                        <MonitorOff className="w-5 h-5" />
                     </div>
                     <div>
                         <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest">Hardware Requirements</h4>
                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Assessment Environment Check</p>
                     </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <Select
                         label="Do you have a laptop?"
@@ -159,7 +159,7 @@ const PersonalInformationSection = ({ register, errors, watchCountry, watchState
                         onSelect={val => setValue('hasLaptop', val)}
                         required
                     />
-                    
+
                     {watch('hasLaptop') === 'no' && (
                         <div className="flex items-start gap-3 p-4 bg-white rounded-2xl border border-orange-200 animate-in fade-in slide-in-from-left-4 duration-300">
                             <AlertCircle className="w-5 h-5 text-[#ff6e00] shrink-0 mt-0.5" />
@@ -411,17 +411,31 @@ const Register = () => {
         const fetchVacancies = async () => {
             try {
                 // Guide Section 4: backend filters server-side with ?openOnly=true
-                const data = await ApiService.get('/api/vacancies?openOnly=true');
-                setVacancies(data);
-
-                if (preSelectedPosition) {
-                    const exists = data.find(v => v.id === Number.parseInt(preSelectedPosition));
-                    if (exists) {
-                        setValue('position', exists.id);
+                const data = await ApiService.getOpenVacancies();
+                if (data && data.length > 0) {
+                    setVacancies(data);
+                    if (preSelectedPosition) {
+                        const exists = data.find(v => v.id === Number.parseInt(preSelectedPosition));
+                        if (exists) {
+                            setValue('position', exists.id);
+                        }
                     }
+                } else {
+                    // Fallback to dummy data if API returns empty
+                    const fallbackVacancies = [
+                        { id: 1, title: "Java Developer", slug: "java-developer" },
+                        { id: 2, title: "React Developer", slug: "react-developer" }
+                    ];
+                    setVacancies(fallbackVacancies);
                 }
             } catch (error) {
                 console.error('Error fetching vacancies:', error);
+                // Fallback to dummy data if API fails
+                const fallbackVacancies = [
+                    { id: 1, title: "Java Developer", slug: "java-developer" },
+                    { id: 2, title: "React Developer", slug: "react-developer" }
+                ];
+                setVacancies(fallbackVacancies);
             }
         };
         fetchVacancies();
@@ -433,7 +447,7 @@ const Register = () => {
         setSubmitting(true);
         try {
             const { resume, ...rest } = data;
-            
+
             // Guide Section 4: send only what CandidateRequestDto accepts
             const payload = {
                 name: rest.name,
@@ -458,14 +472,14 @@ const Register = () => {
                 hasLaptop: rest.hasLaptop
             };
 
-            const response = await ApiService.post('/api/candidates/register', payload);
+            const response = await ApiService.registerCandidate(payload);
             const savedCandidate = response; // Backend returns candidate with real id
             const candidateId = savedCandidate.id;
 
             if (resume?.[0] && candidateId) {
                 const form = new FormData();
                 form.append('file', resume[0]); // Guide Section 4 uses 'file'
-                
+
                 // Upload resume separately using the helper in ApiService
                 await ApiService.uploadResume(candidateId, form);
             }
@@ -511,6 +525,7 @@ const Register = () => {
                             <PersonalInformationSection
                                 register={register}
                                 errors={errors}
+                                watch={watch}
                                 watchCountry={watchCountry}
                                 watchState={watchState}
                                 watchCity={watchCity}

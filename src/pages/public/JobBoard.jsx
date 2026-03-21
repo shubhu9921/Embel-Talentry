@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Search, MapPin, Briefcase, Filter, ArrowRight, Clock } from 'lucide-react';
 import Navbar from '../../components/public/Navbar';
 import JobCard from '../../components/public/JobCard';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Select from '../../components/Select';
 
 const JobBoard = () => {
@@ -16,7 +16,7 @@ const JobBoard = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await ApiService.get('/api/vacancies');
+                const response = await ApiService.getOpenVacancies();
                 setJobs(response.filter(j => j.isOpen));
                 setFilteredJobs(response.filter(j => j.isOpen));
             } catch (error) {
@@ -68,7 +68,7 @@ const JobBoard = () => {
                             />
                         </div>
                         <div className="md:w-64 relative group overflow-visible">
-                            <Select 
+                            <Select
                                 value={selectedCategory}
                                 options={categories}
                                 onSelect={cat => setSelectedCategory(cat)}

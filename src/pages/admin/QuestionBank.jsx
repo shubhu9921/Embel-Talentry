@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, ArrowLeft } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import PageHeader from '../../components/PageHeader';
@@ -40,10 +40,10 @@ const QuestionBank = () => {
         setLoading(true);
         try {
             const [qData, vData] = await Promise.all([
-                ApiService.get('/api/admin/questions'),
-                ApiService.get('/api/vacancies')
+                ApiService.getAdminQuestions(),
+                ApiService.getAdminVacancies()
             ]);
-            
+
             // Map Backend fields to Frontend expected fields
             const mappedQuestions = (qData || []).map(q => ({
                 ...q,
@@ -72,7 +72,7 @@ const QuestionBank = () => {
                 correctAnswer: String.fromCharCode(65 + parseInt(updated.correct)),
                 difficulty: updated.level
             };
-            await ApiService.put(`/api/admin/questions/${question.id}`, payload);
+            await ApiService.updateQuestion(question.id, payload);
             setQuestions(prev => prev.map(q => q.id === question.id ? updated : q));
         } catch (error) {
             console.error('Error toggling status:', error);
@@ -84,7 +84,7 @@ const QuestionBank = () => {
         try {
             const filtered = [...filteredQuestions];
             const updatedQuestions = [];
-            
+
             // Sequential processing is more stable for json-server file writes
             for (const q of filtered) {
                 try {
@@ -102,7 +102,7 @@ const QuestionBank = () => {
             });
             setQuestions(mappedQuestions);
 
-            const message = updatedQuestions.length < filtered.length 
+            const message = updatedQuestions.length < filtered.length
                 ? `Updated ${updatedQuestions.length} of ${filtered.length} questions. Some failed.`
                 : 'Bulk update successful!';
             const type = updatedQuestions.length < filtered.length ? 'warning' : 'success';
@@ -116,7 +116,7 @@ const QuestionBank = () => {
     const handleDelete = async (id) => {
         if (!globalThis.confirm('Delete this question?')) return;
         try {
-            await ApiService.delete(`/api/admin/questions/${id}`);
+            await ApiService.deleteQuestion(id);
             setQuestions(prev => prev.filter(q => q.id !== id));
             showNotification('Question deleted successfully.', 'success');
         } catch (error) {
@@ -139,11 +139,11 @@ const QuestionBank = () => {
                     correctAnswer: String.fromCharCode(65 + parseInt(formData.correct)),
                     difficulty: formData.level
                 };
-                await ApiService.put(`/api/admin/questions/${formData.id}`, payload);
+                await ApiService.updateQuestion(formData.id, payload);
                 showNotification('Question updated successfully.', 'success');
             } else {
                 if (!bulkConfig.position) return showNotification('Please select a target vacancy first.', 'warning');
-                
+
                 const validRows = rows.filter(r => r.text.trim());
                 if (validRows.length === 0) return showNotification('Please add at least one question.', 'warning');
 
@@ -155,7 +155,7 @@ const QuestionBank = () => {
                         position: bulkConfig.position,
                         type: 'mcq'
                     };
-                    return ApiService.post('/api/admin/questions', payload);
+                    return ApiService.addQuestion(payload);
                 }));
                 showNotification(`${validRows.length} questions added successfully.`, 'success');
             }

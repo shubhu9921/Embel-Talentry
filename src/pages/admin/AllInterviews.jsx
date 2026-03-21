@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Calendar } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Loader from '../../components/Loader';
 import PageHeader from '../../components/PageHeader';
 
@@ -17,8 +17,8 @@ const AllInterviews = () => {
         const fetchAllData = async () => {
             try {
                 const [candData, adminData] = await Promise.all([
-                    ApiService.get('/api/candidates'),
-                    ApiService.get('/api/admin/users')
+                    ApiService.getAllCandidates(),
+                    ApiService.getUsers()
                 ]);
 
                 // Map candidates with interview info to the "Interview" structure

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Mail, Send, CheckCircle2, XCircle, User, Users, Info, Briefcase, Phone, BookOpen, Download, Eye, Calendar, GraduationCap, Award, AlertCircle, History, Clock } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';

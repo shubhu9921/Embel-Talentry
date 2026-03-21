@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Search, Filter } from 'lucide-react';
-import ApiService from '../../services/ApiService';
+import ApiService from '../../services/apiService';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import PageHeader from '../../components/PageHeader';
@@ -38,18 +38,18 @@ const CandidatesList = () => {
         setLoading(true);
         try {
             const [candData, adminData, qData, vData, intData] = await Promise.all([
-                ApiService.get('/api/candidates'),
-                ApiService.get('/api/admin/users'),
-                ApiService.get('/api/admin/questions'),
-                ApiService.get('/api/vacancies'),
-                ApiService.get('/api/interviews')
+                ApiService.getAllCandidates(),
+                ApiService.getUsers(),
+                ApiService.getAdminQuestions(),
+                ApiService.getAdminVacancies(),
+                ApiService.getAllInterviews()
             ]);
             setCandidates(candData || []);
             setVacancies(vData || []);
             setInterviews(intData || []);
-            setInterviewers((adminData || []).filter(u => 
-                u.role === 'interviewer' || 
-                u.role === 'INTERVIEWER' || 
+            setInterviewers((adminData || []).filter(u =>
+                u.role === 'interviewer' ||
+                u.role === 'INTERVIEWER' ||
                 u.role === 'ROLE_INTERVIEWER'
             ));
             setInterviews(intData || []);
@@ -61,11 +61,11 @@ const CandidatesList = () => {
         }
     };
 
-const STATUS_GROUPS = {
-    shortlisted: ['SHORTLISTED', 'SCHEDULED', 'INTERVIEW_PENDING', 'INTERVIEW_COMPLETED'],
-    rejected: ['REJECTED', 'DISQUALIFIED'],
-    applied: ['APPLIED', 'EXAM_COMPLETED']
-};
+    const STATUS_GROUPS = {
+        shortlisted: ['SHORTLISTED', 'SCHEDULED', 'INTERVIEW_PENDING', 'INTERVIEW_COMPLETED'],
+        rejected: ['REJECTED', 'DISQUALIFIED'],
+        applied: ['APPLIED', 'EXAM_COMPLETED']
+    };
 
     const stats = React.useMemo(() => ({
         total: candidates.length,
@@ -80,11 +80,9 @@ const STATUS_GROUPS = {
             if (status === 'SELECTED' || status === 'REJECTED') {
                 await ApiService.submitHrDecision(id, status, extraData.notes || 'Decision via TalentTry Admin');
                 // Also update the candidate's main status
-                await ApiService.patch(`/api/candidates/${id}`, { status });
-            } else {
-                await ApiService.patch(`/api/candidates/${id}`, { status, ...extraData });
+                await ApiService.patch(`/candidates/${id}`, { status, ...extraData });
             }
-            
+
             setCandidates(prev => prev.map(c => c.id === id ? { ...c, status, ...extraData } : c));
             if (selectedCandidate?.id === id) {
                 setSelectedCandidate(prev => ({ ...prev, status, ...extraData }));
@@ -98,7 +96,7 @@ const STATUS_GROUPS = {
     const handleDeleteCandidate = async (id) => {
         if (!globalThis.confirm('Are you sure you want to permanently delete this candidate?')) return;
         try {
-            await ApiService.delete(`/api/candidates/${id}`);
+            await ApiService.delete(`/candidates/${id}`);
             setCandidates(prev => prev.filter(c => c.id !== id));
             if (selectedCandidate?.id === id) {
                 setIsDetailModalOpen(false);
@@ -138,8 +136,8 @@ const STATUS_GROUPS = {
         return candidates.filter(c => {
             const matchesSearch = (c.name || '').toLowerCase().includes(lowerSearch) ||
                 (c.email || '').toLowerCase().includes(lowerSearch);
-            const matchesStatus = statusFilter === 'all' || 
-                                 (STATUS_GROUPS[statusFilter] ? STATUS_GROUPS[statusFilter].includes(c.status) : c.status === statusFilter);
+            const matchesStatus = statusFilter === 'all' ||
+                (STATUS_GROUPS[statusFilter] ? STATUS_GROUPS[statusFilter].includes(c.status) : c.status === statusFilter);
             return matchesSearch && matchesStatus;
         });
     }, [candidates, searchTerm, statusFilter]);
@@ -164,9 +162,9 @@ const STATUS_GROUPS = {
                                 className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all w-64 shadow-sm"
                             />
                         </div>
-                        <Button 
-                            variant="outline" 
-                            icon={Filter} 
+                        <Button
+                            variant="outline"
+                            icon={Filter}
                             onClick={() => console.log('Filter clicked')}
                         >
                             Filter

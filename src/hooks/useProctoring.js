@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import * as faceapi from 'face-api.js';
-import ApiService from '../services/ApiService';
+import ApiService from '../services/apiService';
 
 const MODEL_URL = 'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights/';
 
@@ -13,7 +13,7 @@ const useProctoring = (onAutoSubmit, videoRef, candidateId, maxViolations = 3) =
     const [isSuspiciousMovement, setIsSuspiciousMovement] = useState(false);
     const [isVoiceDetected, setIsVoiceDetected] = useState(false);
     const [isTabViolation, setIsTabViolation] = useState(false);
-    
+
     // Refs for tracking state across intervals/listeners
     const audioContextRef = useRef(null);
     const analyserRef = useRef(null);
@@ -52,8 +52,12 @@ const useProctoring = (onAutoSubmit, videoRef, candidateId, maxViolations = 3) =
             }
 
             // Phase 6: Log proctoring event to Spring Boot backend
-            await ApiService.logProctoringEvent(candidateId, type, { evidence });
-            
+            await ApiService.logProctoringEvent({
+                candidateId:  candidateId,
+                eventType:    type,
+                eventDetails: { evidence }
+            });
+
             localLogsRef.current.push({ type, timestamp: new Date().toISOString() });
             console.log(`Violation logged to backend: ${type}`);
         } catch (err) {
@@ -170,7 +174,7 @@ const useProctoring = (onAutoSubmit, videoRef, candidateId, maxViolations = 3) =
     // 2. Audio Monitoring
     useEffect(() => {
         let isMounted = true;
-        
+
         const startAudio = async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });

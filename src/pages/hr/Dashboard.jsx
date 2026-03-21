@@ -15,7 +15,7 @@ const HRDashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const candidates = await ApiService.get('/api/candidates');
+                const candidates = await ApiService.getAllCandidates();
                 const notified = candidates.filter(c => c.feedback !== null).length;
                 const toNotify = candidates.filter(c => (c.status === 'SHORTLISTED' || c.status === 'REJECTED') && c.feedback === null).length;
 

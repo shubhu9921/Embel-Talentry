@@ -164,10 +164,10 @@ const ExamInstructions = () => {
                             {(!cameraReady || !acceptedTerms) && (
                                 <div className="mt-5 flex flex-col items-center gap-2">
                                     {!cameraReady && (
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-[#ff6e00] flex items-center justify-center gap-2">
+                                        <div className="text-[10px] font-black uppercase tracking-widest text-[#ff6e00] flex items-center justify-center gap-2">
                                             <div className="w-1.5 h-1.5 bg-[#ff6e00] rounded-full animate-pulse"></div>
                                             Awaiting camera verification
-                                        </p>
+                                        </div>
                                     )}
                                     {!acceptedTerms && cameraReady && (
                                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-center gap-2">
